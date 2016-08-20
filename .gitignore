@@ -6,10 +6,13 @@ bin/
 /logs/
 /modules
 /project/target
-/target
+target/
 tmp/
 test-result
 server.pid
 *.eml
 /dist/
 .cache
+
+# settings
+/conf/local.conf

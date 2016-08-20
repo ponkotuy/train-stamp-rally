@@ -1,0 +1,7 @@
+
+play.crypto.secret =
+
+db.default {
+  username =
+  password =
+}
