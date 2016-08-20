@@ -17,6 +17,9 @@ object Station extends SkinnyCRUDMapperWithId[Long, Station] {
 
   def save(station: Station)(implicit session: DBSession): Long =
     createWithAttributes('name -> station.name, 'rank -> station.rank)
+
+  def findByName(name: String)(implicit session: DBSession): Option[Station] =
+    findBy(sqls.eq(column.name, name))
 }
 
 sealed abstract class StationRank(val value: Int)
