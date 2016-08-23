@@ -1,4 +1,7 @@
 
-GET / controllers.Application.index
+GET / controllers.Assets.at(path="/public", file="index.html")
 
-POST /line controllers.Lines.create()
+GET /api/lines controllers.Lines.list()
+POST /api/line controllers.Lines.create()
+
+GET /*file controllers.Assets.at(path="/public", file)

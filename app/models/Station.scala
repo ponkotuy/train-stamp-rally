@@ -16,7 +16,7 @@ object Station extends SkinnyCRUDMapperWithId[Long, Station] {
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
   def save(station: Station)(implicit session: DBSession): Long =
-    createWithAttributes('name -> station.name, 'rank -> station.rank)
+    createWithAttributes('name -> station.name, 'rank -> station.rank.value)
 
   def findByName(name: String)(implicit session: DBSession): Option[Station] =
     findBy(sqls.eq(column.name, name))
