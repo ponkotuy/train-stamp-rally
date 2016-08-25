@@ -27,7 +27,7 @@ html(lang=ja)
           .col-sm-5
             input.form-control(type='text', v-model='st.name')
           .col-sm-3
-            input.form-control(type='number', step='0.1', min='0.0', value='0.0', v-model='st.km' number)
+            input.form-control(type='number', step='0.1', min='0.0', v-model='st.km')
           .col-sm-3
             select.form-control(v-model='st.rankValue')
               option(value=1) Top
@@ -41,6 +41,13 @@ html(lang=ja)
         .form-group
           .col-sm-2.col-sm-offset-10
             button.btn.btn-default.form-control(type='button', v-on:click='addStation()') Add Station
+        .form-group
+          label.col-sm-3.control-label(for='csvArea') From TSV
+          .col-sm-9
+            textarea#csvArea.form-control(rows='4', v-model='csv')
+        .form-group
+          .col-sm-2.col-sm-offset-10
+            button.btn.btn-default.form-control(type='button', v-on:click='loadCSV()') Load TSV
       h3 Send
       form.form-inline
         button.btn.btn-primary(type='button', v-on:click='postLine()') ALL Send
