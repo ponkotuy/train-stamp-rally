@@ -1,5 +1,5 @@
 $(document).ready ->
-  cl = new Vue
+  new Vue
     el: '#createLine'
     data:
       lineName: ""
