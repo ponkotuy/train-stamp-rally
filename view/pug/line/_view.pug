@@ -1,0 +1,10 @@
+script(src='/js/lines.js')
+h2 Lines
+#lines
+  table.table.table-striped.table-condensed
+    tr
+      th ID
+      th Name
+    tr(v-for="line in lines")
+      td {{ line.id }}
+      td {{ line.name }}
