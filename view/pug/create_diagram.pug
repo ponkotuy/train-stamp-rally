@@ -5,18 +5,34 @@ html(lang=ja)
     include template/_bootstrap
     script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
+    script(src='/js/create_diagram.js')
     title Create Diagram
   body
     .jumbotron
       h1 Create Diagram
     .container(role=main)
-      form.form-horizontal
+      form#createDiagram.form-horizontal
         .form-group
           label.col-sm-3.control-label(for='name') Name
           .col-sm-9
-            input#name.form-control(type='text')
+            input#name.form-control(type='text', v-model='name')
         .form-group
           label.col-sm-3.control-label(for='trainType') TrainType
           .col-sm-9
-            select#trainType.form-control
-              option
+            select#trainType.form-control(v-model='type')
+              option(v-for='t in types', value='{{ t.value }}') {{ t.name }}
+        .form-group
+          label.col-sm-3.control-label(for='subtype') Subtype
+          .col-sm-9
+            input#subType.form-control(type='text', v-model='subtype')
+        .form-group
+          label.col-sm-7.control-label Station
+          label.col-sm-5.control-label Minutes
+        .form-group(v-for='stop in stops')
+          .col-sm-7
+            input.form-control
+          .col-sm-5
+            input.form-control(type='number', v-model='stop.trainTime')
+        .form-group
+          .col-sm-offset-10.col-sm-2
+            button.btn.btn-default.form-control(type='button') AddStop
