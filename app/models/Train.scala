@@ -8,7 +8,9 @@ case class Train(
     id: Long,
     diagramId: Long,
     start: TrainTime
-)
+) {
+  def save()(implicit session: DBSession): Long = Train.save(this)
+}
 
 object Train extends SkinnyCRUDMapperWithId[Long, Train] {
   override def defaultAlias: Alias[Train] = createAlias("t")

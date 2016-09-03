@@ -10,3 +10,13 @@ html(lang=ja)
     .jumbotron
       h1 Create Diagram
     .container(role=main)
+      form.form-horizontal
+        .form-group
+          label.col-sm-3.control-label(for='name') Name
+          .col-sm-9
+            input#name.form-control(type='text')
+        .form-group
+          label.col-sm-3.control-label(for='trainType') TrainType
+          .col-sm-9
+            select#trainType.form-control
+              option

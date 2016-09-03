@@ -1,14 +1,17 @@
 package models
 
 import scalikejdbc.TypeBinder
+import org.json4s.JsonDSL._
 
-sealed abstract class TrainType(val value: Int)
+sealed abstract class TrainType(val value: Int, val name: String) {
+  def toJson = ("value" -> value) ~ ("name" -> name)
+}
 
 object TrainType {
-  case object Local extends TrainType(1)
-  case object Rapid extends TrainType(2)
-  case object Express extends TrainType(3)
-  case object Shinkansen extends TrainType(4)
+  case object Local extends TrainType(1, "普通")
+  case object Rapid extends TrainType(2, "快速")
+  case object Express extends TrainType(3, "特急")
+  case object Shinkansen extends TrainType(4, "新幹線")
 
   def values = Seq(Local, Rapid, Express, Shinkansen)
   def find(v: Int): Option[TrainType] = values.find(_.value == v)
