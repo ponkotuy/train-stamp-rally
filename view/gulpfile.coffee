@@ -15,10 +15,15 @@ gulp.task 'coffee', ->
     .pipe coffee()
     .pipe gulp.dest('./output/js/')
 
-gulp.task 'compile', ['pug', 'coffee']
+gulp.task 'css', ->
+  gulp.src('./css/**')
+    .pipe gulp.dest('./output/css/')
+
+gulp.task 'compile', ['pug', 'coffee', 'css']
 
 gulp.task 'watch', ['compile'], ->
   gulp.watch('./pug/**/*.pug', ['pug'])
   gulp.watch('./coffee/**/*.coffee', ['coffee'])
+  gulp.watch('./css/**', ['css'])
 
 gulp.task 'default', ['watch']
