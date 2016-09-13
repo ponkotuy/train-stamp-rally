@@ -24,7 +24,9 @@ $(document).ready ->
             s.name = "#{s.line.name} #{s.station.name}"
           @setAutoComplete($('.autoCompleteStation'))
       setAutoComplete: (elem) ->
-        elem.typeahead({hint: true, highlight: true}, {name: 'stations', display: 'name', source: stationMatcher(@stations)})
+        design = {hint: true, highlight: true}
+        config = {name: 'stations', display: 'name', source: stationMatcher(@stations)}
+        elem.typeahead(design, config)
       pushPattern: ->
         start = parseTime(@pattern.start)
         end = parseTime(@pattern.end)
