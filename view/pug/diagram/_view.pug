@@ -1,1 +1,14 @@
-h2 Diagrams
+script(src='/js/diagrams.js')
+#diagrams
+  h2 Diagrams
+  table.table.table-striped.table-condensed
+    tr
+      th ID
+      th Name
+      th Type
+      th SubType
+    tr(v-for='diagram in diagrams')
+      td {{ diagram.id }}
+      td {{ diagram.name }}
+      td {{ diagram.trainType.name }}
+      td {{ diagram.subType }}
