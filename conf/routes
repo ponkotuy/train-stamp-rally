@@ -4,4 +4,11 @@ GET / controllers.Assets.at(path="/public", file="index.html")
 GET /api/lines controllers.Lines.list()
 POST /api/line controllers.Lines.create()
 
+GET /api/diagrams controllers.Diagrams.list()
+POST /api/diagram controllers.Diagrams.create()
+
+GET /api/train_types controllers.Diagrams.trainTypes()
+
+GET /api/stations controllers.Stations.list()
+
 GET /*file controllers.Assets.at(path="/public", file)
