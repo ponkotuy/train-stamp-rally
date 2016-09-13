@@ -20,11 +20,3 @@ $(document).ready ->
         lines = @csv.split('\n').map (line) -> line.split('\t')
         @stations = lines.map (line) ->
           {name: line[0], km: parseFloat(line[1] ? "0"), rankValue: parseInt(line[2] ? "5")}
-
-postJSON = (obj) ->
-  $.ajax
-    type: 'POST'
-    url: obj.url
-    data: JSON.stringify obj.data
-    contentType: 'application/json'
-    success: obj.success

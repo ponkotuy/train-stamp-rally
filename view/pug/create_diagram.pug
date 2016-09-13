@@ -7,6 +7,7 @@ html(lang=ja)
     script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
     script(src='https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js')
+    script(src='/js/common.js')
     script(src='/js/create_diagram.js')
     title Create Diagram
   body
@@ -21,12 +22,12 @@ html(lang=ja)
         .form-group
           label.col-sm-3.control-label(for='trainType') TrainType
           .col-sm-9
-            select#trainType.form-control(v-model='type')
+            select#trainType.form-control(v-model='trainType')
               option(v-for='t in types', value='{{ t.value }}') {{ t.name }}
         .form-group
-          label.col-sm-3.control-label(for='subtype') Subtype
+          label.col-sm-3.control-label(for='subType') Subtype
           .col-sm-9
-            input#subType.form-control(type='text', v-model='subtype')
+            input#subType.form-control(type='text', v-model='subType')
         .form-group
           label.col-sm-3.control-label(for='starts') Train Times
           .col-sm-9
@@ -41,15 +42,16 @@ html(lang=ja)
           .col-sm-2
             input#patternPeriod.form-control(type='number', v-model='pattern.period')
           .col-sm-2
-            button.btn.btn-default.form-control(type='button' v-on:click='pushPattern()') Push
+            button.btn.btn-default.form-control(type='button', v-on:click='pushPattern()') Push
         .form-group
           label.col-sm-7.control-label Station
           label.col-sm-5.control-label Minutes
         .form-group(v-for='stop in stops')
           .col-sm-7
-            input.form-control.autoCompleteStation(autocomplete='off')
+            input.form-control.autoCompleteStation(autocomplete='off', v-model='stop.name')
           .col-sm-5
-            input.form-control(type='number', v-model='stop.trainTime')
+            input.form-control(type='number', v-model='stop.minutes')
         .form-group
           .col-sm-offset-10.col-sm-2
-            button.btn.btn-default.form-control(type='button') AddStop
+            button.btn.btn-default.form-control(type='button', v-on:click='addStop()') AddStop
+        button.btn.btn-primary.btn-lg(type='button', v-on:click='submit()') Send ALL

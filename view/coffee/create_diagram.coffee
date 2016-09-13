@@ -3,17 +3,16 @@ $(document).ready ->
     el: '#createDiagram'
     data:
       types: []
-      type: 1
+      trainType: 1
       name: ""
-      subtype: ""
-      stops: [{trainTime: 0}, {trainTime: 1}]
+      subType: ""
+      stops: [{minutes: 0}, {minutes: 1}]
       starts: ""
       pattern:
         start: "0700"
         end: "2300"
         period: 60
       stations: []
-      stationNames: []
     methods:
       getTypes: ->
         $.getJSON '/api/train_types', (json) =>
@@ -21,21 +20,39 @@ $(document).ready ->
       getStations: ->
         $.getJSON '/api/stations', (json) =>
           @stations = json
-          @setAutoComplete()
-      setAutoComplete: ->
-        @stationNames = for s in @stations
-          "#{s.line.name} #{s.station.name}"
-        $('.autoCompleteStation')
-          .typeahead({hint: true, highlight: true}, {name: 'stations', source: substringMatcher(@stationNames)})
+          for s in @stations
+            s.name = "#{s.line.name} #{s.station.name}"
+          @setAutoComplete($('.autoCompleteStation'))
+      setAutoComplete: (elem) ->
+        elem.typeahead({hint: true, highlight: true}, {name: 'stations', display: 'name', source: stationMatcher(@stations)})
       pushPattern: ->
         start = parseTime(@pattern.start)
         end = parseTime(@pattern.end)
         now = _.clone(start)
+        console.log(now.fourDigit())
         times = while (now.isBefore(end) or now.equals(end)) and (now.isAfter(start) or now.equals(start))
-          result = now.fourDigit().toString()
+          result = now.fourDigit()
           now.addMinutes(@pattern.period)
           result
         @starts += times.join(', ')
+      addStop: ->
+        @stops.push({minutes: 0})
+        @setAutoComplete($('.autoCompleteStation:last'))
+      submit: ->
+        stops = _.flatMap @stops, (s) =>
+          id = @getLineStationId(s.name)
+          if id then [{lineStationId: id, minutes: parseInt(s.minutes)}] else []
+        starts = for s in @starts.split(",")
+          s.trim()
+        data = {name: @name, trainType: parseInt(@trainType), subType: @subType, starts: starts, stops: stops}
+        postJSON
+          url: '/api/diagram'
+          data: data
+          success: ->
+            location.reload(false)
+      getLineStationId: (name) ->
+        station = _.find @stations, (s) -> s.name == name
+        station?.id
     ready: ->
       @getTypes()
       @getStations()
@@ -55,7 +72,8 @@ class TrainTime
       @hour -= 24
 
   fourDigit: ->
-    @hour * 100 + @minutes
+    @hour.toLocaleString("en-IN", {minimumIntegerDigits: 2}) +
+      @minutes.toLocaleString("en-IN", {minimumIntegerDigits: 2})
 
   isBefore: (time) ->
     @fourDigit() < time.fourDigit()
@@ -70,8 +88,8 @@ parseTime = (str) ->
   num = parseInt(str)
   new TrainTime(num / 100, num % 100)
 
-substringMatcher = (xs) ->
+stationMatcher = (xs) ->
   (q, cb) ->
     substrRegex = new RegExp(q, 'i')
-    matches = _.filter xs, (x) ->substrRegex.test(x)
+    matches = _.filter xs, (x) -> substrRegex.test(x.line.name) or substrRegex.test(x.station.name)
     cb(matches)
