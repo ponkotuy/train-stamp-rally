@@ -15,6 +15,6 @@ case class CreateDiagram(
   def trainTypeOpt: Option[TrainType] = TrainType.find(trainType)
 }
 
-case class CreateStopStation(lineStationId: Long, minutes: Int) {
-  def stopStation(diagramId: Long) = StopStation(0L, diagramId, lineStationId, minutes)
+case class CreateStopStation(lineStationId: Long, arrival: Option[Int], departure: Option[Int]) {
+  def stopStation(diagramId: Long) = StopStation(0L, diagramId, lineStationId, arrival, departure)
 }

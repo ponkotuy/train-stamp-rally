@@ -7,7 +7,8 @@ case class StopStation(
     id: Long,
     diagramId: Long,
     lineStationId: Long,
-    minutes: Int
+    arrival: Option[Int],
+    departure: Option[Int]
 ) {
   def save()(implicit session: DBSession): Long = StopStation.save(this)
 }
@@ -21,5 +22,10 @@ object StopStation extends SkinnyCRUDMapperWithId[Long, StopStation] {
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
   def save(ss: StopStation)(implicit session: DBSession): Long =
-    createWithAttributes('diagramId -> ss.diagramId, 'lineStationId -> ss.lineStationId, 'minutes -> ss.minutes)
+    createWithAttributes(
+      'diagramId -> ss.diagramId,
+      'lineStationId -> ss.lineStationId,
+      'arrival -> ss.arrival,
+      'departure -> ss.departure
+    )
 }

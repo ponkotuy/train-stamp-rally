@@ -44,13 +44,16 @@ html(lang=ja)
           .col-sm-2
             button.btn.btn-default.form-control(type='button', v-on:click='pushPattern()') Push
         .form-group
-          label.col-sm-7.control-label Station
-          label.col-sm-5.control-label Minutes
+          label.col-sm-6.control-label Station
+          label.col-sm-3.control-label Arrival(minutes)
+          label.col-sm-3.control-label Departure(minutes)
         .form-group(v-for='stop in stops')
-          .col-sm-7
+          .col-sm-6
             input.form-control.autoCompleteStation(autocomplete='off', v-model='stop.name')
-          .col-sm-5
-            input.form-control(type='number', v-model='stop.minutes')
+          .col-sm-3
+            input.form-control(type='text', v-model='stop.arrival', v-bind="{'disabled': $index == 0}")
+          .col-sm-3
+            input.form-control(type='text', v-model='stop.departure', v-bind="{'disabled': $index == 0}")
         .form-group
           .col-sm-offset-10.col-sm-2
             button.btn.btn-default.form-control(type='button', v-on:click='addStop()') AddStop

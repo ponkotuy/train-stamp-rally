@@ -17,7 +17,8 @@ CREATE TABLE stop_station(
         id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         diagram_id BIGINT NOT NULL,
         line_station_id BIGINT NOT NULL,
-        minutes INT NOT NULL,
+        arrival INT,
+        departure INT,
         FOREIGN KEY (diagram_id) REFERENCES diagram(id),
         FOREIGN KEY (line_station_id) REFERENCES line_station(id)
 ) ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;

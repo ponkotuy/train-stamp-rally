@@ -6,7 +6,7 @@ $(document).ready ->
       trainType: 1
       name: ""
       subType: ""
-      stops: [{minutes: 0}, {minutes: 1}]
+      stops: [{departure: "0"}, {arrival: "1"}]
       starts: ""
       pattern:
         start: "0700"
@@ -43,7 +43,9 @@ $(document).ready ->
       submit: ->
         stops = _.flatMap @stops, (s) =>
           id = @getLineStationId(s.name)
-          if id then [{lineStationId: id, minutes: parseInt(s.minutes)}] else []
+          if id
+            [{lineStationId: id, arrival: parseInt(s.arrival), departure: parseInt(s.departure)}]
+          else []
         starts = for s in @starts.split(",")
           s.trim()
         data = {name: @name, trainType: parseInt(@trainType), subType: @subType, starts: starts, stops: stops}
