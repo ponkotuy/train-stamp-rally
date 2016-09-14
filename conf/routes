@@ -12,5 +12,6 @@ POST /api/mission controllers.Missions.create()
 GET /api/train_types controllers.Diagrams.trainTypes()
 
 GET /api/stations controllers.Stations.list()
+GET /api/lineStations controllers.Stations.lineStationList()
 
 GET /*file controllers.Assets.at(path="/public", file)
