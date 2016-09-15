@@ -39,7 +39,6 @@ $(document).ready ->
         @starts += times.join(', ')
       addStop: ->
         @stops.push({minutes: 0})
-        @setAutoComplete($('.autoCompleteStation:last'))
       submit: ->
         stops = _.flatMap @stops, (s) =>
           id = @getLineStationId(s.name)
@@ -60,6 +59,10 @@ $(document).ready ->
     ready: ->
       @getTypes()
       @getStations()
+    watch:
+      stops: ->
+        @setAutoComplete($('.autoCompleteStation:last'))
+
 
 class TrainTime
   constructor: (@hour, @minutes) ->

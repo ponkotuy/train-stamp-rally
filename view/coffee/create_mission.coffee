@@ -35,6 +35,10 @@ $(document).ready ->
         st?.id
     ready: ->
       @getStations()
+    watch:
+      stations: ->
+        @setAutoComplete($('.autoCompleteStation:last'))
+
 
 stationMatcher = (xs) ->
   (q, cb) ->
