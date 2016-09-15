@@ -5,11 +5,11 @@ $(document).ready ->
       name: ""
       stationMaster: []
       stations: [{name: ""}]
+      startStation: ""
     methods:
       getStations: ->
         $.getJSON '/api/stations', (json) =>
           @stationMaster = json
-          console.log(json, )
           @setAutoComplete($('.autoCompleteStation'))
       setAutoComplete: (elem) ->
         design = {hint: true, highlight: true}
@@ -17,16 +17,22 @@ $(document).ready ->
         elem.typeahead(design, config)
       submit: ->
         stations = _.flatMap @stations, (s) =>
-          x = _.find @stationMaster, (sm) -> sm.name == s.name
-          if x then [x.id] else []
+          x = @findStationId(s.name)
+          console.log(x, s.name)
+          if x then [x] else []
+        start = @findStationId(@startStation)
+        console.log({name: @name, stations: stations, startStation: start})
         postJSON
           url: '/api/mission'
-          data: {name: @name, stations: stations}
+          data: {name: @name, stations: stations, startStation: start}
           success: ->
-            # location.reload(false)
+            location.reload(false)
       addStation: ->
         @stations.push({name: ""})
         @setAutoComplete($('.autoCompleteStation:last'))
+      findStationId: (name) ->
+        st = _.find @stationMaster, (s) -> s.name == name
+        st?.id
     ready: ->
       @getStations()
 

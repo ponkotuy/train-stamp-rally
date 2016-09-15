@@ -9,6 +9,10 @@ script(src='/js/create_mission.js')
       label.col-sm-3.control-label(for='name') Name
       .col-sm-9
         input#name.form-control(type='text', v-model='name')
+    .form-group
+      label.col-sm-3.control-label(for='start') Start Station
+      .col-sm-9
+        input#start.autoCompleteStation.form-control(type='text', v-model='startStation')
   h3 Stations
   form.form-holizontal
     .form-group(v-for='st in stations')

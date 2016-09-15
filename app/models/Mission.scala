@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class Mission(id: Long, name: String, created: Long) {
+case class Mission(id: Long, name: String, startStationId: Long, created: Long) {
   def save()(implicit session: DBSession): Long = Mission.save(this)
 }
 
@@ -16,5 +16,5 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
   override def extract(rs: WrappedResultSet, n: ResultName[Mission]): Mission = autoConstruct(rs, n)
 
   def save(mission: Mission)(implicit session: DBSession): Long =
-    createWithAttributes('name -> mission.name, 'created -> mission.created)
+    createWithAttributes('name -> mission.name, 'created -> mission.created, 'startStationId -> mission.startStationId)
 }
