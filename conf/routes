@@ -7,6 +7,7 @@ POST /api/line controllers.Lines.create()
 GET /api/diagrams controllers.Diagrams.list()
 POST /api/diagram controllers.Diagrams.create()
 
+GET /api/missions controllers.Missions.list()
 POST /api/mission controllers.Missions.create()
 
 GET /api/train_types controllers.Diagrams.trainTypes()
