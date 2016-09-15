@@ -5,8 +5,8 @@ import com.google.inject.Inject
 import models.Mission
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
-import queries.CreateMission
-import scalikejdbc.DB
+import queries.{CreateMission, RandomMission}
+import scalikejdbc.{AutoSession, DB}
 
 class Missions @Inject()(json4s: Json4s) extends Controller {
   import json4s._
@@ -17,6 +17,11 @@ class Missions @Inject()(json4s: Json4s) extends Controller {
   def list() = Action {
     val missions = Mission.findAll(Seq(Mission.column.id))
     Ok(Extraction.decompose(missions))
+  }
+
+  def random(size: Int) = Action {
+    val mission = RandomMission.create(size)(AutoSession)
+    Ok(Extraction.decompose(mission))
   }
 
   def create() = Action(json) { req =>

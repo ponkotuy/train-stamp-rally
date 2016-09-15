@@ -8,6 +8,7 @@ GET /api/diagrams controllers.Diagrams.list()
 POST /api/diagram controllers.Diagrams.create()
 
 GET /api/missions controllers.Missions.list()
+GET /api/mission/random controllers.Missions.random(size: Int = 6)
 POST /api/mission controllers.Missions.create()
 
 GET /api/train_types controllers.Diagrams.trainTypes()
