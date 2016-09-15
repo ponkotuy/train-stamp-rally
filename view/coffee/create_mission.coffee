@@ -33,6 +33,10 @@ $(document).ready ->
       findStationId: (name) ->
         st = _.find @stationMaster, (s) -> s.name == name
         st?.id
+      getRandom: (size) ->
+        $.getJSON '/api/mission/random', {size: size}, (json) =>
+          @startStation = json.start.name
+          @stations = json.stations.map (s) -> {name: s.name}
     ready: ->
       @getStations()
     watch:

@@ -21,6 +21,12 @@ script(src='/js/create_mission.js')
     .form-group
       .col-sm-2.col-sm-offset-10
         button.btn.btn-default.form-control(type='button', v-on:click='addStation()') Add Station
+  h3 Random Create
+  form.form-inline
+    .form-group
+      button.btn.btn-default.form-control(type='button' v-on:click='getRandom(6)') Easy
+      button.btn.btn-default.form-control(type='button' v-on:click='getRandom(12)') Medium
+      button.btn.btn-default.form-control(type='button' v-on:click='getRandom(24)') Hard
   h3 Send
   form.form-inline
     button.btn.btn-primary.btn-lg(type='button', v-on:click='submit()') ALL Send
