@@ -20,7 +20,7 @@ object StationRank {
   implicit val impl: TypeBinder[StationRank] = TypeBinder(_ getInt _)(_ getInt _).map { i => find(i).getOrElse(Local) }
 }
 
-class StationRankSerializer extends CustomSerializer[StationRank](format => (
+object StationRankSerializer extends CustomSerializer[StationRank](format => (
     {PartialFunction.empty},
     {
       case x: StationRank =>

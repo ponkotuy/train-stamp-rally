@@ -4,8 +4,21 @@ html(lang=ja)
     meta(charset='utf-8')
     include ../template/_bootstrap
     script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
+    script(src='/js/missions.js')
   body
     .jumbotron
       h1 Train Stamp Rally
     .container(role=main)
       include _navbar
+      h2 Select mission
+      #missions
+        table.table.table-striped.table-condensed
+          tr
+            th Name
+            th Start
+            th Stations
+          tr(v-for='mission in missions')
+            td {{ mission.name }}
+            td {{ mission.startStation.name }}
+            td
+              span.label.label-default(v-for='station in mission.stations') {{ station.name }}

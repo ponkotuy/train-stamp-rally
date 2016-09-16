@@ -2,20 +2,20 @@ package controllers
 
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
-import models.Mission
+import models.{Mission, StationRankSerializer}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
 import queries.{CreateMission, RandomMission}
 import scalikejdbc.{AutoSession, DB}
 
 class Missions @Inject()(json4s: Json4s) extends Controller {
-  import json4s._
   import Responses._
+  import json4s._
 
-  implicit val formats = DefaultFormats
+  implicit val formats = DefaultFormats + StationRankSerializer
 
   def list() = Action {
-    val missions = Mission.findAll(Seq(Mission.column.id))
+    val missions = Mission.joins(Mission.stationsRef).joins(Mission.startStationRef).findAll(Seq(Mission.defaultAlias.id))
     Ok(Extraction.decompose(missions))
   }
 
