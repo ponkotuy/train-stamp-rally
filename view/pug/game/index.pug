@@ -4,7 +4,7 @@ html(lang=ja)
     meta(charset='utf-8')
     include ../template/_bootstrap
     script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
-    script(src='/js/missions.js')
+    script(src='/js/game/missions.js')
   body
     .jumbotron
       h1 Train Stamp Rally
@@ -12,13 +12,16 @@ html(lang=ja)
       include _navbar
       h2 Select mission
       #missions
-        table.table.table-striped.table-condensed
+        table.table.table-striped
           tr
             th Name
             th Start
             th Stations
+            th
           tr(v-for='mission in missions')
             td {{ mission.name }}
             td {{ mission.startStation.name }}
             td
               span.label.label-default(v-for='station in mission.stations') {{ station.name }}
+            td
+              button.btn.btn-primary.btn-sm(v-on:click='start(mission)') Start
