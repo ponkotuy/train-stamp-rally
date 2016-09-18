@@ -2,5 +2,7 @@
 CREATE TABLE account(
         id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
         `name` VARCHAR(255) NOT NULL,
-        `role` INT NOT NULL
+        email VARCHAR(767) CHARACTER SET 'latin1' NOT NULL UNIQUE,
+        `role` INT NOT NULL,
+        password CHAR(60) NOT NULL
 ) ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;

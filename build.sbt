@@ -15,7 +15,8 @@ libraryDependencies ++= Seq(
   "jp.t2v" %% "play2-auth-social" % play2AuthVer,
   "com.github.tototoshi" %% "play-json4s-native" % "0.5.0",
   "com.github.tototoshi" %% "play-json4s-test-native" % "0.5.0" % "test",
-  "org.scalatest" %% "scalatest" % "2.2.6" % "test"
+  "org.scalatest" %% "scalatest" % "2.2.6" % "test",
+  "org.springframework.security" % "spring-security-web" % "4.1.3.RELEASE"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
