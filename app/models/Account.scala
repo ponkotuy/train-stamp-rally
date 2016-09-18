@@ -1,5 +1,6 @@
-package authes
+package models
 
+import authes.Role
 import scalikejdbc.WrappedResultSet
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 

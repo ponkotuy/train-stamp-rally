@@ -1,6 +1,7 @@
 package authes
 
 import jp.t2v.lab.play2.auth._
+import models.Account
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
 
