@@ -9,6 +9,7 @@ import queries.{CreateMission, RandomMission}
 import scalikejdbc.{AutoSession, DB}
 
 class Missions @Inject()(json4s: Json4s) extends Controller {
+  routes.Assets
   import Responses._
   import json4s._
 
