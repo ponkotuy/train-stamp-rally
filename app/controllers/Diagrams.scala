@@ -1,30 +1,33 @@
 package controllers
 
+import authes.AuthConfigImpl
+import authes.Role.{Administrator, NormalUser}
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
+import jp.t2v.lab.play2.auth.AuthElement
 import models.{Diagram, TrainType, TrainTypeSerializer}
 import org.json4s._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 import queries.CreateDiagram
 import scalikejdbc.DB
 
-class Diagrams @Inject()(json4s: Json4s) extends Controller {
+class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
   implicit val formats = DefaultFormats + new TrainTypeSerializer
 
-  def list() = Action {
+  def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(Diagram.findAll(Seq(Diagram.column.id))))
   }
 
-  def create() = Action(json) { req =>
+  def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
       createDiagram(diagram)
       Success
     }
   }
 
-  def trainTypes() = Action {
+  def trainTypes() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(TrainType.values))
   }
 

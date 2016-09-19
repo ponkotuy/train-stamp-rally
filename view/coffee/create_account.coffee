@@ -9,7 +9,6 @@ $(document).ready ->
       alert: undefined
     methods:
       submit: ->
-        console.log("OK")
         if @retype != @password
           @alert = "パスワードが一致しません"
           return

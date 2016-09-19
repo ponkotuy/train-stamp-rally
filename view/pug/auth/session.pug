@@ -5,15 +5,17 @@ html(lang=ja)
     meta(http-equiv="X-UA-Compatible" content="IE=edge")
     meta(name="viewport" content="width=device-width, initial-scale=1")
     include ../template/_bootstrap
-    script(src='/js/forms.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
+    script(src='/js/common.js')
+    script(src='/js/session.js')
     title Login
   body
     .container(role=main)
-      form(action='/api/session', method='POST')
+      form#session(@submit.prevent, @submit='login()')
         .form-group
           label(for='email') Email address
-          input#email.form-control(type='email', name='email')
+          input#email.form-control(type='email', v-model='email')
         .form-group
           label(for='password') Password
-          input#password.form-control(type='password', name='password')
-        button.btn.btn-primary.submit(type='button') Submit
+          input#password.form-control(type='password', v-model='password')
+        button.btn.btn-primary(type='submit') Login

@@ -2,13 +2,14 @@ package authes
 
 import jp.t2v.lab.play2.auth._
 import models.Account
-import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
 trait AuthConfigImpl extends AuthConfig {
+  import controllers.Responses._
+
   override type Id = Long
   override type User = Account
   override type Authority = Role
@@ -21,16 +22,16 @@ trait AuthConfigImpl extends AuthConfig {
     Future.successful(Account.findById(id))
 
   override def loginSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(controllers.routes.Assets.at("game/index.html")))
+    Future.successful(Success)
 
   override def logoutSucceeded(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(controllers.routes.Assets.at("index.html")))
+    Future.successful(Success)
 
   override def authenticationFailed(request: RequestHeader)(implicit context: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(controllers.routes.Assets.at("session.html")))
+    Future.successful(Forbidden("Authentication failed"))
 
   override def authorizationFailed(request: RequestHeader, user: User, authority: Option[Role])(implicit context: ExecutionContext): Future[Result] =
-    Future.successful(Redirect(controllers.routes.Assets.at("session.html")))
+    Future.successful(Forbidden("Authorization failed"))
 
   override def authorize(user: User, authority: Authority)(implicit context: ExecutionContext): Future[Boolean] = Future.successful{
     (user.role, authority) match {

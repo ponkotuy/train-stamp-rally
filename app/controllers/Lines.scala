@@ -1,23 +1,26 @@
 package controllers
 
+import authes.AuthConfigImpl
+import authes.Role.{Administrator, NormalUser}
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
+import jp.t2v.lab.play2.auth.AuthElement
 import models.{Line, LineStation, Station}
 import org.json4s._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 import queries.CreateLine
 import scalikejdbc._
 
-class Lines @Inject()(json4s: Json4s) extends Controller {
+class Lines @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
   implicit val formats = DefaultFormats
 
-  def list() = Action {
+  def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(Line.findAll(Seq(Line.column.id))))
   }
 
-  def create() = Action(json) { req =>
+  def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateLine].fold(JSONParseError) { line =>
       createLine(line)
       Success
