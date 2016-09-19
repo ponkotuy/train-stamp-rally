@@ -16,8 +16,8 @@ $(document).ready ->
             Vue.set(mission, 'game', game)
       start: (mission) ->
         API.post "/api/game/#{mission.id}", {}, ->
-          @continue(mission)
-      continue: (mission) ->
+          @gameContinue(mission)
+      gameContinue: (mission) ->
         location.href = "/game/game.html?mission=#{mission.id}"
     ready: ->
       @getMissions()
