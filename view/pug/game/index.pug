@@ -4,6 +4,7 @@ html(lang=ja)
     meta(charset='utf-8')
     include ../template/_bootstrap
     script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
+    script(src='/js/common.js')
     script(src='/js/game/missions.js')
   body
     .jumbotron
@@ -24,4 +25,4 @@ html(lang=ja)
             td
               span.label.label-default(v-for='station in mission.stations') {{ station.name }}
             td
-              button.btn.btn-primary.btn-sm(v-on:click='start(mission)') Start
+              button.btn.btn-primary.btn-sm(@click='start(mission)') Start

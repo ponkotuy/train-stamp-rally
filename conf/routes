@@ -19,4 +19,6 @@ GET /api/train_types controllers.Diagrams.trainTypes()
 GET /api/stations controllers.Stations.list()
 GET /api/lineStations controllers.Stations.lineStationList()
 
+POST /api/game/:missionId controllers.Games.create(missionId: Long)
+
 GET /*file controllers.Assets.at(path="/public", file)

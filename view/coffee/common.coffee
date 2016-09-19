@@ -11,6 +11,9 @@
       contentType: 'application/json'
       success: obj.success
       error: failure
+  post: (url, data, success) ->
+    $.post(url, data, success)
+      .fail(failure)
 
 failure = (jqXHR) ->
   redirect = location.pathname
