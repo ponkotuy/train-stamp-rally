@@ -11,7 +11,7 @@ $(document).ready ->
           @getGames()
       getGames: ->
         API.getJSON '/api/games', (games) =>
-          @missions.forEach (mission) =>
+          @missions.forEach (mission) ->
             game = _.find games, (g) -> g.missionId == mission.id
             Vue.set(mission, 'game', game)
       start: (mission) ->
