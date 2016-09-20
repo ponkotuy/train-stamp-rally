@@ -17,7 +17,9 @@ POST /api/mission controllers.Missions.create()
 GET /api/train_types controllers.Diagrams.trainTypes()
 
 GET /api/stations controllers.Stations.list()
-GET /api/lineStations controllers.Stations.lineStationList()
+GET /api/station/:stationId controllers.Stations.show(stationId: Long)
+GET /api/line_stations controllers.Stations.lineStationList()
+GET /api/line_station/:lineStationId controllers.Stations.lineStation(lineStationId: Long)
 
 GET /api/games controllers.Games.list()
 GET /api/game/:missionId controllers.Games.show(missionId: Long)

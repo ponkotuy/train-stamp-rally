@@ -23,6 +23,21 @@ $(document).ready ->
         @twoDigit(time.hour) + @twoDigit(time.minutes)
       twoDigit: (int) ->
         int.toLocaleString('en-IN', {minimumIntegerDigits: 2})
+      openModal: (diagram) ->
+        new Vue(modalVue(diagram))
+        $('#trainModal').modal('show')
     ready: ->
       @setMission()
       @getGame()
+  modalVue = (diagram) ->
+    el: '#trainModal'
+    data:
+      diagram: diagram
+      stationNames: {}
+    methods:
+      getStation: (stationId) ->
+        API.getJSON "/api/line_station/#{stationId}", (json) =>
+          Vue.set(@stationNames, json.id, json.station.name)
+    ready: ->
+      @diagram.stops.forEach (stop) =>
+        @getStation(stop.lineStationId)

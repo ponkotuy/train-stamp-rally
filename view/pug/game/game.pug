@@ -7,6 +7,7 @@ html(lang=ja)
     script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
     script(src='/js/common.js')
     script(src='/js/game/game.js')
+    style .clickable { cursor: pointer; }
   body
     .jumbotron
       h1 Train Stamp Rally
@@ -16,11 +17,29 @@ html(lang=ja)
         h1 {{ game.station.name }}駅
         h3 {{ dateFormat(game.time) }}
         p 使用金額:{{ game.money }}円 移動距離:{{ game.distance }}km
-        h3 Next train
         table.table
-          tr
-            th Name
-            th Time
-          tr(v-for='diagram in diagrams', :class='{success: diagram.trainType.value == 2, danger: diagram.trainType.value == 3, info: diagram.trainType.value == 4}')
-            td {{ diagram.subType }} {{ diagram.name }}
-            td {{ timeFormat(diagram.train.start) }}
+          thead
+            tr
+              th Name
+              th Time
+          tbody
+            tr.clickable(v-for='diagram in diagrams', @click='openModal(diagram)', :class='{success: diagram.trainType.value == 2, danger: diagram.trainType.value == 3, info: diagram.trainType.value == 4}')
+              td {{ diagram.subType }} {{ diagram.name }}
+              td {{ timeFormat(diagram.train.start) }}
+    .modal#trainModal.fade(role='dialog')
+      .modal-dialog(role='document')
+        .modal-content
+          .modal-header
+            button.close(type='button', data-dismiss='modal', aria-label='Close')
+              span(aria-hidden='true') &times;
+            h3 {{ diagram.subType }} {{ diagram.name }}
+          .modal-body
+            table.table
+              thead
+                tr
+                  th Station
+                  th Arrival
+                  th Departure
+              tbody
+                tr(v-for='stop in diagram.stops')
+                  td {{ stationNames[stop.lineStationId] }}
