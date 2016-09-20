@@ -14,9 +14,8 @@ $(document).ready ->
           return
         if @password.length < 8
           @alert = "passwordは8文字以上が必須です"
-          console.log(@password.length)
           return
-        postJSON
+        API.postJSON
           url: '/api/account'
           data: {name: @name, email: @email, password: @password}
           success: =>

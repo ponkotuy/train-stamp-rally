@@ -6,14 +6,14 @@ html(lang=ja)
     meta(v-model="viewport" content="width=device-width, initial-scale=1")
     include ../template/_bootstrap
     script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
-    script(src='/js/create_account.js')
     script(src='/js/common.js')
+    script(src='/js/create_account.js')
     title Create Account
   body
     .jumbotron
       h1 Create Account
     .container(role=main)
-      form#createAccount.form-horizontal
+      form#createAccount.form-horizontal(@submit.prevent, @submit='submit()')
         .alert.alert-warning(role=alert, v-show='alert')
           span {{ alert }}
         .form-group
@@ -34,4 +34,4 @@ html(lang=ja)
             input#checkPassword.form-control(type='password', v-model='retype')
         .form-group
           .col-sm-offset-3
-            button.btn.btn-primary(type='button', v-on:click='submit()') Create
+            button.btn.btn-primary(type='submit') Create
