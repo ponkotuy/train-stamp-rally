@@ -4,7 +4,14 @@ import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 import utils.MissionTime
 
-case class Game(id: Long, missionId: Long, accountId: Long, time: MissionTime, created: Long) {
+case class Game(
+    id: Long,
+    missionId: Long,
+    accountId: Long,
+    time: MissionTime,
+    distance: Double,
+    money: Int,
+    created: Long) {
   def save()(implicit session: DBSession): Long = Game.save(this)
 }
 
@@ -21,6 +28,8 @@ object Game extends SkinnyCRUDMapperWithId[Long, Game] {
       'missionId -> game.missionId,
       'accountId -> game.accountId,
       'time -> game.time.toString,
+      'distance -> game.distance,
+      'money -> game.money,
       'created -> game.created
     )
 }
