@@ -21,6 +21,6 @@ html(lang=ja)
           tr
             th Name
             th Time
-          tr(v-for='diagram in diagrams', :class='{success: diagram.trainType.id == 2, danger: diagram.trainType.id == 3, info: diagram.trainType.id == 4}')
+          tr(v-for='diagram in diagrams', :class='{success: diagram.trainType.value == 2, danger: diagram.trainType.value == 3, info: diagram.trainType.value == 4}')
             td {{ diagram.subType }} {{ diagram.name }}
             td {{ timeFormat(diagram.train.start) }}
