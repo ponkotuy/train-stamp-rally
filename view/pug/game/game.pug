@@ -12,3 +12,8 @@ html(lang=ja)
       h1 Train Stamp Rally
     .container(role=main)
       include _navbar
+      #game
+        h1 {{ game.station.name }}駅
+        h3 {{ timeFormat(game.time) }}
+        p 使用金額:{{ game.money }}円 移動距離:{{ game.distance }}km
+        h3 Next train...

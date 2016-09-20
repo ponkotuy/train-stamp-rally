@@ -22,13 +22,19 @@ class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with A
     Ok(Extraction.decompose(games))
   }
 
+  def show(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    val game = Game.joins(Game.stationRef)
+        .findBy(sqls.eq(Game.column.accountId, loggedIn.id).and.eq(Game.column.missionId, missionId))
+    Ok(Extraction.decompose(game))
+  }
+
   def create(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     DB localTx { implicit session =>
       val accountId = loggedIn.id
       val missionOpt = Mission.joins(Mission.stationsRef).findById(missionId)
-      missionOpt.fold(NotFound("Not found mission.")) { mission =>
+      missionOpt.fold(NotFound("Not found missionId.")) { mission =>
         deleteGameIfExists(missionId, accountId)
-        val gameId = Game(0L, missionId, accountId, MissionTime.Default, 0.0, 0, System.currentTimeMillis()).save()
+        val gameId = Game(0L, missionId, accountId, MissionTime.Default, 0.0, 0, mission.startStationId, System.currentTimeMillis()).save()
         mission.stations.foreach { st => GameProgress(gameId, st.id, None).save() }
         Success
       }
