@@ -14,6 +14,13 @@ html(lang=ja)
       include _navbar
       #game
         h1 {{ game.station.name }}駅
-        h3 {{ timeFormat(game.time) }}
+        h3 {{ dateFormat(game.time) }}
         p 使用金額:{{ game.money }}円 移動距離:{{ game.distance }}km
-        h3 Next train...
+        h3 Next train
+        table.table
+          tr
+            th Name
+            th Time
+          tr(v-for='diagram in diagrams', :class='{success: diagram.trainType.id == 2, danger: diagram.trainType.id == 3, info: diagram.trainType.id == 4}')
+            td {{ diagram.subType }} {{ diagram.name }}
+            td {{ timeFormat(diagram.train.start) }}

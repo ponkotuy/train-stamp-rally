@@ -4,6 +4,7 @@ $(document).ready ->
     data:
       missionId: 0
       game: {}
+      diagrams: []
     methods:
       setMission: ->
         @missionId = fromURLParameter(location.search.slice(1)).mission
@@ -12,10 +13,16 @@ $(document).ready ->
       getGame: ->
         API.getJSON "/api/game/#{@missionId}", (json) =>
           @game = json
+          @getDiagrams()
+      getDiagrams: ->
+        API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormat(@game.time)}", (json) =>
+          @diagrams = json
+      dateFormat: (date) ->
+        "#{date.day}日目 #{@twoDigit(date.hour)}:#{@twoDigit(date.minutes)}"
       timeFormat: (time) ->
-        hour = time.hour.toLocaleString('en-IN', {minimumIntegerDigits: 2})
-        minutes = time.minutes.toLocaleString('en-IN', {minimumIntegerDigits: 2})
-        "#{time.day}日目 #{hour}:#{minutes}"
+        @twoDigit(time.hour) + @twoDigit(time.minutes)
+      twoDigit: (int) ->
+        int.toLocaleString('en-IN', {minimumIntegerDigits: 2})
     ready: ->
       @setMission()
       @getGame()

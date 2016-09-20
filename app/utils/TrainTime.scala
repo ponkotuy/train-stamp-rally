@@ -11,6 +11,12 @@ case class TrainTime(hour: Int, minutes: Int) extends Ordered[TrainTime] {
   override def toString: String = f"${hour}%02d${minutes}%02d"
 
   override def compare(that: TrainTime): Int = TrainTime.ordering.compare(this, that)
+
+  def addMinutes(add: Int): TrainTime = {
+    val m = (minutes + add) % 60
+    val h = (hour + (minutes + add) / 60) % 24
+    TrainTime(h, m)
+  }
 }
 
 object TrainTime {
