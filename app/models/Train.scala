@@ -7,7 +7,9 @@ import utils.TrainTime
 case class Train(
     id: Long,
     diagramId: Long,
-    start: TrainTime
+    start: TrainTime,
+    diagram: Option[Diagram] = None,
+    stops: Seq[StopStation] = Nil
 ) {
   def save()(implicit session: DBSession): Long = Train.save(this)
 }
@@ -15,10 +17,21 @@ case class Train(
 object Train extends SkinnyCRUDMapperWithId[Long, Train] {
   override def defaultAlias: Alias[Train] = createAlias("t")
 
-  override def extract(rs: WrappedResultSet, n: ResultName[Train]): Train = autoConstruct(rs, n)
+  override def extract(rs: WrappedResultSet, n: ResultName[Train]): Train = autoConstruct(rs, n, "diagram", "stops")
 
   override def idToRawValue(id: Long): Any = id
   override def rawValueToId(value: Any): Long = value.toString.toLong
+
+  lazy val diagramRef = belongsTo[Diagram](
+    right = Diagram,
+    merge = (t, d) => t.copy(diagram = d)
+  )
+
+  lazy val stopStationRef = hasMany[StopStation](
+    many = StopStation -> StopStation.defaultAlias,
+    on = (t, ss) => sqls.eq(t.diagramId, ss.diagramId),
+    merge = (t, sss) => t.copy(stops = sss)
+  )
 
   def save(t: Train)(implicit session: DBSession): Long =
     createWithAttributes('diagramId -> t.diagramId, 'start -> t.start.toString)

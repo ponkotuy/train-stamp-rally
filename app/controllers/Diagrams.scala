@@ -28,6 +28,11 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
     }
   }
 
+  def train(trainId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+      import Train.{diagramRef, stopStationRef}
+    Ok(Extraction.decompose(Train.joins(diagramRef, stopStationRef).findById(trainId)))
+  }
+
   def trainTypes() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(TrainType.values))
   }
