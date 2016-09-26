@@ -1,6 +1,7 @@
 $(document).ready ->
   new Vue
     el: '#game'
+    mixins: [formatter]
     data:
       missionId: 0
       game: {}
@@ -15,29 +16,22 @@ $(document).ready ->
           @game = json
           @getDiagrams()
       getDiagrams: ->
-        API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormat(@game.time)}", (json) =>
+        API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
           @diagrams = json
-      dateFormat: (date) ->
-        "#{date.day}日目 #{@twoDigit(date.hour)}:#{@twoDigit(date.minutes)}"
-      timeFormat: (time) ->
-        @twoDigit(time.hour) + @twoDigit(time.minutes)
-      twoDigit: (int) ->
-        int.toLocaleString('en-IN', {minimumIntegerDigits: 2})
       openModal: (diagram) ->
-        new Vue(modalVue(diagram))
+        new Vue(modalVue(diagram.train.id))
         $('#trainModal').modal('show')
     ready: ->
       @setMission()
       @getGame()
-  modalVue = (diagram) ->
+  modalVue = (trainId) ->
     el: '#trainModal'
+    mixins: [formatter]
     data:
-      diagram: diagram
-      stationNames: {}
+      train: {}
     methods:
-      getStation: (stationId) ->
-        API.getJSON "/api/line_station/#{stationId}", (json) =>
-          Vue.set(@stationNames, json.id, json.station.name)
+      getTrain: (id) ->
+        API.getJSON "/api/train/#{id}", (json) =>
+          @train = json
     ready: ->
-      @diagram.stops.forEach (stop) =>
-        @getStation(stop.lineStationId)
+      @getTrain(trainId)

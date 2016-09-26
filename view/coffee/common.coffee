@@ -27,3 +27,14 @@ failure = (jqXHR) ->
     key = ary.shift()
     obj[key] = ary.join('=')
   obj
+
+@formatter =
+  methods:
+    dateFormat: (date) ->
+      "#{date.day}日目 #{@twoDigit(date.hour)}:#{@twoDigit(date.minutes)}"
+    timeFormat: (time) ->
+      "#{@twoDigit(time.hour)}:#{@twoDigit(time.minutes)}"
+    timeFormatAPI: (time) ->
+      @twoDigit(time.hour) + @twoDigit(time.minutes)
+    twoDigit: (int) ->
+      int.toLocaleString('en-IN', {minimumIntegerDigits: 2})

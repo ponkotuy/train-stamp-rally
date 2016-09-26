@@ -9,6 +9,7 @@ import models._
 import org.json4s._
 import play.api.mvc.Controller
 import queries.{CreateDiagram, SearchDiagram}
+import responses.TrainResponse
 import scalikejdbc._
 
 class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
@@ -29,8 +30,7 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   }
 
   def train(trainId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-      import Train.{diagramRef, stopStationRef}
-    Ok(Extraction.decompose(Train.joins(diagramRef, stopStationRef).findById(trainId)))
+    Ok(Extraction.decompose(TrainResponse.fromTrainId(trainId)(AutoSession)))
   }
 
   def trainTypes() = StackAction(AuthorityKey -> NormalUser) { implicit req =>

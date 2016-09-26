@@ -32,7 +32,7 @@ html(lang=ja)
           .modal-header
             button.close(type='button', data-dismiss='modal', aria-label='Close')
               span(aria-hidden='true') &times;
-            h3 {{ diagram.subType }} {{ diagram.name }}
+            h3 {{ train.subType }} {{ train.name }}
           .modal-body
             table.table
               thead
@@ -41,5 +41,7 @@ html(lang=ja)
                   th Arrival
                   th Departure
               tbody
-                tr(v-for='stop in diagram.stops')
-                  td {{ stationNames[stop.lineStationId] }}
+                tr(v-for='stop in train.stops')
+                  td {{ stop.station.name }}
+                  td {{ timeFormat(stop.arrival) }}
+                  td {{ timeFormat(stop.departure) }}
