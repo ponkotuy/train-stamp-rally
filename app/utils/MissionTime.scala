@@ -8,6 +8,11 @@ case class MissionTime(day: Int, hour: Int, minutes: Int) extends Ordered[Missio
   assert(0 <= hour && hour < 24)
   assert(0 <= minutes && minutes < 60)
 
+  def setTime(time: TrainTime): MissionTime = {
+    if(trainTime < time) copy(hour = time.hour, minutes = time.minutes)
+    else copy(day = day + 1, hour = time.hour, minutes = time.minutes)
+  }
+
   override def toString: String = f"${day}-${hour}%02d:${minutes}%02d"
 
   lazy val trainTime = TrainTime(hour, minutes)

@@ -19,12 +19,12 @@ $(document).ready ->
         API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
           @diagrams = json
       openModal: (diagram) ->
-        new Vue(modalVue(diagram.train.id))
+        new Vue(modalVue(diagram.train.id, @game.station.id))
         $('#trainModal').modal('show')
     ready: ->
       @setMission()
       @getGame()
-  modalVue = (trainId) ->
+  modalVue = (trainId, stationId) ->
     el: '#trainModal'
     mixins: [formatter]
     data:
@@ -32,6 +32,9 @@ $(document).ready ->
     methods:
       getTrain: (id) ->
         API.getJSON "/api/train/#{id}", (json) =>
+          stops = _.dropWhile json.stops, (stop) =>
+            stop.station.id != stationId
           @train = json
+          @train.stops = stops
     ready: ->
       @getTrain(trainId)

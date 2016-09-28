@@ -43,5 +43,6 @@ html(lang=ja)
               tbody
                 tr(v-for='stop in train.stops')
                   td {{ stop.station.name }}
-                  td {{ timeFormat(stop.arrival) }}
+                  td(v-if='$index == 0') --
+                  td(v-if='$index != 0') {{ timeFormat(stop.arrival) }}
                   td {{ timeFormat(stop.departure) }}

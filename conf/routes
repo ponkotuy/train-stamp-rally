@@ -27,4 +27,6 @@ GET /api/games controllers.Games.list()
 GET /api/game/:missionId controllers.Games.show(missionId: Long)
 POST /api/game/:missionId controllers.Games.create(missionId: Long)
 
+PUT /api/game/train controllers.GameTrains.board()
+
 GET /*file controllers.Assets.at(path="/public", file)
