@@ -13,9 +13,12 @@ case class Game(
     money: Int,
     stationId: Long,
     created: Long,
+    updated: Long,
     station: Option[Station] = None
 ) {
   def save()(implicit session: DBSession): Long = Game.save(this)
+
+  def update()(implicit session: DBSession): Unit = Game.update(this)
 }
 
 object Game extends SkinnyCRUDMapperWithId[Long, Game] {
@@ -39,6 +42,17 @@ object Game extends SkinnyCRUDMapperWithId[Long, Game] {
       'distance -> game.distance,
       'money -> game.money,
       'station_id -> game.stationId,
-      'created -> game.created
+      'created -> game.created,
+      'updated -> game.created
+    )
+
+  // update time, distance, money, stationId
+  def update(game: Game)(implicit session: DBSession): Unit =
+    updateById(game.id).withAttributes(
+      'time -> game.time.toString,
+      'distance -> game.distance,
+      'money -> game.money,
+      'stationId -> game.stationId,
+      'updated -> game.updated
     )
 }

@@ -5,10 +5,10 @@ $(document).ready ->
     data:
       missionId: 0
       game: {}
-      diagrams: []
+      trains: []
     methods:
       setMission: ->
-        @missionId = fromURLParameter(location.search.slice(1)).mission
+        @missionId = parseInt(fromURLParameter(location.search.slice(1)).mission)
         if !@missionId
           location.href = '/game/index.html'
       getGame: ->
@@ -18,37 +18,34 @@ $(document).ready ->
           @getDiagrams()
       getDiagrams: ->
         API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
-          @diagrams = json
-      openModal: (diagram) ->
-        new Vue(modalVue(diagram.train.id, @game.station.id, @missionId))
+          @trains = json
+      openModal: (train) ->
+        new Vue(modalVue(train, @game))
         $('#trainModal').modal('show')
+      here: (train) ->
+        _.find train.stops, (stop) => stop.station.id == @game.station.id
     ready: ->
       @setMission()
       @getGame()
-  modalVue = (trainId, stationId, missionId) ->
+
+  modalVue = (train, game) ->
     el: '#trainModal'
     mixins: [formatter]
     data:
-      train: {}
+      train: train
     methods:
-      getTrain: (id) ->
-        API.getJSON "/api/train/#{id}", (json) =>
-          stops = _.dropWhile json.stops, (stop) ->
-            stop.station.id != stationId
-          @train = json
-          @train.stops = stops
       board: (to) ->
         API.putJSON
           url: '/api/game/train'
           data:
-            missionId: missionId
-            trainId: trainId
-            fromStation: stationId
+            missionId: game.missionId
+            trainId: train.id
+            fromStation: game.station.id
             toStation: to
-            success: ->
-              location.reload(false)
-    ready: ->
-      @getTrain(trainId)
+          success: ->
+            location.reload(false)
+      stations: ->
+        _.dropWhile train.stops, (stop) -> stop.station.id != game.station.id
 
   missionVue = (gameId) ->
     el: '#mission'
@@ -58,6 +55,5 @@ $(document).ready ->
       getProgresses: ->
         API.getJSON "/api/game/#{gameId}/progresses", (json) =>
           @progresses = json
-          console.log(@progresses)
     ready: ->
       @getProgresses()

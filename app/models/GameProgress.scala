@@ -10,6 +10,8 @@ case class GameProgress(
     arrivalTime: Option[MissionTime],
     station: Option[Station] = None) {
   def save()(implicit session: DBSession): Unit = GameProgress.save(this)
+
+  def update()(implicit session: DBSession): Unit = GameProgress.update(this)
 }
 
 object GameProgress extends SkinnyNoIdCRUDMapper[GameProgress] {
@@ -28,4 +30,8 @@ object GameProgress extends SkinnyNoIdCRUDMapper[GameProgress] {
       'stationId -> gp.stationId,
       'arrivalTime -> gp.arrivalTime.map(_.toString)
     )
+
+  def update(gp: GameProgress)(implicit session: DBSession): Unit =
+    updateBy(sqls.eq(column.gameId, gp.gameId).and.eq(column.stationId, gp.stationId))
+      .withAttributes('arrivalTime -> gp.arrivalTime.map(_.toString))
 }

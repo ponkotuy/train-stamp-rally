@@ -34,7 +34,8 @@ class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with A
       val missionOpt = Mission.joins(Mission.stationsRef).findById(missionId)
       missionOpt.fold(NotFound("Not found missionId.")) { mission =>
         deleteGameIfExists(missionId, accountId)
-        val gameId = Game(0L, missionId, accountId, MissionTime.Default, 0.0, 0, mission.startStationId, System.currentTimeMillis()).save()
+        val now = System.currentTimeMillis()
+        val gameId = Game(0L, missionId, accountId, MissionTime.Default, 0.0, 0, mission.startStationId, now, now).save()
         mission.stations.foreach { st => GameProgress(gameId, st.id, None).save() }
         Success
       }
