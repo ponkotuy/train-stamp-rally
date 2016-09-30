@@ -4,8 +4,12 @@
     $.getJSON(url, f)
       .fail(failure)
   postJSON: (obj) ->
+    @json('POST', obj)
+  putJSON: (obj) ->
+    @json('PUT', obj)
+  json: (type, obj) ->
     $.ajax
-      type: 'POST'
+      type: type
       url: obj.url
       data: JSON.stringify obj.data
       contentType: 'application/json'

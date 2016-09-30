@@ -42,7 +42,8 @@ html(lang=ja)
                   th Departure
               tbody
                 tr(v-for='stop in train.stops')
-                  td {{ stop.station.name }}
+                  td
+                   a(@click='board(stop.station.id)') {{ stop.station.name }}
                   td(v-if='$index == 0') --
                   td(v-if='$index != 0') {{ timeFormat(stop.arrival) }}
                   td {{ timeFormat(stop.departure) }}
