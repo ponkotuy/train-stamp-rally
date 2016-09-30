@@ -13,6 +13,12 @@ case class MissionTime(day: Int, hour: Int, minutes: Int) extends Ordered[Missio
     else copy(day = day + 1, hour = time.hour, minutes = time.minutes)
   }
 
+  def addMinutes(add: Int): MissionTime = {
+    val min = (day * 24 + hour) * 60 + minutes + add
+    val h = min / 60
+    MissionTime(h / 24, h, min % 60)
+  }
+
   override def toString: String = f"${day}-${hour}%02d:${minutes}%02d"
 
   lazy val trainTime = TrainTime(hour, minutes)

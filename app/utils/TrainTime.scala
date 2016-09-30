@@ -13,9 +13,13 @@ case class TrainTime(hour: Int, minutes: Int) extends Ordered[TrainTime] {
   override def compare(that: TrainTime): Int = TrainTime.ordering.compare(this, that)
 
   def addMinutes(add: Int): TrainTime = {
-    val m = (minutes + add) % 60
-    val h = (hour + (minutes + add) / 60) % 24
-    TrainTime(h, m)
+    val min = mod(hour * 60 + minutes + add, 24 * 60)
+    TrainTime(min / 60, min % 60)
+  }
+
+  def mod(x: Int, y: Int): Int = {
+    val z = x % y
+    if(z < 0) z + y else z
   }
 }
 

@@ -5,14 +5,14 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.Game
+import models.{Game, GameProgress}
 import org.json4s.DefaultFormats
 import play.api.mvc.{Controller, Result}
 import queries.Board
 import responses.TrainResponse
 import scalikejdbc._
 import utils.EitherUtil._
-import utils.FeeCalculator
+import utils.{FeeCalculator, TrainTime}
 
 class GameTrains @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
@@ -32,21 +32,44 @@ class GameTrains @Inject()(json4s: Json4s) extends Controller with AuthElement w
         _ <- Either.cond(stopIds.contains(b.toStation) && stopIds.contains(b.fromStation), Unit, BadRequest("Wrong trainId."))
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.indexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
       } yield {
-        val distance = train.stops.sliding(2).map { xs =>
-          val Seq(x, y) = xs
-          if (x.line.id == y.line.id) math.abs(x.lineStation.km - y.lineStation.km) else 0.0
-        }.sum
-        val fee = FeeCalculator.calc(train.trainType, distance)
-        val station = train.stops.find(_.station.id == b.toStation).get
-        val time = station.arrival.map(_.addMinutes(1)).orElse(station.departure).get
-        game.copy(
-          distance = game.distance + distance,
-          money = game.money + fee,
-          time = game.time.setTime(time)
-        ).save()
+        val afterGame = TrainBoardCost.calc(train, b.toStation).apply(game)
+        afterGame.save()
+        val gp = GameProgress.defaultAlias
+        GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).foreach { progress =>
+          if(progress.arrivalTime.isEmpty) {
+            progress.copy(arrivalTime = Some(afterGame.time.addMinutes(-1))).save()
+          }
+        }
         Success
       }
       result.merge
     }
+  }
+}
+
+case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime) {
+  def apply(game: Game): Game =
+    game.copy(
+      distance = game.distance + distance,
+      money = game.money + fee,
+      time = game.time.setTime(time)
+    )
+}
+
+object TrainBoardCost {
+  def calc(train: TrainResponse, toStation: Long): TrainBoardCost = {
+    val distance = calcDistance(train, toStation)
+    val fee = FeeCalculator.calc(train.trainType, distance)
+    val station = train.stops.find(_.station.id == toStation).get
+    val time = station.arrival.map(_.addMinutes(1)).orElse(station.departure).get
+    TrainBoardCost(distance, fee, time)
+  }
+
+  private def calcDistance(train: TrainResponse, toStation: Long): Double = {
+    val (xs, ys) = train.stops.span(_.station.id == toStation)
+    (xs :+ ys.head).sliding(2).map { xs =>
+      val Seq(x, y) = xs
+      if (x.line.id == y.line.id) math.abs(x.lineStation.km - y.lineStation.km) else 0.0
+    }.sum
   }
 }
