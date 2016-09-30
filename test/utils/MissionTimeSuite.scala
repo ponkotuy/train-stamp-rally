@@ -17,4 +17,8 @@ class MissionTimeSuite extends FunSuite {
     assert(MissionTime(1, 23, 44).addMinutes(25) === MissionTime(2, 0, 9))
     assert(MissionTime(2, 0, 15).addMinutes(-18) === MissionTime(1, 23, 57))
   }
+
+  test("MissionTime.fromString") {
+    assert(MissionTime.fromString("1-06:15") === Some(MissionTime(1, 6, 15)))
+  }
 }

@@ -14,6 +14,7 @@ $(document).ready ->
       getGame: ->
         API.getJSON "/api/game/#{@missionId}", (json) =>
           @game = json
+          new Vue(missionVue(@game.id))
           @getDiagrams()
       getDiagrams: ->
         API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
@@ -48,3 +49,15 @@ $(document).ready ->
               location.reload(false)
     ready: ->
       @getTrain(trainId)
+
+  missionVue = (gameId) ->
+    el: '#mission'
+    data:
+      progresses: []
+    methods:
+      getProgresses: ->
+        API.getJSON "/api/game/#{gameId}/progresses", (json) =>
+          @progresses = json
+          console.log(@progresses)
+    ready: ->
+      @getProgresses()

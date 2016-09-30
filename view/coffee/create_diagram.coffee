@@ -18,7 +18,7 @@ $(document).ready ->
         $.getJSON '/api/train_types', (json) =>
           @types = json
       getStations: ->
-        $.getJSON '/api/lineStations', (json) =>
+        $.getJSON '/api/line_stations', (json) =>
           @stations = json
           for s in @stations
             s.name = "#{s.line.name} #{s.station.name}"
@@ -48,7 +48,7 @@ $(document).ready ->
         starts = for s in @starts.split(",")
           s.trim()
         data = {name: @name, trainType: parseInt(@trainType), subType: @subType, starts: starts, stops: stops}
-        postJSON
+        API.postJSON
           url: '/api/diagram'
           data: data
           success: ->

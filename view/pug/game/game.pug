@@ -13,19 +13,27 @@ html(lang=ja)
       h1 Train Stamp Rally
     .container(role=main)
       include _navbar
-      #game
-        h1 {{ game.station.name }}駅
-        h3 {{ dateFormat(game.time) }}
-        p 使用金額:{{ game.money }}円 移動距離:{{ game.distance }}km
-        table.table
-          thead
-            tr
-              th Name
-              th Time
-          tbody
-            tr.clickable(v-for='diagram in diagrams', @click='openModal(diagram)', :class='{success: diagram.trainType.value == 2, danger: diagram.trainType.value == 3, info: diagram.trainType.value == 4}')
-              td {{ diagram.subType }} {{ diagram.name }}
-              td {{ timeFormat(diagram.train.start) }}
+      .row
+        .col-md-8
+          #game
+            h1 {{ game.station.name }}駅
+            h3 {{ dateFormat(game.time) }}
+            p 使用金額:{{ game.money }}円 移動距離:{{ game.distance }}km
+            table.table
+              thead
+                tr
+                  th Name
+                  th Time
+              tbody
+                tr.clickable(v-for='diagram in diagrams', @click='openModal(diagram)', :class='{success: diagram.trainType.value == 2, danger: diagram.trainType.value == 3, info: diagram.trainType.value == 4}')
+                  td {{ diagram.subType }} {{ diagram.name }}
+                  td {{ timeFormat(diagram.train.start) }}
+        .col-md-4
+          #mission
+            h2 目的地
+            h4(v-for='progress in progresses', v-bind:class='{"text-success": progress.arrivalTime, "text-danger": !progress.arrivalTime}') {{ progress.station.name }}
+              span.glyphicon.glyphicon-ok(v-if='progress.arrivalTime')
+              span.glyphicon.glyphicon-remove(v-if='!progress.arrivalTime')
     .modal#trainModal.fade(role='dialog')
       .modal-dialog(role='document')
         .modal-content
@@ -43,7 +51,8 @@ html(lang=ja)
               tbody
                 tr(v-for='stop in train.stops')
                   td
-                   a(@click='board(stop.station.id)') {{ stop.station.name }}
+                    a(@click='board(stop.station.id)' href='#' v-if='$index != 0') {{ stop.station.name }}
+                    span(v-if='$index == 0') {{ stop.station.name }}
                   td(v-if='$index == 0') --
                   td(v-if='$index != 0') {{ timeFormat(stop.arrival) }}
                   td {{ timeFormat(stop.departure) }}

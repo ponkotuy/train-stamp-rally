@@ -27,7 +27,7 @@ case class MissionTime(day: Int, hour: Int, minutes: Int) extends Ordered[Missio
 }
 
 object MissionTime {
-  val Regex = """\d+\-\d+\:\d+""".r
+  val Regex = """(\d+)-(\d+):(\d+)""".r
   val ordering = Ordering.by(unapply)
   val Default = MissionTime(1, 6, 0)
 
@@ -38,5 +38,5 @@ object MissionTime {
 
   implicit def typeBinder: TypeBinder[String] = TypeBinder.string
   implicit val impl: TypeBinder[MissionTime] =
-    TypeBinder(_ getString _)(_ getString _).map(fromString).map(_.getOrElse(Default))
+    TypeBinder(_ getString _)(_ getString _).map(fromString).map(_.orNull)
 }
