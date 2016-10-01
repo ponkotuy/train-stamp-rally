@@ -9,8 +9,9 @@ $(document).ready ->
       addStation: ->
         @stations.push {name: '', km: 0.0, rankValue: 5}
       deleteStation: (idx) ->
-        @stations.splice(idx, 1)      postLine: ->
-        postJSON
+        @stations.splice(idx, 1)
+      postLine: ->
+        API.postJSON
           url: '/api/line'
           data: {name: @lineName, stations: @stations}
           success: ->
