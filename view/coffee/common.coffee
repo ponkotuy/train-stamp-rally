@@ -1,7 +1,7 @@
 
 @API =
-  getJSON: (url, f) ->
-    $.getJSON(url, f)
+  getJSON: (url, a, b) ->
+    $.getJSON(url, a, b)
       .fail(failure)
   postJSON: (obj) ->
     @json('POST', obj)

@@ -42,7 +42,6 @@ $(document).ready ->
       stations: ->
         @setAutoComplete($('.autoCompleteStation:last'))
 
-
 stationMatcher = (xs) ->
   (q, cb) ->
     substrRegex = new RegExp(q, 'i')
