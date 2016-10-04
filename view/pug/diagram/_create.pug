@@ -32,7 +32,7 @@ script(src='/js/create_diagram.js')
       .col-sm-2
         input#patternPeriod.form-control(type='number', v-model='pattern.period')
       .col-sm-2
-        button.btn.btn-default.form-control(type='button', v-on:click='pushPattern()') Push
+        button.btn.btn-default.form-control(type='button', @click='pushPattern()') Push
     .form-group
       label.col-sm-6.control-label Station
       label.col-sm-3.control-label Arrival(minutes)
@@ -46,5 +46,15 @@ script(src='/js/create_diagram.js')
         input.form-control(type='text', v-model='stop.departure', v-bind="{'disabled': $index == 0}")
     .form-group
       .col-sm-offset-10.col-sm-2
-        button.btn.btn-default.form-control(type='button', v-on:click='addStop()') AddStop
-    button.btn.btn-primary.btn-lg(type='button', v-on:click='submit()') Send ALL
+        button.btn.btn-default.form-control(type='button', @click='addStop()') AddStop
+    .form-group
+      label.col-sm-3.control-label From web
+      label.col-sm-1.control-label(for='scrapeLineId') Line ID
+      .col-sm-2
+        input#scrapeLineId.form-control(type='number', v-model='scrape.lineId')
+      label.col-sm-2.control-label(for='scrapeTrainId') Train ID
+      .col-sm-2
+        input#scrapeTrainId.form-control(type='number', v-model='scrape.trainId')
+      .col-sm-2
+        button.btn.btn-default.form-control(type='button', @click='getScrape()') Scrape
+    button.btn.btn-primary.btn-lg(type='button', @click='submit()') Send ALL

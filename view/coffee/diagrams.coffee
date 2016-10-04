@@ -5,7 +5,7 @@ $(document).ready ->
       diagrams: []
     methods:
       getDiagrams: ->
-        $.getJSON '/api/diagrams', (json) =>
+        API.getJSON '/api/diagrams', (json) =>
           @diagrams = json
     ready: ->
       @getDiagrams()

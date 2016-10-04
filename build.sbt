@@ -16,7 +16,10 @@ libraryDependencies ++= Seq(
   "com.github.tototoshi" %% "play-json4s-native" % "0.5.0",
   "com.github.tototoshi" %% "play-json4s-test-native" % "0.5.0" % "test",
   "org.scalatest" %% "scalatest" % "3.0.0" % "test",
-  "org.springframework.security" % "spring-security-web" % "4.1.3.RELEASE"
+  "org.springframework.security" % "spring-security-web" % "4.1.3.RELEASE",
+  "ch.qos.logback" % "logback-classic" % "1.1.7" % "runtime",
+  "org.slf4j" % "slf4j-api" % "1.7.21",
+  "net.liftweb" %% "lift-util" % "2.6.2"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

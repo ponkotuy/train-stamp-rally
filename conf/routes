@@ -23,6 +23,8 @@ GET /api/station/:stationId controllers.Stations.show(stationId: Long)
 GET /api/line_stations controllers.Stations.lineStationList()
 GET /api/line_station/:lineStationId controllers.Stations.lineStation(lineStationId: Long)
 
+GET /api/scrape/train/:lineId/:trainId controllers.Scraper.train(lineId: Long, trainId: Long)
+
 GET /api/games controllers.Games.list()
 GET /api/game/:missionId controllers.Games.show(missionId: Long)
 POST /api/game/:missionId controllers.Games.create(missionId: Long)

@@ -13,25 +13,39 @@ $(document).ready ->
         end: "2300"
         period: 60
       stations: []
+      scrape:
+        lineId: 0
+        trainId: 0
     methods:
       getTypes: ->
-        $.getJSON '/api/train_types', (json) =>
+        API.getJSON '/api/train_types', (json) =>
           @types = json
       getStations: ->
-        $.getJSON '/api/line_stations', (json) =>
+        API.getJSON '/api/line_stations', (json) =>
           @stations = json
           for s in @stations
             s.name = "#{s.line.name} #{s.station.name}"
-          @setAutoComplete($('.autoCompleteStation'))
+          @setAutoCompleteAll()
+      getScrape: ->
+        API.getJSON "/api/scrape/train/#{@scrape.lineId}/#{@scrape.trainId}", (json) =>
+          start = json.stops[0].departure
+          startTime = new TrainTime(start.hour, start.minutes)
+          @stops = json.stops.filter (stop) -> not $.isEmptyObject(stop.arrive) or not $.isEmptyObject(stop.departure)
+            .map (stop) ->
+              arrival = if $.isEmptyObject(stop.arrive) then null else new TrainTime(stop.arrive.hour, stop.arrive.minutes)
+              departure = if $.isEmptyObject(stop.departure) then null else new TrainTime(stop.departure.hour, stop.departure.minutes)
+              {name: stop.name, arrival: arrival?.diff(startTime), departure: departure?.diff(startTime)}
       setAutoComplete: (elem) ->
+        elem.typeahead('destroy')
         design = {hint: true, highlight: true}
         config = {name: 'stations', display: 'name', source: stationMatcher(@stations)}
         elem.typeahead(design, config)
+      setAutoCompleteAll: ->
+        @setAutoComplete($('.autoCompleteStation'))
       pushPattern: ->
         start = parseTime(@pattern.start)
         end = parseTime(@pattern.end)
         now = _.clone(start)
-        console.log(now.fourDigit())
         times = while (now.isBefore(end) or now.equals(end)) and (now.isAfter(start) or now.equals(start))
           result = now.fourDigit()
           now.addMinutes(@pattern.period)
@@ -61,12 +75,15 @@ $(document).ready ->
       @getStations()
     watch:
       stops: ->
-        @setAutoComplete($('.autoCompleteStation:last'))
-
+        @setAutoCompleteAll()
 
 class TrainTime
   constructor: (@hour, @minutes) ->
     @normalize()
+
+  value: ->
+    60 * @hour + @minutes
+
   addMinutes: (minutes) ->
     @minutes += minutes
     @normalize()
@@ -91,9 +108,15 @@ class TrainTime
   equals: (time) ->
     time.fourDigit() == @fourDigit()
 
+  diff: (time) ->
+    Math.abs(@value() - time.value())
+
 parseTime = (str) ->
   num = parseInt(str)
   new TrainTime(num / 100, num % 100)
+
+trainFromMinutes = (minutes) ->
+  new TrainTime(minutes / 60, minutes % 60)
 
 stationMatcher = (xs) ->
   (q, cb) ->
