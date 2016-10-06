@@ -6,16 +6,14 @@ $(document).ready ->
       trainType: 1
       name: ""
       subType: ""
-      stops: [{departure: "0"}, {arrival: "1"}]
+      stops: [{departure: "0"}, {}]
       starts: ""
       pattern:
         start: "0700"
         end: "2300"
         period: 60
       stations: []
-      scrape:
-        lineId: 0
-        trainId: 0
+      scrape: ""
     methods:
       getTypes: ->
         API.getJSON '/api/train_types', (json) =>
@@ -27,7 +25,8 @@ $(document).ready ->
             s.name = "#{s.line.name} #{s.station.name}"
           @setAutoCompleteAll()
       getScrape: ->
-        API.getJSON "/api/scrape/train/#{@scrape.lineId}/#{@scrape.trainId}", (json) =>
+        ids = @parseScrapeUrl(@scrape)
+        API.getJSON "/api/scrape/train/#{ids[0]}/#{ids[1]}", (json) =>
           start = json.stops[0].departure
           startTime = new TrainTime(start.hour, start.minutes)
           @stops = json.stops.filter (stop) -> not $.isEmptyObject(stop.arrive) or not $.isEmptyObject(stop.departure)
@@ -51,8 +50,9 @@ $(document).ready ->
           now.addMinutes(@pattern.period)
           result
         @starts += times.join(', ')
-      addStop: ->
-        @stops.push({minutes: 0})
+      addStop: (idx) ->
+        add = $.extend(true, {}, @stops[idx])
+        @stops.splice(idx + 1, 0, add)
       submit: ->
         stops = _.flatMap @stops, (s) =>
           id = @getLineStationId(s.name)
@@ -70,6 +70,8 @@ $(document).ready ->
       getLineStationId: (name) ->
         station = _.find @stations, (s) -> s.name == name
         station?.id
+      parseScrapeUrl: (url) ->
+        url.match(/\/detail\/(\d+)\/(\d+).htm/).slice(1, 3)
     ready: ->
       @getTypes()
       @getStations()

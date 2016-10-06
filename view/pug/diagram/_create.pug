@@ -38,23 +38,19 @@ script(src='/js/create_diagram.js')
       label.col-sm-3.control-label Arrival(minutes)
       label.col-sm-3.control-label Departure(minutes)
     .form-group(v-for='stop in stops')
-      .col-sm-6
+      .col-sm-7
         input.form-control.autoCompleteStation(autocomplete='off', v-model='stop.name')
-      .col-sm-3
+      .col-sm-2
         input.form-control(type='text', v-model='stop.arrival', v-bind="{'disabled': $index == 0}")
-      .col-sm-3
+      .col-sm-2
         input.form-control(type='text', v-model='stop.departure', v-bind="{'disabled': $index == 0}")
-    .form-group
-      .col-sm-offset-10.col-sm-2
-        button.btn.btn-default.form-control(type='button', @click='addStop()') AddStop
+      .col-sm-1
+        button.btn.btn-default.form-control(type='button', @click='addStop($index)')
+          span.glyphicon.glyphicon-plus
     .form-group
       label.col-sm-3.control-label From web
-      label.col-sm-1.control-label(for='scrapeLineId') Line ID
-      .col-sm-2
-        input#scrapeLineId.form-control(type='number', v-model='scrape.lineId')
-      label.col-sm-2.control-label(for='scrapeTrainId') Train ID
-      .col-sm-2
-        input#scrapeTrainId.form-control(type='number', v-model='scrape.trainId')
+      .col-sm-7
+        input.form-control(type='text', v-model='scrape')
       .col-sm-2
         button.btn.btn-default.form-control(type='button', @click='getScrape()') Scrape
     button.btn.btn-primary.btn-lg(type='button', @click='submit()') Send ALL
