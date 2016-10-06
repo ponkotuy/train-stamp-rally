@@ -9,13 +9,18 @@ import models._
 import org.json4s._
 import play.api.mvc.Controller
 import queries.{CreateDiagram, SearchDiagram}
-import responses.TrainResponse
+import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc._
 
 class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
   implicit val formats = DefaultFormats + new TrainTypeSerializer
+
+  def show(diagramId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    val diagram = DiagramResponse.fromId(diagramId)
+    Ok(Extraction.decompose(diagram))
+  }
 
   def list() = StackAction(parse.form(SearchDiagram.form), AuthorityKey -> NormalUser) { implicit req =>
     val diagrams = req.body.search()(AutoSession)

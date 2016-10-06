@@ -1,4 +1,4 @@
-script(src='/js/diagrams.js')
+script(src='/js/create/diagrams.js')
 #diagrams
   h2 Diagrams
   table.table.table-striped.table-condensed
@@ -7,8 +7,11 @@ script(src='/js/diagrams.js')
       th Name
       th Type
       th SubType
+      th
     tr(v-for='diagram in diagrams')
       td {{ diagram.id }}
       td {{ diagram.name }}
       td {{ diagram.trainType.name }}
       td {{ diagram.subType }}
+      td
+        button.btn.btn-xs(type='button', @click='edit(diagram.id)') Copy

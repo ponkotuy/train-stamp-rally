@@ -2,6 +2,7 @@ $(document).ready ->
   new Vue
     el: '#createDiagram'
     data:
+      update: null
       types: []
       trainType: 1
       name: ""
@@ -72,46 +73,26 @@ $(document).ready ->
         station?.id
       parseScrapeUrl: (url) ->
         url.match(/\/detail\/(\d+)\/(\d+).htm/).slice(1, 3)
+      setUpdate: ->
+        @update = fromURLParameter(location.search.slice(1))?.edit
+        if @update
+          API.getJSON "/api/diagram/#{@update}", (json) =>
+            @trainType = json.trainType.value
+            @name = json.name
+            @subType = json.subType
+            @stops = json.stops.map (stop) ->
+              console.log(stop)
+              {name: "#{stop.line.name} #{stop.station.name}", arrival: stop.arrival, departure: stop.departure}
+            starts = json.trains.map (train) ->
+              (new TrainTime(train.start.hour, train.start.minutes)).fourDigit()
+            @starts = starts.join(', ')
     ready: ->
       @getTypes()
       @getStations()
+      @setUpdate()
     watch:
       stops: ->
         @setAutoCompleteAll()
-
-class TrainTime
-  constructor: (@hour, @minutes) ->
-    @normalize()
-
-  value: ->
-    60 * @hour + @minutes
-
-  addMinutes: (minutes) ->
-    @minutes += minutes
-    @normalize()
-
-  normalize: ->
-    while 60 <= @minutes
-      @hour += 1
-      @minutes -= 60
-    while 24 <= @hour
-      @hour -= 24
-
-  fourDigit: ->
-    @hour.toLocaleString("en-IN", {minimumIntegerDigits: 2}) +
-      @minutes.toLocaleString("en-IN", {minimumIntegerDigits: 2})
-
-  isBefore: (time) ->
-    @fourDigit() < time.fourDigit()
-
-  isAfter: (time) ->
-    time.fourDigit() < @fourDigit()
-
-  equals: (time) ->
-    time.fourDigit() == @fourDigit()
-
-  diff: (time) ->
-    Math.abs(@value() - time.value())
 
 parseTime = (str) ->
   num = parseInt(str)
