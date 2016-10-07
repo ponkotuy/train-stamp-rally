@@ -18,7 +18,7 @@ html(lang=ja)
           #game
             h1 {{ game.station.name }}駅
             h3 {{ dateFormat(game.time) }}
-            p 使用金額:{{ game.money }}円 移動距離:{{ game.distance }}km
+            p 使用金額:{{ game.money }}円 移動距離:{{ game.distance.toFixed(1) }}km
             table.table
               thead
                 tr
@@ -50,7 +50,7 @@ html(lang=ja)
                   th Arrival
                   th Departure
               tbody
-                tr(v-for='stop in stations()')
+                tr(v-for='stop in stations')
                   td
                     a(@click='board(stop.station.id)' href='#' v-if='$index != 0') {{ stop.station.name }}
                     span(v-if='$index == 0')
