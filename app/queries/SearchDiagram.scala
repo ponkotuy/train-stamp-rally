@@ -3,7 +3,7 @@ package queries
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
-import responses.TrainResponse
+import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc._
 import utils.TrainTime
 
@@ -16,7 +16,11 @@ sealed abstract class SearchDiagram {
 
 object SearchDiagram {
   case object All extends SearchDiagram {
-    override def search()(implicit session: DBSession) = Diagram.findAll()
+    override def search()(implicit session: DBSession): Seq[DiagramResponse] = {
+      import Diagram.{trainRef, stopStationRef, defaultAlias => d}
+      Diagram.joins(trainRef, stopStationRef).findAll(Seq(d.id)).map(DiagramResponse.fromDiagram)
+    }
+
     override def tuple: (Option[Long], Option[String]) = (None, None)
   }
 

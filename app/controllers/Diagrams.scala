@@ -15,10 +15,12 @@ import scalikejdbc._
 class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
+  import Diagrams._
+
   implicit val formats = DefaultFormats + new TrainTypeSerializer
 
   def show(diagramId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    val diagram = DiagramResponse.fromId(diagramId)
+    val diagram = DiagramResponse.fromId(diagramId)(AutoSession)
     Ok(Extraction.decompose(diagram))
   }
 
@@ -34,6 +36,13 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
     }
   }
 
+  def update(diagramId: Long) = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
+    req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
+      updateDiagram(diagramId, diagram)
+      Success
+    }
+  }
+
   def train(trainId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(TrainResponse.fromTrainId(trainId)(AutoSession)))
   }
@@ -41,13 +50,25 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   def trainTypes() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(TrainType.values))
   }
+}
 
-  private[this] def createDiagram(diagram: CreateDiagram): Long = {
+object Diagrams {
+  private def createDiagram(diagram: CreateDiagram): Long = {
     DB localTx { implicit session =>
       val diagramId = diagram.diagram.save()
       diagram.trains(diagramId).foreach(_.save())
       diagram.stops.foreach { stop => stop.stopStation(diagramId).save() }
       diagramId
+    }
+  }
+
+  private def updateDiagram(id: Long, diagram: CreateDiagram): Int = {
+    DB localTx { implicit session =>
+      StopStation.deleteBy(sqls.eq(StopStation.column.diagramId, id))
+      Train.deleteBy(sqls.eq(Train.column.diagramId, id))
+      diagram.trains(id).foreach(_.save())
+      diagram.stops.foreach { stop => stop.stopStation(id).save() }
+      diagram.diagram.copy(id = id).update()
     }
   }
 }

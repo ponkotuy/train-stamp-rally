@@ -1,6 +1,7 @@
 package responses
 
 import models._
+import scalikejdbc.DBSession
 
 case class DiagramResponse(
     id: Long,
@@ -12,17 +13,21 @@ case class DiagramResponse(
 )
 
 object DiagramResponse {
-  def fromId(id: Long): Option[DiagramResponse] = {
+  // trainRefとstopStationRefをjoinしている必要がある
+  def fromDiagram(diagram: Diagram): DiagramResponse = {
+    DiagramResponse(
+      diagram.id,
+      diagram.name,
+      diagram.trainType,
+      diagram.subType,
+      diagram.stops.flatMap(DiagramStationResponse.fromStop),
+      diagram.trains
+    )
+  }
+
+  def fromId(id: Long)(implicit session: DBSession): Option[DiagramResponse] = {
     import Diagram.{trainRef, stopStationRef}
-    Diagram.joins(trainRef, stopStationRef).findById(id).map { diagram =>
-      DiagramResponse(
-        diagram.id,
-        diagram.name,
-        diagram.trainType,
-        diagram.subType,
-        diagram.stops.flatMap(DiagramStationResponse.fromStop),
-        diagram.trains)
-    }
+    Diagram.joins(trainRef, stopStationRef).findById(id).map(fromDiagram)
   }
 }
 

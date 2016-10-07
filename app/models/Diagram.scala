@@ -14,6 +14,7 @@ case class Diagram(
     trains: Seq[Train] = Nil
 ) extends DiagramTrait {
   def save()(implicit session: DBSession): Long = Diagram.save(this)
+  def update()(implicit session: DBSession): Int = Diagram.update(this)
 
   def nextTrain(lineStationId: Long, time: TrainTime): Option[Train] = {
     for {
@@ -45,7 +46,16 @@ object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
   )
 
   def save(d: Diagram)(implicit session: DBSession): Long =
-    createWithAttributes('name -> d.name, 'trainType -> d.trainType.value, 'subType -> d.subType)
+    createWithAttributes(params(d):_*)
+
+  def update(d: Diagram)(implicit session: DBSession): Int =
+    updateById(d.id).withAttributes(params(d):_*)
+
+  def params(d: Diagram) = Seq(
+    'name -> d.name,
+    'trainType -> d.trainType.value,
+    'subType -> d.subType
+  )
 
   override val defaultOrderings = Seq(column.id)
 }

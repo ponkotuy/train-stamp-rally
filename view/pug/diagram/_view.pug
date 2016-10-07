@@ -7,11 +7,15 @@ script(src='/js/create/diagrams.js')
       th Name
       th Type
       th SubType
+      th From
+      th To
       th
     tr(v-for='diagram in diagrams')
       td {{ diagram.id }}
       td {{ diagram.name }}
       td {{ diagram.trainType.name }}
       td {{ diagram.subType }}
+      td {{ diagram.stops[0].station.name }}
+      td {{ diagram.stops[diagram.stops.length - 1].station.name }}
       td
         button.btn.btn-xs(type='button', @click='edit(diagram.id)') Copy

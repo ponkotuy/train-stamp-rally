@@ -55,6 +55,19 @@ $(document).ready ->
         add = $.extend(true, {}, @stops[idx])
         @stops.splice(idx + 1, 0, add)
       submit: ->
+        API.postJSON
+          url: '/api/diagram'
+          data: @createData()
+          success: ->
+            location.reload(false)
+      updateDiagram: ->
+        if @update
+          API.putJSON
+            url: "/api/diagram/#{@update}"
+            data: @createData()
+            success: ->
+              location.href = location.pathname
+      createData: ->
         stops = _.flatMap @stops, (s) =>
           id = @getLineStationId(s.name)
           if id
@@ -62,12 +75,9 @@ $(document).ready ->
           else []
         starts = for s in @starts.split(",")
           s.trim()
-        data = {name: @name, trainType: parseInt(@trainType), subType: @subType, starts: starts, stops: stops}
-        API.postJSON
-          url: '/api/diagram'
-          data: data
-          success: ->
-            location.reload(false)
+        {name: @name, trainType: parseInt(@trainType), subType: @subType, starts: starts, stops: stops}
+      clear: ->
+        location.href = location.pathname
       getLineStationId: (name) ->
         station = _.find @stations, (s) -> s.name == name
         station?.id
@@ -81,7 +91,6 @@ $(document).ready ->
             @name = json.name
             @subType = json.subType
             @stops = json.stops.map (stop) ->
-              console.log(stop)
               {name: "#{stop.line.name} #{stop.station.name}", arrival: stop.arrival, departure: stop.departure}
             starts = json.trains.map (train) ->
               (new TrainTime(train.start.hour, train.start.minutes)).fourDigit()
