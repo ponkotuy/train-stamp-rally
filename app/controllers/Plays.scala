@@ -4,17 +4,17 @@ import authes.AuthConfigImpl
 import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
+import games.TrainBoardCost
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Game, GameProgress, Station}
+import models.{Game, GameProgress}
 import org.json4s.DefaultFormats
 import play.api.mvc.{Controller, Result}
 import queries.Board
 import responses.TrainResponse
 import scalikejdbc._
 import utils.EitherUtil._
-import utils.{FeeCalculator, TrainTime}
 
-class GameTrains @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
 
@@ -45,34 +45,22 @@ class GameTrains @Inject()(json4s: Json4s) extends Controller with AuthElement w
       result.merge
     }
   }
-}
 
-case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: Station) {
-  def apply(game: Game): Game =
-    game.copy(
-      distance = game.distance + distance,
-      money = game.money + fee,
-      time = game.time.setTime(time),
-      stationId = station.id,
-      station = Some(station),
-      updated = System.currentTimeMillis()
-    )
-}
-
-object TrainBoardCost {
-  def calc(train: TrainResponse, toStation: Long): TrainBoardCost = {
-    val distance = calcDistance(train, toStation)
-    val fee = FeeCalculator.calc(train.trainType, distance)
-    val station = train.stops.find(_.station.id == toStation).get
-    val time = station.arrival.map(_.addMinutes(1)).orElse(station.departure).get
-    TrainBoardCost(distance, fee, time, station.station)
-  }
-
-  private def calcDistance(train: TrainResponse, toStation: Long): Double = {
-    val (xs, ys) = train.stops.span(_.station.id != toStation)
-    (xs :+ ys.head).sliding(2).map { xs =>
-      val Seq(x, y) = xs
-      if (x.line.id == y.line.id) math.abs(x.lineStation.km - y.lineStation.km) else 0.0
-    }.sum
+  def clear(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    DB localTx { implicit session =>
+      val g = Game.defaultAlias
+      val result = for {
+        game <- Game.findBy(sqls.eq(g.accountId, loggedIn.id).and.eq(g.missionId, missionId))
+            .toRight(notFound("Mission"))
+        gp = GameProgress.defaultAlias
+        progresses = GameProgress.findAllBy(sqls.eq(gp.gameId, game.id))
+        _ <- Either.cond(progresses.forall(_.arrivalTime.isDefined), Unit, BadRequest("Not cleared."))
+      } yield {
+        game.score(System.currentTimeMillis()).save()
+        Games.deleteGame(game)
+        Success
+      }
+      result.merge
+    }
   }
 }

@@ -42,3 +42,12 @@ failure = (jqXHR) ->
       @twoDigit(time.hour) + @twoDigit(time.minutes)
     twoDigit: (int) ->
       int.toLocaleString('en-IN', {minimumIntegerDigits: 2})
+
+@missionParam =
+  data:
+    missionId: 0
+  methods:
+    setMission: (failed)->
+      @missionId = parseInt(fromURLParameter(location.search.slice(1)).mission)
+      if !@missionId
+        failed()

@@ -3,17 +3,12 @@ $(document).ready ->
 
 mainVue = ->
   el: '#game'
-  mixins: [formatter]
+  mixins: [formatter, missionParam]
   data:
-    missionId: 0
     game: {}
     trains: []
     trainModal: null
   methods:
-    setMission: ->
-      @missionId = parseInt(fromURLParameter(location.search.slice(1)).mission)
-      if !@missionId
-        location.href = '/game/index.html'
     getGame: ->
       API.getJSON "/api/game/#{@missionId}", (json) =>
         @game = json
@@ -28,7 +23,8 @@ mainVue = ->
     here: (train) ->
       _.find train.stops, (stop) => stop.station.id == @game.station.id
   ready: ->
-    @setMission()
+    @setMission ->
+      location.href = '/game/index.html'
     @getGame()
     @trainModal = new Vue(modalVue())
 

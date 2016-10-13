@@ -19,6 +19,8 @@ case class Game(
   def save()(implicit session: DBSession): Long = Game.save(this)
 
   def update()(implicit session: DBSession): Unit = Game.update(this)
+
+  def score(created: Long) = Score(0L, missionId, accountId, time, distance, money, created)
 }
 
 object Game extends SkinnyCRUDMapperWithId[Long, Game] {

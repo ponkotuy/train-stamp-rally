@@ -12,6 +12,7 @@ import scalikejdbc._
 import utils.MissionTime
 
 class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+  import Games._
   import Responses._
   import json4s._
 
@@ -41,13 +42,17 @@ class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with A
       }
     }
   }
+}
 
-  private[this] def deleteGameIfExists(missionId: Long, accountId: Long)(implicit session: DBSession): Unit = {
+object Games {
+  def deleteGameIfExists(missionId: Long, accountId: Long)(implicit session: DBSession): Unit = {
     val g = Game.defaultAlias
     val gameOpt = Game.findBy(sqls.eq(g.missionId, missionId).and.eq(g.accountId, accountId))
-    gameOpt.foreach { game =>
-      GameProgress.deleteBy(sqls.eq(GameProgress.column.gameId, game.id))
-      Game.deleteById(game.id)
-    }
+    gameOpt.foreach(deleteGame)
+  }
+
+  def deleteGame(game: Game)(implicit session: DBSession): Unit = {
+    GameProgress.deleteBy(sqls.eq(GameProgress.column.gameId, game.id))
+    Game.deleteById(game.id)
   }
 }

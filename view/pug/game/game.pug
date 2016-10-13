@@ -14,7 +14,7 @@ html(lang=ja)
     .container(role=main)
       include _navbar
       .row
-        .col-md-8
+        .col-sm-8
           #game
             h1 {{ game.station.name }}駅
             h3 {{ dateFormat(game.time) }}
@@ -28,7 +28,7 @@ html(lang=ja)
                 tr.clickable(v-for='train in trains', @click='openModal(train)', :class='{success: train.trainType.value == 2, danger: train.trainType.value == 3, info: train.trainType.value == 4}')
                   td {{ train.subType }} {{ train.name }} {{ train.stops[train.stops.length - 1].station.name }}行
                   td {{ timeFormat(here(train).departure) }}
-        .col-md-4
+        .col-sm-4
           #mission
             h2 目的地
             div(v-for='progress in progresses', v-bind:class='{"text-success": progress.arrivalTime, "text-danger": !progress.arrivalTime}')
