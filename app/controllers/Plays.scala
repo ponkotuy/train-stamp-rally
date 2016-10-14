@@ -6,8 +6,8 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import games.TrainBoardCost
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Game, GameProgress}
-import org.json4s.DefaultFormats
+import models.{Game, GameProgress, Score}
+import org.json4s._
 import play.api.mvc.{Controller, Result}
 import queries.Board
 import responses.TrainResponse
@@ -63,4 +63,32 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
       result.merge
     }
   }
+
+  def rankingTime(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    Ok(Plays.ranking(RankingType.Time, missionId))
+  }
+
+  def rankingMoney(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    Ok(Plays.ranking(RankingType.Money, missionId))
+  }
+
+  def rankingDistance(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    Ok(Plays.ranking(RankingType.Distance, missionId))
+  }
+}
+
+object Plays {
+  private def ranking(typ: RankingType, missionId: Long): JValue = {
+    val scores = Score.findAllByWithLimitOffset(sqls.eq(Score.column.missionId, missionId), 20, 0, Seq(typ.column))
+    Extraction.decompose(scores)
+  }
+}
+
+sealed abstract class RankingType(val column: SQLSyntax)
+
+object RankingType {
+  val sc = Score.defaultAlias
+  case object Time extends RankingType(sc.time)
+  case object Money extends RankingType(sc.money)
+  case object Distance extends RankingType(sc.distance)
 }

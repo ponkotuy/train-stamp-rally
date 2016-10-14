@@ -36,4 +36,8 @@ GET /api/game/:gameId/progresses controllers.GameProgresses.list(gameId: Long)
 PUT /api/game/train controllers.Plays.board()
 PUT /api/game/:missionId/clear controllers.Plays.clear(missionId: Long)
 
+GET /api/game/:missionId/ranking/time controllers.Plays.rankingTime(missionId: Long)
+GET /api/game/:missionId/ranking/money controllers.Plays.rankingMoney(missionId: Long)
+GET /api/game/:missionId/ranking/distance controllers.Plays.rankingDistance(missionId: Long)
+
 GET /*file controllers.Assets.at(path="/public", file)
