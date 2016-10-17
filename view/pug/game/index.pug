@@ -1,0 +1,30 @@
+doctype html
+html(lang=ja)
+  head
+    meta(charset='utf-8')
+    include ../template/_bootstrap
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
+    script(src='/js/common.js')
+    script(src='/js/game/missions.js')
+  body
+    .jumbotron
+      h1 Train Stamp Rally
+    .container(role=main)
+      h2 Select mission
+      #missions
+        table.table.table-striped
+          tr
+            th Name
+            th Start
+            th Stations
+            th
+          tr(v-for='mission in missions')
+            td {{ mission.name }}
+            td {{ mission.startStation.name }}
+            td
+              span.label.label-default(v-for='station in mission.stations') {{ station.name }}
+            td
+              button.btn.btn-primary.btn-sm(@click='start(mission)', v-if='!mission.game') Start
+              button.btn.btn-primary.btn-sm(@click='gameContinue(mission)', v-if='mission.game') Continue
+              button.btn.btn-warning.btn-sm(@click='start(mission)', v-if='mission.game') Restart

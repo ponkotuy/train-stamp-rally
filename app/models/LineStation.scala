@@ -22,12 +22,12 @@ object LineStation extends SkinnyCRUDMapperWithId[Long, LineStation] {
   override def idToRawValue(id: Long): Any = id
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
-  lazy val lines = belongsTo[Line](
+  lazy val lineRef = belongsTo[Line](
     right = Line,
     merge = (ls, line) => ls.copy(line = line)
   )
 
-  lazy val stations = belongsTo[Station](
+  lazy val stationRef = belongsTo[Station](
     right = Station,
     merge = (ls, station) => ls.copy(station = station)
   )

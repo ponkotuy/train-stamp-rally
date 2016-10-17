@@ -1,0 +1,39 @@
+doctype html
+html(lang=ja)
+  head
+    meta(charset='utf-8')
+    include ../template/_bootstrap
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
+    script(src='/js/common.js')
+    script(src='/js/game/clear.js')
+  body
+    .jumbotron
+      h1 Train Stamp Rally
+    .container(role=main)
+      #game
+        h1 Mission Complete!
+        h4 終了日時: {{ dateFormat(game.time) }}
+        h4 使用金額: {{ game.money }}円
+        h4 移動距離: {{ game.distance.toFixed(1) }}km
+      #mission
+        dl.dl-horizontal
+          template(v-for='progress in progresses')
+            dt {{ progress.station.name }}駅
+            dd {{ dateFormat(progress.arrivalTime) }}
+      #finish
+        button.btn.btn-primary.btn-lg(@click='clear()') ランキングに登録
+      #ranking
+        h2 Ranking
+        .row
+          .col-sm-4
+            h3 所要時間
+            ol
+              li(v-for='rank in times') {{ rank.account.name }}: {{ dateFormat(rank.time) }}
+          .col-sm-4
+            h3 使用金額
+            ol
+              li(v-for='rank in moneys') {{ rank.account.name }}: {{ rank.money }}円
+          .col-sm-4
+            h3 移動距離
+            ol
+              li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km

@@ -13,14 +13,14 @@ object StationRank {
   case object Middle extends StationRank(4, "快速駅") // Rapid stops
   case object Local extends StationRank(5, "末端駅") // others
 
-  def values = Seq(Top, Major, Large, Middle, Local)
+  val values = Seq(Top, Major, Large, Middle, Local)
   def find(v: Int): Option[StationRank] = values.find(_.value == v)
 
   implicit def typeBinder: TypeBinder[Int] = TypeBinder.int
   implicit val impl: TypeBinder[StationRank] = TypeBinder(_ getInt _)(_ getInt _).map { i => find(i).getOrElse(Local) }
 }
 
-class StationRankSerializer extends CustomSerializer[StationRank](format => (
+object StationRankSerializer extends CustomSerializer[StationRank](format => (
     {PartialFunction.empty},
     {
       case x: StationRank =>

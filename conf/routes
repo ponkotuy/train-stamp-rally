@@ -1,19 +1,43 @@
 
 GET / controllers.Assets.at(path="/public", file="index.html")
 
+POST /api/session controllers.Sessions.login()
+POST /api/account controllers.Sessions.account()
+
 GET /api/lines controllers.Lines.list()
 POST /api/line controllers.Lines.create()
 
+GET /api/diagram/:diagramId controllers.Diagrams.show(diagramId: Long)
 GET /api/diagrams controllers.Diagrams.list()
 POST /api/diagram controllers.Diagrams.create()
+PUT /api/diagram/:diagramId controllers.Diagrams.update(diagramId: Long)
+
+GET /api/train/:trainId controllers.Diagrams.train(trainId: Long)
+
+GET /api/train_types controllers.Diagrams.trainTypes()
 
 GET /api/missions controllers.Missions.list()
 GET /api/mission/random controllers.Missions.random(size: Int = 6)
 POST /api/mission controllers.Missions.create()
 
-GET /api/train_types controllers.Diagrams.trainTypes()
-
 GET /api/stations controllers.Stations.list()
-GET /api/lineStations controllers.Stations.lineStationList()
+GET /api/station/:stationId controllers.Stations.show(stationId: Long)
+GET /api/line_stations controllers.Stations.lineStationList()
+GET /api/line_station/:lineStationId controllers.Stations.lineStation(lineStationId: Long)
+
+GET /api/scrape/train/:lineId/:trainId controllers.Scraper.train(lineId: Long, trainId: Long)
+
+GET /api/games controllers.Games.list()
+GET /api/game/:missionId controllers.Games.show(missionId: Long)
+POST /api/game/:missionId controllers.Games.create(missionId: Long)
+
+GET /api/game/:gameId/progresses controllers.GameProgresses.list(gameId: Long)
+
+PUT /api/game/train controllers.Plays.board()
+PUT /api/game/:missionId/clear controllers.Plays.clear(missionId: Long)
+
+GET /api/game/:missionId/ranking/time controllers.Plays.rankingTime(missionId: Long)
+GET /api/game/:missionId/ranking/money controllers.Plays.rankingMoney(missionId: Long)
+GET /api/game/:missionId/ranking/distance controllers.Plays.rankingDistance(missionId: Long)
 
 GET /*file controllers.Assets.at(path="/public", file)

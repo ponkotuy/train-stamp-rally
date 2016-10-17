@@ -1,39 +1,74 @@
 package controllers
 
+import authes.AuthConfigImpl
+import authes.Role.{Administrator, NormalUser}
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
-import models.{Diagram, TrainType, TrainTypeSerializer}
+import jp.t2v.lab.play2.auth.AuthElement
+import models._
 import org.json4s._
-import play.api.mvc.{Action, Controller}
-import queries.CreateDiagram
-import scalikejdbc.DB
+import play.api.mvc.Controller
+import queries.{CreateDiagram, SearchDiagram}
+import responses.{DiagramResponse, TrainResponse}
+import scalikejdbc._
 
-class Diagrams @Inject()(json4s: Json4s) extends Controller {
+class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
+  import Diagrams._
+
   implicit val formats = DefaultFormats + new TrainTypeSerializer
 
-  def list() = Action {
-    Ok(Extraction.decompose(Diagram.findAll(Seq(Diagram.column.id))))
+  def show(diagramId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    val diagram = DiagramResponse.fromId(diagramId)(AutoSession)
+    Ok(Extraction.decompose(diagram))
   }
 
-  def create() = Action(json) { req =>
+  def list() = StackAction(parse.form(SearchDiagram.form), AuthorityKey -> NormalUser) { implicit req =>
+    val diagrams = req.body.search()(AutoSession)
+    Ok(Extraction.decompose(diagrams))
+  }
+
+  def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
       createDiagram(diagram)
       Success
     }
   }
 
-  def trainTypes() = Action {
-    Ok(Extraction.decompose(TrainType.values))
+  def update(diagramId: Long) = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
+    req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
+      updateDiagram(diagramId, diagram)
+      Success
+    }
   }
 
-  private[this] def createDiagram(diagram: CreateDiagram): Long = {
+  def train(trainId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    Ok(Extraction.decompose(TrainResponse.fromTrainId(trainId)(AutoSession)))
+  }
+
+  def trainTypes() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    Ok(Extraction.decompose(TrainType.values))
+  }
+}
+
+object Diagrams {
+  private def createDiagram(diagram: CreateDiagram): Long = {
     DB localTx { implicit session =>
       val diagramId = diagram.diagram.save()
       diagram.trains(diagramId).foreach(_.save())
       diagram.stops.foreach { stop => stop.stopStation(diagramId).save() }
       diagramId
+    }
+  }
+
+  private def updateDiagram(id: Long, diagram: CreateDiagram): Int = {
+    DB localTx { implicit session =>
+      StopStation.deleteBy(sqls.eq(StopStation.column.diagramId, id))
+      Train.deleteBy(sqls.eq(Train.column.diagramId, id))
+      diagram.trains(id).foreach(_.save())
+      diagram.stops.foreach { stop => stop.stopStation(id).save() }
+      diagram.diagram.copy(id = id).update()
     }
   }
 }

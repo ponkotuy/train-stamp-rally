@@ -5,7 +5,7 @@ $(document).ready ->
       missions: []
     methods:
       getMissions: ->
-        $.getJSON '/api/missions', (json) =>
+        API.getJSON '/api/missions', (json) =>
           @missions = json
     ready: ->
       @getMissions()

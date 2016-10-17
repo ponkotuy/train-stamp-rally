@@ -8,7 +8,7 @@ $(document).ready ->
       startStation: ""
     methods:
       getStations: ->
-        $.getJSON '/api/stations', (json) =>
+        API.getJSON '/api/stations', (json) =>
           @stationMaster = json
           @setAutoComplete($('.autoCompleteStation'))
       setAutoComplete: (elem) ->
@@ -21,8 +21,7 @@ $(document).ready ->
           console.log(x, s.name)
           if x then [x] else []
         start = @findStationId(@startStation)
-        console.log({name: @name, stations: stations, startStation: start})
-        postJSON
+        API.postJSON
           url: '/api/mission'
           data: {name: @name, stations: stations, startStation: start}
           success: ->
@@ -34,7 +33,7 @@ $(document).ready ->
         st = _.find @stationMaster, (s) -> s.name == name
         st?.id
       getRandom: (size) ->
-        $.getJSON '/api/mission/random', {size: size}, (json) =>
+        API.getJSON '/api/mission/random', {size: size}, (json) =>
           @startStation = json.start.name
           @stations = json.stations.map (s) -> {name: s.name}
     ready: ->
@@ -42,7 +41,6 @@ $(document).ready ->
     watch:
       stations: ->
         @setAutoComplete($('.autoCompleteStation:last'))
-
 
 stationMatcher = (xs) ->
   (q, cb) ->
