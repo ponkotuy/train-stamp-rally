@@ -8,5 +8,5 @@ CREATE TABLE score(
         distance DOUBLE NOT NULL,
         created BIGINT NOT NULL,
         FOREIGN KEY (mission_id) REFERENCES mission(id),
-        FOREIGN KEY (account_id) REFERENCES account(id),
+        FOREIGN KEY (account_id) REFERENCES account(id)
 ) ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;

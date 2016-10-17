@@ -6,7 +6,7 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import games.TrainBoardCost
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Game, GameProgress, Score}
+import models.{AccountSerializer, Game, GameProgress, Score}
 import org.json4s._
 import play.api.mvc.{Controller, Result}
 import queries.Board
@@ -32,7 +32,7 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
         _ <- Either.cond(stopIds.contains(b.toStation) && stopIds.contains(b.fromStation), Unit, BadRequest("Wrong trainId."))
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.indexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
       } yield {
-        val afterGame = TrainBoardCost.calc(train, b.toStation).apply(game)
+        val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation).apply(game)
         afterGame.update()
         val gp = GameProgress.defaultAlias
         GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).foreach { progress =>
@@ -78,8 +78,11 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
 }
 
 object Plays {
+  implicit val format = DefaultFormats + AccountSerializer
+
   private def ranking(typ: RankingType, missionId: Long): JValue = {
-    val scores = Score.findAllByWithLimitOffset(sqls.eq(Score.column.missionId, missionId), 20, 0, Seq(typ.column))
+    val scores = Score.joins(Score.accountRef)
+        .findAllByWithLimitOffset(sqls.eq(Score.column.missionId, missionId), 20, 0, Seq(typ.column))
     Extraction.decompose(scores)
   }
 }

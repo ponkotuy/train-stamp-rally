@@ -57,11 +57,16 @@ modalVue = ->
 
 missionVue = (gameId) ->
   el: '#mission'
+  mixins: [missionParam]
   data:
     progresses: []
   methods:
     getProgresses: ->
       API.getJSON "/api/game/#{gameId}/progresses", (json) =>
         @progresses = json
+        if _.every(@progresses, (p) -> p.arrivalTime)
+          location.href = "/game/clear.html?mission=#{@missionId}"
   ready: ->
+    @setMission ->
+      location.href = '/game/index.html'
     @getProgresses()

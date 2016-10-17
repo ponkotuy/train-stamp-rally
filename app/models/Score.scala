@@ -11,7 +11,8 @@ case class Score(
     time: MissionTime,
     distance: Double,
     money: Int,
-    created: Long
+    created: Long,
+    account: Option[Account] = None
 ) {
   def save()(implicit session: DBSession): Long = Score.save(this)
 }
@@ -22,7 +23,12 @@ object Score extends SkinnyCRUDMapperWithId[Long, Score] {
 
   override def defaultAlias: Alias[Score] = createAlias("sc")
 
-  override def extract(rs: WrappedResultSet, n: ResultName[Score]): Score = autoConstruct(rs, n)
+  override def extract(rs: WrappedResultSet, n: ResultName[Score]): Score = autoConstruct(rs, n, "account")
+
+  lazy val accountRef = belongsTo[Account](
+    right = Account,
+    merge = (s, a) => s.copy(account = a)
+  )
 
   def save(score: Score)(implicit session: DBSession): Long =
     createWithAttributes(

@@ -10,29 +10,30 @@ html(lang=ja)
     .jumbotron
       h1 Train Stamp Rally
     .container(role=main)
-      include _navbar
       #game
         h1 Mission Complete!
-        h4 所要時間:{{ dateFormat(game.time) }}
-        h4 使用金額:{{ game.money }}円
-        h4 移動距離:{{ game.distance.toFixed(1) }}km
+        h4 終了日時: {{ dateFormat(game.time) }}
+        h4 使用金額: {{ game.money }}円
+        h4 移動距離: {{ game.distance.toFixed(1) }}km
       #mission
         dl.dl-horizontal
           template(v-for='progress in progresses')
-            dl {{ progress.station.name }}
+            dt {{ progress.station.name }}駅
             dd {{ dateFormat(progress.arrivalTime) }}
+      #finish
+        button.btn.btn-primary.btn-lg(@click='clear()') ランキングに登録
       #ranking
         h2 Ranking
         .row
           .col-sm-4
             h3 所要時間
             ol
-              li(v-for='rank in times') {{ rank.name }}: {{ dateFormat(rank.time) }}
+              li(v-for='rank in times') {{ rank.account.name }}: {{ dateFormat(rank.time) }}
           .col-sm-4
             h3 使用金額
             ol
-              li(v-for='rank in moneys') {{ rank.name }}: {{ rank.money }}円
+              li(v-for='rank in moneys') {{ rank.account.name }}: {{ rank.money }}円
           .col-sm-4
             h3 移動距離
             ol
-              li(v-for='rank in distances') {{ rank.name }}: {{ rank.distance.toFixed(1) }}km
+              li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km

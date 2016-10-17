@@ -1,7 +1,8 @@
 package games
 
 import models.{Game, Station}
-import utils.TrainTime
+import responses.TrainResponse
+import utils.{FeeCalculator, TrainTime}
 
 /**
   * Created by yosuke on 16/10/13.
@@ -19,16 +20,16 @@ case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: 
 }
 
 object TrainBoardCost {
-  def calc(train: TrainResponse, toStation: Long): TrainBoardCost = {
-    val distance = calcDistance(train, toStation)
+  def calc(train: TrainResponse, fromStation: Long, toStation: Long): TrainBoardCost = {
+    val distance = calcDistance(train, fromStation, toStation)
     val fee = FeeCalculator.calc(train.trainType, distance)
     val station = train.stops.find(_.station.id == toStation).get
-    val time = station.arrival.map(_.addMinutes(1)).orElse(station.departure).get
+    val time = station.arrival.orElse(station.departure).map(_.addMinutes(5)).get
     TrainBoardCost(distance, fee, time, station.station)
   }
 
-  private def calcDistance(train: TrainResponse, toStation: Long): Double = {
-    val (xs, ys) = train.stops.span(_.station.id != toStation)
+  private def calcDistance(train: TrainResponse, fromStation: Long, toStation: Long): Double = {
+    val (xs, ys) = train.stops.dropWhile(_.station.id != fromStation).span(_.station.id != toStation)
     (xs :+ ys.head).sliding(2).map { xs =>
       val Seq(x, y) = xs
       if (x.line.id == y.line.id) math.abs(x.lineStation.km - y.lineStation.km) else 0.0

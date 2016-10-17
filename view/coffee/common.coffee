@@ -18,6 +18,12 @@
   post: (url, data, success) ->
     $.post(url, data, success)
       .fail(failure)
+  put: (url, data, success) ->
+    obj =
+      url: url
+      data: data
+      success: success
+    @json('PUT', obj)
 
 failure = (jqXHR) ->
   redirect = location.pathname
@@ -43,6 +49,7 @@ failure = (jqXHR) ->
     twoDigit: (int) ->
       int.toLocaleString('en-IN', {minimumIntegerDigits: 2})
 
+# Game commons
 @missionParam =
   data:
     missionId: 0
