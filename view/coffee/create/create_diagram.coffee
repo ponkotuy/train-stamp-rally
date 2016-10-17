@@ -32,8 +32,12 @@ $(document).ready ->
           startTime = new TrainTime(start.hour, start.minutes)
           @stops = json.stops.filter (stop) -> not $.isEmptyObject(stop.arrive) or not $.isEmptyObject(stop.departure)
             .map (stop) ->
-              arrival = if $.isEmptyObject(stop.arrive) then null else new TrainTime(stop.arrive.hour, stop.arrive.minutes)
-              departure = if $.isEmptyObject(stop.departure) then null else new TrainTime(stop.departure.hour, stop.departure.minutes)
+              arrival = if $.isEmptyObject(stop.arrive)
+                null
+              else new TrainTime(stop.arrive.hour, stop.arrive.minutes)
+              departure = if $.isEmptyObject(stop.departure)
+                null
+              else new TrainTime(stop.departure.hour, stop.departure.minutes)
               {name: stop.name, arrival: arrival?.diff(startTime), departure: departure?.diff(startTime)}
       setAutoComplete: (elem) ->
         elem.typeahead('destroy')
