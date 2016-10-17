@@ -21,7 +21,7 @@ object TrainType {
   implicit val impl: TypeBinder[TrainType] = TypeBinder(_ getInt _)(_ getInt _).map(find).map(_.getOrElse(Local))
 }
 
-class TrainTypeSerializer extends CustomSerializer[TrainType](format => (
+object TrainTypeSerializer extends CustomSerializer[TrainType](format => (
     {PartialFunction.empty},
     {
       case x: TrainType =>

@@ -17,7 +17,7 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   import json4s._
   import Diagrams._
 
-  implicit val formats = DefaultFormats + new TrainTypeSerializer
+  implicit val formats = DefaultFormats + TrainTypeSerializer + StationRankSerializer
 
   def show(diagramId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     val diagram = DiagramResponse.fromId(diagramId)(AutoSession)

@@ -26,13 +26,13 @@ mainVue = ->
     @setMission ->
       location.href = '/game/index.html'
     @getGame()
-    @trainModal = new Vue(modalVue())
+    @trainModal = new Vue(modalVue(@game.id))
 
 modalId = '#trainModal'
 
-modalVue = ->
+modalVue = (gameId) ->
   el: modalId
-  mixins: [formatter]
+  mixins: [formatter, progress]
   data:
     train: {}
     game: {}
@@ -50,19 +50,30 @@ modalVue = ->
           location.reload(false)
     setStations: ->
       @stations = _.dropWhile @train.stops, (stop) => stop.station.id != @game.station.id
+      dests = @progresses.map (p) -> p.station.id
+      @stations = _.filter @stations, (st) ->
+        st.station.rank.value <= 3 || _.includes(dests, st.station.id)
     setData: (train, game) ->
       @train = train
       @game = game
       @setStations()
+  compiled: ->
+    @gameId = gameId
 
 missionVue = (gameId) ->
   el: '#mission'
+  mixins: [progress]
+  compiled: ->
+    @gameId = gameId
+
+progress =
   mixins: [missionParam]
   data:
+    gameId: 0
     progresses: []
   methods:
     getProgresses: ->
-      API.getJSON "/api/game/#{gameId}/progresses", (json) =>
+      API.getJSON "/api/game/#{@gameId}/progresses", (json) =>
         @progresses = json
         if _.every(@progresses, (p) -> p.arrivalTime)
           location.href = "/game/clear.html?mission=#{@missionId}"
