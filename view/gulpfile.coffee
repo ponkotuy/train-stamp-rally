@@ -16,10 +16,16 @@ gulp.task 'coffee', ->
     .pipe gulp.dest('./output/js/')
 
 gulp.task 'css', ->
-  gulp.src('./css/**')
+  gulp.src './css/**'
+    .pipe plumber()
     .pipe gulp.dest('./output/css/')
 
-gulp.task 'compile', ['pug', 'coffee', 'css']
+gulp.task 'copy', ->
+  gulp.src './node_modules/bootstrap-material-design/dist/**'
+    .pipe plumber()
+    .pipe gulp.dest('./output/lib/bootstrap-material-design/')
+
+gulp.task 'compile', ['pug', 'coffee', 'css', 'copy']
 
 gulp.task 'watch', ['compile'], ->
   gulp.watch('./pug/**/*.pug', ['pug'])
