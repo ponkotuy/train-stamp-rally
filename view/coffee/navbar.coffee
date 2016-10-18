@@ -9,7 +9,7 @@ $(document).ready ->
       parseCategory: ->
         @category = location.pathname.split('/')[1]
       getAccount: ->
-        $.getJSON('/api/account', (json) => @account = json)
+        $.getJSON '/api/account', (json) => @account = json
       camelCase: (str) ->
         str.charAt(0).toUpperCase() + str.substring(1)
       logout: ->

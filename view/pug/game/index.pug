@@ -20,6 +20,6 @@ html(lang=ja)
             td
               span.label.label-default(v-for='station in mission.stations') {{ station.name }}
             td
-              button.btn.btn-primary.btn-sm(@click='start(mission)', v-if='!mission.game') Start
-              button.btn.btn-primary.btn-sm(@click='gameContinue(mission)', v-if='mission.game') Continue
-              button.btn.btn-warning.btn-sm(@click='start(mission)', v-if='mission.game') Restart
+              button.btn.btn-primary.btn-xs(@click='start(mission)', v-if='!mission.game') Start
+              button.btn.btn-primary.btn-xs(@click='gameContinue(mission)', v-if='mission.game') Continue
+              button.btn.btn-warning.btn-xs(@click='start(mission)', v-if='mission.game') Restart
