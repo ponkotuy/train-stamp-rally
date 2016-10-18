@@ -9,6 +9,7 @@
     "gulp-pug": "^3.0.4"
   },
   "devDependencies": {
+    "bootstrap-material-design": "^0.5.10",
     "coffee-script": "^1.10.0",
     "gulp-plumber": "^1.1.0"
   },
