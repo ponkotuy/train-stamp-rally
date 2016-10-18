@@ -42,4 +42,4 @@ GET /api/game/:missionId/ranking/time controllers.Plays.rankingTime(missionId: L
 GET /api/game/:missionId/ranking/money controllers.Plays.rankingMoney(missionId: Long)
 GET /api/game/:missionId/ranking/distance controllers.Plays.rankingDistance(missionId: Long)
 
-GET /*file controllers.Assets.at(path="/public", file)
+GET /*file controllers.MyAssets.at(path="/public", file)

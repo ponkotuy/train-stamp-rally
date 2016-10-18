@@ -1,10 +1,10 @@
 package controllers
 
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 
 class MyAssets extends Controller {
   def at(path: String, file: String, aggressiveCaching: Boolean = false) = {
-    println(path, file)
-    Assets.at(path, file, aggressiveCaching)
+    if(file.endsWith("/")) Assets.at(path, file + "index.html")
+    else Assets.at(path, file, aggressiveCaching)
   }
 }
