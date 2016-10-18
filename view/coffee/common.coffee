@@ -19,11 +19,19 @@
     $.post(url, data, success)
       .fail(failure)
   put: (url, data, success) ->
-    obj =
+    $.ajax
+      type: 'PUT'
       url: url
       data: data
       success: success
-    @json('PUT', obj)
+      error: failure
+  delete: (url, data, success) ->
+    $.ajax
+      type: 'DELETE'
+      url: url
+      data: data
+      success: success
+      error: failure
 
 failure = (jqXHR) ->
   redirect = location.pathname

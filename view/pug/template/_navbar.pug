@@ -9,4 +9,5 @@ script(src='/js/navbar.js')
           a(href='/{{cat}}/index.html', v-text='camelCase(cat)')
       ul.nav.navbar-nav.navbar-right
         li
-          a(href='/auth/session.html') Login
+          a(href='/auth/session.html', v-if='!account') Login
+          a(href='#', @click='logout()', v-if='account') {{ account.name }}(Logout)
