@@ -1,16 +1,11 @@
 doctype html
 html(lang=ja)
   head
-    meta(charset='utf-8')
     include ../template/_bootstrap
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.15.0/lodash.min.js')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.js')
-    script(src='/js/common.js')
+    include ../template/_header
     script(src='/js/game/game.js')
-    style .clickable { cursor: pointer; }
   body
-    .jumbotron
-      h1 Train Stamp Rally
+    include ../template/_navbar
     .container(role=main)
       .row
         .col-sm-8

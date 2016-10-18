@@ -1,13 +1,12 @@
+script(src='/js/navbar.js')
 .navbar.navbar-default
   .container-fluid
     .navbar-header
       a.navbar-brand(href='/') TrainStampRally
-    .navbar-collapse.collapse.navbar-responsive-collapse
+    #navs.navbar-collapse.collapse.navbar-responsive-collapse
       ul.nav.navbar-nav
-        li
-          a(href='/game/index.html') Game
-        li
-          a(href='/creator/index.html') Creator
+        li(v-for='cat in categories', :class="{'active': cat === category}")
+          a(href='/{{cat}}/index.html', v-text='camelCase(cat)')
       ul.nav.navbar-nav.navbar-right
         li
           a(href='/auth/session.html') Login
