@@ -9,7 +9,7 @@ import jp.t2v.lab.play2.auth.AuthElement
 import models.{AccountSerializer, Game, GameProgress, Score}
 import org.json4s._
 import play.api.mvc.{Controller, Result}
-import queries.Board
+import queries.{Board, Clear}
 import responses.TrainResponse
 import scalikejdbc._
 import utils.EitherUtil._
@@ -46,17 +46,19 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
     }
   }
 
-  def clear(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def clear(missionId: Long) = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
     DB localTx { implicit session =>
       val g = Game.defaultAlias
       val result = for {
+        cl <- req.body.extractOpt[Clear].toRight(JSONParseError)
+        _ <- Either.cond(cl.isValid, Unit, BadRequest("Invalid rate value"))
         game <- Game.findBy(sqls.eq(g.accountId, loggedIn.id).and.eq(g.missionId, missionId))
             .toRight(notFound("Mission"))
         gp = GameProgress.defaultAlias
         progresses = GameProgress.findAllBy(sqls.eq(gp.gameId, game.id))
         _ <- Either.cond(progresses.forall(_.arrivalTime.isDefined), Unit, BadRequest("Not cleared."))
       } yield {
-        game.score(System.currentTimeMillis()).save()
+        game.score(cl.rate, System.currentTimeMillis()).save()
         Games.deleteGame(game)
         Success
       }

@@ -14,6 +14,7 @@ mainVue = ->
         @game = json
         new Vue(missionVue(@game.id))
         @getDiagrams()
+        @trainModal = new Vue(modalVue(@game.id))
     getDiagrams: ->
       API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
         @trains = json
@@ -26,7 +27,6 @@ mainVue = ->
     @setMission ->
       location.href = '/game/index.html'
     @getGame()
-    @trainModal = new Vue(modalVue(@game.id))
 
 modalId = '#trainModal'
 
@@ -52,12 +52,13 @@ modalVue = (gameId) ->
       @stations = _.dropWhile @train.stops, (stop) => stop.station.id != @game.station.id
       dests = @progresses.map (p) -> p.station.id
       @stations = _.filter @stations, (st) ->
-        st.station.rank.value <= 3 || _.includes(dests, st.station.id)
+        st.station.rank.value <= 3 or _.includes(dests, st.station.id)
     setData: (train, game) ->
       @train = train
       @game = game
       @setStations()
-  compiled: ->
+  ready: ->
+    console.log(gameId)
     @gameId = gameId
 
 missionVue = (gameId) ->

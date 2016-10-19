@@ -13,12 +13,14 @@ html(lang=ja)
             th Name
             th Start
             th Stations
+            th Rate
             th
           tr(v-for='mission in missions')
-            td {{ mission.name }}
-            td {{ mission.startStation.name }}
+            td(v-text='mission.name')
+            td(v-text='mission.startStation.name')
             td
-              span.label.label-default(v-for='station in mission.stations') {{ station.name }}
+              span.label.label-default(v-for='station in mission.stations', v-text='station.name')
+            td(v-text='mission.rate')
             td
               button.btn.btn-primary.btn-xs(@click='start(mission)', v-if='!mission.game') Start
               button.btn.btn-primary.btn-xs(@click='gameContinue(mission)', v-if='mission.game') Continue

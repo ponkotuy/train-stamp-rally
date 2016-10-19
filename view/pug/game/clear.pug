@@ -15,10 +15,15 @@ html(lang=ja)
       #mission
         dl.dl-horizontal
           template(v-for='progress in progresses')
-            dt {{ progress.station.name }}駅
-            dd {{ dateFormat(progress.arrivalTime) }}
+            dt(v-text='progress.station.name')
+            dd(v-text='dateFormat(progress.arrivalTime)')
       #finish
-        button.btn.btn-primary.btn-lg(@click='clear()') ランキングに登録
+        h4 Mission評価してランキングに登録する
+        .btn-group(role='group')
+          button.btn.btn-primary.btn-lg(@click='clear(3)')
+            span.glyphicon.glyphicon-thumbs-up
+          button.btn.btn-primary.btn-lg(@click='clear(-3')
+            span.glyphicon.glyphicon-thumbs-down
       #ranking
         h2 Ranking
         .row

@@ -42,9 +42,13 @@ $(document).ready ->
     el: '#finish'
     mixins: [missionParam]
     methods:
-      clear: ->
-        API.put "/api/game/#{@missionId}/clear", {}, ->
-          location.href = '/game/index.html'
+      clear: (rate) ->
+        API.putJSON
+          url: "/api/game/#{@missionId}/clear"
+          data:
+            rate: rate
+          success: ->
+            location.href = '/game/index.html'
     ready: ->
       @setMission ->
         location.href = '/game/index.html'

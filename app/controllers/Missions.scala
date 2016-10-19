@@ -9,7 +9,7 @@ import models.{Mission, StationRankSerializer}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.Controller
 import queries.{CreateMission, RandomMission}
-import scalikejdbc.{AutoSession, DB}
+import scalikejdbc._
 
 class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
@@ -18,8 +18,9 @@ class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   implicit val formats = DefaultFormats + StationRankSerializer
 
   def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    val missions = Mission.joins(Mission.stationsRef).joins(Mission.startStationRef).findAll(Seq(Mission.defaultAlias.id))
-    Ok(Extraction.decompose(missions))
+    val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef, Mission.rateRef)
+        .findAll()
+    Ok(Extraction.decompose(missions.sortBy(-_.rate)))
   }
 
   def random(size: Int) = StackAction(AuthorityKey -> NormalUser) { implicit req =>

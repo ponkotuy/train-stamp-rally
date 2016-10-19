@@ -11,6 +11,7 @@ case class Score(
     time: MissionTime,
     distance: Double,
     money: Int,
+    rate: Int,
     created: Long,
     account: Option[Account] = None
 ) {
@@ -30,13 +31,16 @@ object Score extends SkinnyCRUDMapperWithId[Long, Score] {
     merge = (s, a) => s.copy(account = a)
   )
 
-  def save(score: Score)(implicit session: DBSession): Long =
+  def save(score: Score)(implicit session: DBSession): Long = {
+    MissionRate.upsert(score.missionId, score.rate)
     createWithAttributes(
       'missionId -> score.missionId,
       'accountID -> score.accountId,
       'time -> score.time.toString,
       'money -> score.money,
       'distance -> score.distance,
+      'rate -> score.rate,
       'created -> score.created
     )
+  }
 }
