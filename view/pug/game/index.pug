@@ -8,6 +8,13 @@ html(lang=ja)
     .container(role=main)
       h1.page-header Select mission
       #missions
+        form.form-inline
+          label.control-label(for='rankSelector') 難易度で絞り込み
+          #rankSelector.btn-group(role='group')
+            button.btn(type='button', @click='filter("all")', v-bind:class="{'btn-primary': rank == 'all'}") ALL
+            button.btn.btn-default(type='button', @click='filter("easy")', v-bind:class="{'btn-primary': rank == 'easy'}") Easy
+            button.btn.btn-default(type='button', @click='filter("medium")', v-bind:class="{'btn-primary': rank == 'medium'}") Medium
+            button.btn.btn-default(type='button', @click='filter("hard")', v-bind:class="{'btn-primary': rank == 'hard'}") Hard
         table.table.table-striped
           tr
             th Name
@@ -25,3 +32,22 @@ html(lang=ja)
               button.btn.btn-primary.btn-xs(@click='start(mission)', v-if='!mission.game') Start
               button.btn.btn-primary.btn-xs(@click='gameContinue(mission)', v-if='mission.game') Continue
               button.btn.btn-warning.btn-xs(@click='start(mission)', v-if='mission.game') Restart
+      #random
+        h2 Random mission
+        .btn-group(role='group')
+          button.btn.btn-default(type='button', @click='getRandom(6)') Easy
+          button.btn.btn-default(type='button', @click='getRandom(12)') Medium
+          button.btn.btn-default(type='button', @click='getRandom(24)') Hard
+        #createdMission(v-if='mission')
+          form.form-horizontal
+            label.col-sm-3.control-label(for='missionName') Name
+            .col-sm-9
+              input#missionName.form-control(type='text', v-model='mission.name')
+            label.col-sm-3.control-label Mission Start
+            .col-sm-9
+              p(v-text='mission.start.name')
+            label.col-sm-3.control-label Stations
+            .col-sm-9
+              span.label.label-default(v-for='station in mission.stations', v-text='station.name')
+            .col-offset-sm-3.col-sm-9
+              button.btn.btn-primary(type='button', @click='start()') START

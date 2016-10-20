@@ -4,9 +4,10 @@ $(document).ready ->
     data:
       missions: []
       games: []
+      rank: "all"
     methods:
       getMissions: ->
-        API.getJSON '/api/missions', (json) =>
+        API.getJSON '/api/missions', {rank: @rank}, (json) =>
           @missions = json
           @getGames()
       getGames: ->
@@ -20,5 +21,27 @@ $(document).ready ->
       start: (mission) ->
         API.post "/api/game/#{mission.id}", {}, =>
           @gameContinue(mission)
+      filter: (name) ->
+        @rank = name
+        @getMissions()
     ready: ->
       @getMissions()
+
+  new Vue
+    el: '#random'
+    data:
+      mission: undefined
+    methods:
+      getRandom: (size) ->
+        API.getJSON '/api/mission/random', {size: size}, (json) =>
+          @mission = json
+      start: ->
+        API.postJSON
+          url: '/api/mission'
+          data:
+            name: @mission.name
+            stations: @mission.stations.map (s) -> s.id
+            startStation: @mission.start.id
+          success: (id) =>
+            API.post "/api/game/#{id}", {}, =>
+              location.href = "/game/game.html?mission=#{id}"

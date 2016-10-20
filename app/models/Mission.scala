@@ -21,20 +21,15 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
 
   override def defaultAlias: Alias[Mission] = createAlias("m")
 
-  override def extract(rs: WrappedResultSet, n: ResultName[Mission]): Mission = new Mission(
-    id = rs.get(n.id),
-    name = rs.get(n.name),
-    startStationId = rs.get(n.startStationId),
-    created = rs.get(n.created),
-    rate = rs.get(MissionRate.defaultAlias.resultName.rate)
-  )
+  override def extract(rs: WrappedResultSet, n: ResultName[Mission]): Mission =
+    autoConstruct(rs, n, "stations", "startStation", "rate")
 
   lazy val stationsRef = hasManyThrough[MissionStation, Station](
     through = MissionStation -> MissionStation.defaultAlias,
     throughOn = (m, ms) => sqls.eq(m.id, ms.missionId),
     many = Station -> Station.createAlias("ss"),
     on = (ms, s) => sqls.eq(ms.stationId, s.id),
-    merge = (m, sts) => m.copy(stations = sts)
+    merge = (m, sts) => m.copy(stations = sts.sortBy(_.id))
   )
 
 
@@ -44,7 +39,7 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
     fk = "start_station_id"
   )
 
-  lazy val rateRef = hasOne[MissionRate](MissionRate, (m, mr) => m.copy(rate = mr.map(_.rate).getOrElse(0)))
+  hasOne[MissionRate](MissionRate, (m, mr) => m.copy(rate = mr.map(_.rate).getOrElse(0))).byDefault
 
   def save(mission: Mission)(implicit session: DBSession): Long =
     createWithAttributes('name -> mission.name, 'created -> mission.created, 'startStationId -> mission.startStationId)
