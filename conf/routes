@@ -3,8 +3,9 @@ GET / controllers.Assets.at(path="/public", file="index.html")
 
 POST /api/session controllers.Sessions.login()
 DELETE /api/session controllers.Sessions.logout()
-GET /api/account controllers.Sessions.show()
-POST /api/account controllers.Sessions.createAccount()
+
+GET /api/account controllers.Accounts.show()
+POST /api/account controllers.Accounts.createAccount()
 
 GET /api/lines controllers.Lines.list()
 POST /api/line controllers.Lines.create()

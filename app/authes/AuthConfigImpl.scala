@@ -35,6 +35,7 @@ trait AuthConfigImpl extends AuthConfig {
 
   override def authorize(user: User, authority: Authority)(implicit context: ExecutionContext): Future[Boolean] = Future.successful{
     (user.role, authority) match {
+      case (Role.Disabled, _) => false
       case (Role.Administrator, _) => true
       case (Role.NormalUser, Role.NormalUser) => true
       case _ => false

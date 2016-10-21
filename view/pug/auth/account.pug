@@ -9,9 +9,8 @@ html(lang=ja)
     include ../template/_navbar
     .container(role=main)
       h1.page-header Create Account
+      .alert#message(v-if='message?', v-bind:class='type', v-text='message', role='alert')
       form#createAccount.form-horizontal(@submit.prevent, @submit='submit()')
-        .alert.alert-warning(role=alert, v-show='alert')
-          span {{ alert }}
         .form-group
           label.col-sm-3(for='name') Name
           .col-sm-9

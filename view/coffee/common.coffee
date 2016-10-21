@@ -14,7 +14,7 @@
       data: JSON.stringify obj.data
       contentType: 'application/json'
       success: obj.success
-      error: failure
+      error: obj.error ? failure
   post: (url, data, success) ->
     $.post(url, data, success)
       .fail(failure)
@@ -66,3 +66,17 @@ failure = (jqXHR) ->
       @missionId = parseInt(fromURLParameter(location.search.slice(1)).mission)
       if !@missionId
         failed()
+
+@vueMessage = (el) ->
+  new Vue
+    el: el
+    data:
+      message: undefined
+      type: undefined
+    methods:
+      danger: (mes) ->
+        @message = mes
+        @type = "alert-danger"
+      clear: ->
+        @message = undefined
+        @type = undefined
