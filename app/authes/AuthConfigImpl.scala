@@ -5,6 +5,7 @@ import models.Account
 import play.api.mvc.{RequestHeader, Result}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.duration._
 import scala.reflect.ClassTag
 
 trait AuthConfigImpl extends AuthConfig {
@@ -41,4 +42,9 @@ trait AuthConfigImpl extends AuthConfig {
       case _ => false
     }
   }
+
+  override lazy val tokenAccessor = new CookieTokenAccessor(
+    cookieSecureOption = false,
+    cookieMaxAge = Some(7.days.toSeconds.toInt)
+  )
 }
