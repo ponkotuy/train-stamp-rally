@@ -2,7 +2,7 @@
 
 set -u
 dir=$HOME/service/train-stamp-rally
-pid=server/target/universal/stage/RUNNING_PID
+pid=target/universal/stage/RUNNING_PID
 port=9033
 server_opt='-J-Xms768M -J-Xmx1024M -J-Xloggc:$dir/gc.log -J-XX:+PrintGCDetails -J-XX:+PrintGCDateStamps -J-XX:+HeapDumpOnOutOfMemoryError -Dhttp.port=$port'
 
