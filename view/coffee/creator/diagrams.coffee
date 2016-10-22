@@ -9,5 +9,8 @@ $(document).ready ->
           @diagrams = json
       edit: (id) ->
         location.href = "?edit=#{id}"
+      delete: (id) ->
+        API.delete "/api/diagram/#{id}", {}, ->
+          location.reload(false)
     ready: ->
       @getDiagrams()

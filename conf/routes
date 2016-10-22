@@ -14,6 +14,7 @@ GET /api/diagram/:diagramId controllers.Diagrams.show(diagramId: Long)
 GET /api/diagrams controllers.Diagrams.list()
 POST /api/diagram controllers.Diagrams.create()
 PUT /api/diagram/:diagramId controllers.Diagrams.update(diagramId: Long)
+DELETE /api/diagram/:diagramId controllers.Diagrams.delete(diagramId: Long)
 
 GET /api/train/:trainId controllers.Diagrams.train(trainId: Long)
 

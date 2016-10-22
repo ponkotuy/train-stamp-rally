@@ -19,3 +19,4 @@ script(src='/js/creator/diagrams.js')
       td {{ diagram.stops[diagram.stops.length - 1].station.name }}
       td
         button.btn.btn-xs(type='button', @click='edit(diagram.id)') Copy
+        button.btn.btn-xs.btn-danger(type='button', @click='delete(diagram.id)') Delete

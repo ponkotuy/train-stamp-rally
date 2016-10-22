@@ -43,6 +43,10 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
     }
   }
 
+  def delete(diagramId: Long) = StackAction(AuthorityKey -> Administrator) { implicit req =>
+    if(deleteDiagram(diagramId) <= 0) notFound("diagram") else Success
+  }
+
   def train(trainId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(TrainResponse.fromTrainId(trainId)(AutoSession)))
   }
@@ -69,6 +73,14 @@ object Diagrams {
       diagram.trains(id).foreach(_.save())
       diagram.stops.foreach { stop => stop.stopStation(id).save() }
       diagram.diagram.copy(id = id).update()
+    }
+  }
+
+  private def deleteDiagram(id: Long): Int = {
+    DB localTx { implicit session =>
+      StopStation.deleteBy(sqls.eq(StopStation.column.diagramId, id))
+      Train.deleteBy(sqls.eq(Train.column.diagramId, id))
+      Diagram.deleteById(id)
     }
   }
 }
