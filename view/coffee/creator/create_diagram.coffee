@@ -60,7 +60,7 @@ $(document).ready ->
         now = _.clone(start)
         times = while (now.isBefore(end) or now.equals(end)) and (now.isAfter(start) or now.equals(start))
           result = now.fourDigit()
-          now.addMinutes(@pattern.period)
+          now.addMinutes(parseInt(@pattern.period))
           result
         @starts += times.join(', ')
       addStop: (idx) ->
