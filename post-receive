@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -u
+dir=$HOME/service/train-stamp-rally
+port=9033
+server_opt='-J-Xms768M -J-Xmx1024M -J-Xloggc:$dir/gc.log -J-XX:+PrintGCDetails -J-XX:+PrintGCDateStamps -J-XX:+HeapDumpOnOutOfMemoryError -Dhttp.port=$port'
+
+# pull
+cd $dir && git --git-dir=.git pull
+
+cd $dir/view && npm i && gulp compile
+cd $dir && sbt clean &&sbt stage
+cd $dir && eval target/universal/stage/bin/trainstamprally $server_opt &
