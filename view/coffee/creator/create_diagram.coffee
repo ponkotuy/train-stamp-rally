@@ -14,6 +14,7 @@ $(document).ready ->
         end: "2300"
         period: 60
       stations: []
+      matcher: undefined
       scrape: ""
     methods:
       getTypes: ->
@@ -24,6 +25,7 @@ $(document).ready ->
           @stations = json
           for s in @stations
             s.name = "#{s.line.name} #{s.station.name}"
+          @matcher = stationMatcher(@stations)
           @setAutoCompleteAll()
       getScrape: ->
         ids = @parseScrapeUrl(@scrape)
@@ -42,10 +44,16 @@ $(document).ready ->
       setAutoComplete: (elem) ->
         elem.typeahead('destroy')
         design = {hint: true, highlight: true}
-        config = {name: 'stations', display: 'name', source: stationMatcher(@stations)}
+        config = {name: 'stations', display: 'name', source: @matcher}
         elem.typeahead(design, config)
       setAutoCompleteAll: ->
         @setAutoComplete($('.autoCompleteStation'))
+        @setStationIfOne()
+      setStationIfOne: ->
+        @stops.forEach (stop) =>
+          @matcher stop.name, (matches) ->
+            if matches.length == 1
+              stop.name = matches[0].name
       pushPattern: ->
         start = parseTime(@pattern.start)
         end = parseTime(@pattern.end)
