@@ -1,5 +1,6 @@
 package scrape.model
 
+import scala.util.Try
 import scala.xml.{NodeSeq, Text}
 
 case class TrainPage(
@@ -22,7 +23,7 @@ object TrainPage {
       trs = bigTable \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr"
       name <- extractValueFromTr(trs, 0)(norm)
       number <- extractValueFromTr(trs, 1)(norm)
-      code = extractValueFromTr(trs, 2)(norm).map(_.toInt)
+      code = extractValueFromTr(trs, 2)(norm).flatMap { it => Try(it.toInt).toOption }
       car <- extractValueFromTr(trs, 3)(normList(','))
       remark <- extractValueFromTr(trs, 4)(normList(','))
       day <- extractValueFromTr(trs, 5)(norm)
