@@ -5,23 +5,27 @@ import play.api.data.Form
 import play.api.data.Forms._
 import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc._
+import skinny.Pagination
 import utils.TrainTime
 
 import scala.collection.breakOut
 
 sealed abstract class SearchDiagram {
   def search()(implicit session: DBSession): Any
-  def tuple: (Option[Long], Option[String])
+  def tuple: (Option[Long], Option[String], Option[Int], Option[Int])
 }
 
 object SearchDiagram {
-  case object All extends SearchDiagram {
+  case class All(pageNo: Int, size: Int) extends SearchDiagram {
     override def search()(implicit session: DBSession): Seq[DiagramResponse] = {
       import Diagram.{trainRef, stopStationRef, defaultAlias => d}
-      Diagram.joins(trainRef, stopStationRef).findAll(Seq(d.id)).map(DiagramResponse.fromDiagram)
+      val page = Pagination.page(pageNo).per(size)
+      Diagram.joins(trainRef, stopStationRef)
+          .findAllWithPagination(page, Seq(d.id.desc))
+          .map(DiagramResponse.fromDiagram)
     }
 
-    override def tuple: (Option[Long], Option[String]) = (None, None)
+    override def tuple = (None, None, Some(pageNo), Some(size))
   }
 
   case class StationSearch(stationId: Long) extends SearchDiagram {
@@ -30,7 +34,7 @@ object SearchDiagram {
       Diagram.joins(Diagram.stopStationRef).findAllByIds(diagramIds:_*)
     }
 
-    override def tuple: (Option[Long], Option[String]) = (Some(stationId), None)
+    override def tuple = (Some(stationId), None, None, None)
   }
 
   case class TimeSearch(stationId: Long, time: TrainTime) extends SearchDiagram {
@@ -47,17 +51,21 @@ object SearchDiagram {
       }
     }
 
-    override def tuple: (Option[Long], Option[String]) = (Some(stationId), Some(time.toString))
+    override def tuple  = (Some(stationId), Some(time.toString), None, None)
   }
 
-  def apply(stationIdOpt: Option[Long], timeOpt: Option[String]): SearchDiagram = {
-    stationIdOpt.fold(All: SearchDiagram) { stationId =>
+  def apply(
+      stationIdOpt: Option[Long],
+      timeOpt: Option[String],
+      pageNoOpt: Option[Int],
+      sizeOpt: Option[Int]): SearchDiagram = {
+    stationIdOpt.fold(All(pageNoOpt.getOrElse(1), sizeOpt.getOrElse(10)): SearchDiagram) { stationId =>
       timeOpt.flatMap(TrainTime.fromString)
           .fold(StationSearch(stationId): SearchDiagram) { time => TimeSearch(stationId, time): SearchDiagram }
     }
   }
 
-  def unapply(sd: SearchDiagram): Option[(Option[Long], Option[String])] = Some(sd.tuple)
+  def unapply(sd: SearchDiagram): Option[(Option[Long], Option[String], Option[Int], Option[Int])] = Some(sd.tuple)
 
   private[this] def findDiagramIds(stationId: Long)(implicit session: DBSession): Seq[Long] = {
     val lineStations = LineStation.findAllBy(sqls.eq(LineStation.column.stationId, stationId))
@@ -68,7 +76,9 @@ object SearchDiagram {
   val form = Form(
     mapping(
       "station" -> optional(longNumber(min = 0L)),
-      "time" -> optional(text(minLength = 4, maxLength = 4))
+      "time" -> optional(text(minLength = 4, maxLength = 4)),
+      "page" -> optional(number),
+      "size" -> optional(number)
     )(SearchDiagram.apply)(SearchDiagram.unapply)
   )
 }
