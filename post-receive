@@ -10,5 +10,5 @@ cd $dir && git --git-dir=.git pull
 
 cd $dir/view && npm i && gulp compile
 cd $dir && sbt clean &&sbt stage
-cd $dir && kill `cat $pid`
+cd $dir && kill `cat $pid` && rm $pid
 cd $dir && eval target/universal/stage/bin/trainstamprally $server_opt &
