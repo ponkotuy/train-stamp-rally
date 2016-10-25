@@ -66,6 +66,8 @@ $(document).ready ->
       addStop: (idx) ->
         add = $.extend(true, {}, @stops[idx])
         @stops.splice(idx + 1, 0, add)
+      deleteStop: (idx) ->
+        @stops.splice(idx, 1)
       submit: ->
         API.postJSON
           url: '/api/diagram'
