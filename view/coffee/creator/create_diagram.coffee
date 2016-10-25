@@ -127,5 +127,5 @@ trainFromMinutes = (minutes) ->
 stationMatcher = (xs) ->
   (q, cb) ->
     substrRegex = new RegExp(q, 'i')
-    matches = _.filter xs, (x) -> substrRegex.test(x.line.name) or substrRegex.test(x.station.name)
+    matches = _.filter xs, (x) -> substrRegex.test(x.station.name)
     cb(matches)
