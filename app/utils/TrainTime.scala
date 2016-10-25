@@ -28,7 +28,10 @@ object TrainTime {
   val Default = TrainTime(6, 0)
 
   def fromString(str: String): Option[TrainTime] =
-    Try { TrainTime(str.slice(0, 2).toInt, str.slice(2, 4).toInt) }.toOption
+    Try {
+      val raw = str.toInt
+      TrainTime(raw / 100, raw % 100)
+    }.toOption
 
 
   implicit def typeBinder: TypeBinder[String] = TypeBinder.string
