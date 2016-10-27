@@ -12,7 +12,7 @@ $(document).ready ->
         API.getJSON '/api/diagrams', {page: @pagination.current + 1, count: @pagination.size}, (json) =>
           @diagrams = json.data
           @pagination.total = json.pagination.total
-          @pagination.last = json.pagination.last
+          @pagination.last = Math.min(json.pagination.last, 10)
       edit: (id) ->
         location.href = "?edit=#{id}"
       delete: (id) ->
