@@ -4,12 +4,12 @@ $(document).ready ->
     data:
       diagrams: []
       pagination:
-        current: 1
+        current: 0
         size: 10
         last: 1
     methods:
       getDiagrams: ->
-        API.getJSON '/api/diagrams', {page: @pagination.current, count: @pagination.size}, (json) =>
+        API.getJSON '/api/diagrams', {page: @pagination.current + 1, count: @pagination.size}, (json) =>
           @diagrams = json.data
           @pagination.total = json.pagination.total
           @pagination.last = json.pagination.last
@@ -18,5 +18,8 @@ $(document).ready ->
       delete: (id) ->
         API.delete "/api/diagram/#{id}", {}, ->
           location.reload(false)
+      next: (page) ->
+        @pagination.current = page ? @pagination.current + 1
+        @getDiagrams()
     ready: ->
       @getDiagrams()

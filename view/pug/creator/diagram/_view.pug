@@ -2,13 +2,13 @@ script(src='/js/creator/diagrams.js')
 #diagrams
   h2 Diagrams
   ul.pagination
-    li
-      a(href='#', aria-label='Previous')
+    li(:class='{disabled: pagination.current == 0}')
+      a(href='#', aria-label='Previous', @click='next(pagination.current - 1)')
         span(aria-hidden='true') &laquo;
-    li(v-for='i in pagination.last')
-      a(href='#', v-text='i')
-    li
-      a(href='#', aria-label='Next')
+    li(v-for='i in pagination.last', :class='{active: pagination.current == i}')
+      a(href='#', v-text='i + 1', @click='next(i)')
+    li(:class='{disabled: (pagination.last - 1) <= pagination.current}')
+      a(href='#', aria-label='Next', @click='next()')
         span(aria-hidden='true') &raquo;
   table.table.table-striped.table-condensed
     tr
