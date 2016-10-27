@@ -21,7 +21,7 @@ $(document).ready ->
       next: (page) ->
         @pagination.current = page ? @pagination.current + 1
       parsePageHash: ->
-        page = fromURLParameter(location.hash.slice(1))?.page ? 0
+        page = fromURLParameter(location.hash.slice(1))?.page ? 1
         @pagination.current = page - 1
     ready: ->
       @parsePageHash()

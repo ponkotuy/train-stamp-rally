@@ -97,8 +97,8 @@ object SearchDiagram {
     mapping(
       "station" -> optional(longNumber(min = 0L)),
       "time" -> optional(text(minLength = 4, maxLength = 4)),
-      "page" -> optional(number),
-      "size" -> optional(number)
+      "page" -> optional(number(min = 0)),
+      "size" -> optional(number(min = 1))
     )(SearchDiagram.apply)(SearchDiagram.unapply)
   )
 }
