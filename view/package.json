@@ -7,11 +7,11 @@
     "bootstrap-material-design": "^0.5.10"
   },
   "devDependencies": {
+    "coffee-script": "^1.11.1",
     "gulp": "^3.9.1",
     "gulp-coffee": "^2.3.2",
-    "gulp-pug": "^3.1.0",
-    "coffee-script": "^1.11.1",
-    "gulp-plumber": "^1.1.0"
+    "gulp-plumber": "^1.1.0",
+    "gulp-pug": "^3.1.0"
   },
   "author": "ponkotuy",
   "license": "Apache2"

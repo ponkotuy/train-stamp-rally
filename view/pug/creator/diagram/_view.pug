@@ -1,6 +1,15 @@
 script(src='/js/creator/diagrams.js')
 #diagrams
   h2 Diagrams
+  ul.pagination
+    li
+      a(href='#', aria-label='Previous')
+        span(aria-hidden='true') &laquo;
+    li(v-for='i in pagination.last')
+      a(href='#', v-text='i')
+    li
+      a(href='#', aria-label='Next')
+        span(aria-hidden='true') &raquo;
   table.table.table-striped.table-condensed
     tr
       th ID

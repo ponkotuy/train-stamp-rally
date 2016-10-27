@@ -3,7 +3,7 @@ package queries
 import models._
 import play.api.data.Form
 import play.api.data.Forms._
-import responses.{DiagramResponse, TrainResponse}
+import responses.{DiagramResponse, Page, TrainResponse, WithPage}
 import scalikejdbc._
 import skinny.Pagination
 import utils.TrainTime
@@ -16,13 +16,31 @@ sealed abstract class SearchDiagram {
 }
 
 object SearchDiagram {
-  case class All(pageNo: Int, size: Int) extends SearchDiagram {
-    override def search()(implicit session: DBSession): Seq[DiagramResponse] = {
+  case object All extends SearchDiagram {
+    override def search()(implicit session: DBSession): Any = {
       import Diagram.{trainRef, stopStationRef, defaultAlias => d}
-      val page = Pagination.page(pageNo).per(size)
-      Diagram.joins(trainRef, stopStationRef)
-          .findAllWithPagination(page, Seq(d.id.desc))
+      Diagram.joins(trainRef, stopStationRef).findAll(Seq(d.id.desc))
           .map(DiagramResponse.fromDiagram)
+    }
+
+    override def tuple: (Option[Long], Option[String], Option[Int], Option[Int]) = (None, None, None, None)
+  }
+
+  case class Paging(pageNo: Int, size: Int) extends SearchDiagram {
+    override def search()(implicit session: DBSession): WithPage[Seq[DiagramResponse]] = {
+      import Diagram.{trainRef, stopStationRef, defaultAlias => d}
+      val pagination = Pagination.page(pageNo).per(size)
+      val data = Diagram.joins(trainRef, stopStationRef)
+          .findAllWithPagination(pagination, Seq(d.id.desc))
+          .map(DiagramResponse.fromDiagram)
+      val count = Diagram.count()
+      val page = Page(
+        total = count,
+        size = size,
+        current = pageNo,
+        last = ((count + size - 1) / size).toInt
+      )
+      WithPage(page, data)
     }
 
     override def tuple = (None, None, Some(pageNo), Some(size))
@@ -59,7 +77,9 @@ object SearchDiagram {
       timeOpt: Option[String],
       pageNoOpt: Option[Int],
       sizeOpt: Option[Int]): SearchDiagram = {
-    stationIdOpt.fold(All(pageNoOpt.getOrElse(1), sizeOpt.getOrElse(10)): SearchDiagram) { stationId =>
+    stationIdOpt.fold {
+      pageNoOpt.fold(All: SearchDiagram) { pageNo => Paging(pageNo, sizeOpt.getOrElse(10)): SearchDiagram }
+    } { stationId =>
       timeOpt.flatMap(TrainTime.fromString)
           .fold(StationSearch(stationId): SearchDiagram) { time => TimeSearch(stationId, time): SearchDiagram }
     }
