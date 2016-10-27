@@ -2,7 +2,7 @@ $(document).ready ->
   new Vue
     el: '#creatorNav'
     data:
-      categories: [{name: 'mission', role: 1}, {name: 'line', role: 0}, {name: 'diagram', role: 0}]
+      categories: [{name: 'mission', role: 1}, {name: 'line', role: 0}, {name: 'diagram', role: 0}, {name: 'validator', role: 0}]
       category:  ''
     methods:
       filterRole: ->
