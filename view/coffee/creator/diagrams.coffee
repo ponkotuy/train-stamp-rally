@@ -20,6 +20,13 @@ $(document).ready ->
           location.reload(false)
       next: (page) ->
         @pagination.current = page ? @pagination.current + 1
-        @getDiagrams()
+      parsePageHash: ->
+        page = fromURLParameter(location.hash.slice(1))?.page ? 0
+        @pagination.current = page - 1
     ready: ->
+      @parsePageHash()
       @getDiagrams()
+    watch:
+      'pagination.current': (current)->
+        @getDiagrams()
+        location.hash = "#page=#{parseInt(current) + 1}"
