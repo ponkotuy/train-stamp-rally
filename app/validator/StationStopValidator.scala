@@ -23,6 +23,7 @@ class StationStopValidator(diagrams: Seq[Diagram]) {
 object StationStopValidator {
   class UndefinedTrainError(station: LineStation) extends Error {
     override def message: String = s"Undefined arrived train at ${lineName}:${stationName}"
+    override def url: Option[String] = None
     def lineName = station.line.map(_.name).getOrElse(s"(lineId = ${station.lineId})")
     def stationName = station.station.map(_.name).getOrElse(s"(stationId = ${station.stationId})")
   }

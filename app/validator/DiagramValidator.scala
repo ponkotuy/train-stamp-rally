@@ -16,6 +16,8 @@ object DiagramValidator {
     def content: String
     override def message: String =
       s"DiagramId = ${diagram.id}: ${content}"
+
+    override def url: Option[String] = Some(s"/creator/diagram/index.html?edit=${diagram.id}")
   }
 
   class LineConnectionError(

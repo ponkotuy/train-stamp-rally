@@ -11,4 +11,6 @@ html(lang=ja)
       h1.page-header Validator
       #messages
         .panel.panel-default(v-for='mes in messages')
-          .panel-body(v-text='mes.message')
+          .panel-body
+            a(v-if='mes.url', href='{{ mes.url }}', v-text='mes.message')
+            span(v-if='!mes.url', v-text='mes.message')
