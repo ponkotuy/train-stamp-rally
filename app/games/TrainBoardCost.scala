@@ -24,7 +24,7 @@ object TrainBoardCost {
     val distance = calcDistance(train, fromStation, toStation)
     val fee = FeeCalculator.calc(train.trainType, distance)
     val station = train.stops.find(_.station.id == toStation).get
-    val time = station.arrival.orElse(station.departure).map(_.addMinutes(5)).get
+    val time = station.arrival.orElse(station.departure).get
     TrainBoardCost(distance, fee, time, station.station)
   }
 

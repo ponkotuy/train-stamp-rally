@@ -33,13 +33,14 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.indexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
       } yield {
         val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation).apply(game)
-        afterGame.update()
         val gp = GameProgress.defaultAlias
         GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).foreach { progress =>
           if(progress.arrivalTime.isEmpty) {
             progress.copy(arrivalTime = Some(afterGame.time.addMinutes(-1))).update()
+            afterGame.copy(time = afterGame.time.addMinutes(5)) // スタンプを押すのに5分
           }
         }
+        afterGame.update()
         Success
       }
       result.merge
