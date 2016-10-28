@@ -42,7 +42,7 @@ object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
   lazy val trainRef = hasMany[Train](
     many = Train -> Train.defaultAlias,
     on = (d, t) => sqls.eq(d.id, t.diagramId),
-    merge = (d, ts) => d.copy(trains = ts)
+    merge = (d, ts) => d.copy(trains = ts.sortBy(_.start))
   )
 
   def save(d: Diagram)(implicit session: DBSession): Long =
