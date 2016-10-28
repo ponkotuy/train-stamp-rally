@@ -34,7 +34,7 @@ object SearchDiagram {
       val data = Diagram.joins(trainRef, stopStationRef)
           .findAllByWithPagination(where, pagination, Seq(d.id.desc))
           .map(DiagramResponse.fromDiagram)
-      val count = Diagram.count()
+      val count = Diagram.countBy(where)
       val page = Page(
         total = count,
         size = size,
