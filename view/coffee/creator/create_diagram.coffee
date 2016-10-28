@@ -20,13 +20,14 @@ $(document).ready ->
       getTypes: ->
         API.getJSON '/api/train_types', (json) =>
           @types = json
-      getStations: ->
+      getStations: (done) ->
         API.getJSON '/api/line_stations', (json) =>
           @stations = json
           for s in @stations
             s.name = "#{s.line.name} #{s.station.name}"
           @matcher = stationMatcher(@stations)
           @setAutoCompleteAll()
+          done()
       getScrape: ->
         ids = @parseScrapeUrl(@scrape)
         API.getJSON "/api/scrape/train/#{ids[0]}/#{ids[1]}", (json) =>
@@ -111,8 +112,8 @@ $(document).ready ->
             @starts = starts.join(', ')
     ready: ->
       @getTypes()
-      @getStations()
-      @setUpdate()
+      @getStations ->
+        @setUpdate()
     watch:
       stops: ->
         @setAutoCompleteAll()
