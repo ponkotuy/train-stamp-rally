@@ -42,6 +42,6 @@ $(document).ready ->
             name: @mission.name
             stations: @mission.stations.map (s) -> s.id
             startStation: @mission.start.id
-          success: (id) =>
-            API.post "/api/game/#{id}", {}, =>
+          success: (id) ->
+            API.post "/api/game/#{id}", {}, ->
               location.href = "/game/game.html?mission=#{id}"
