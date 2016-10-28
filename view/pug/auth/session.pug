@@ -7,7 +7,7 @@ html(lang=ja)
   body
     include ../template/_navbar
     .container(role=main)
-      .alert#message(v-if='message?', v-bind:class='type', v-text='message', role='alert')
+      .alert#message(v-if='message?', :class='type', v-text='message', role='alert')
       form#session(@submit.prevent, @submit='login()')
         .form-group
           label(for='email') Email address

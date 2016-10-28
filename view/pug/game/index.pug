@@ -11,10 +11,10 @@ html(lang=ja)
         form.form-inline
           label.control-label(for='rankSelector') 難易度で絞り込み
           #rankSelector.btn-group(role='group')
-            button.btn(type='button', @click='filter("all")', v-bind:class="{'btn-primary': rank == 'all'}") ALL
-            button.btn.btn-default(type='button', @click='filter("easy")', v-bind:class="{'btn-primary': rank == 'easy'}") Easy
-            button.btn.btn-default(type='button', @click='filter("medium")', v-bind:class="{'btn-primary': rank == 'medium'}") Medium
-            button.btn.btn-default(type='button', @click='filter("hard")', v-bind:class="{'btn-primary': rank == 'hard'}") Hard
+            button.btn.btn-default(type='button', @click='filter("all")', :class="{'btn-primary': rank == 'all'}") ALL
+            button.btn.btn-default(type='button', @click='filter("easy")', :class="{'btn-primary': rank == 'easy'}") Easy
+            button.btn.btn-default(type='button', @click='filter("medium")', :class="{'btn-primary': rank == 'medium'}") Medium
+            button.btn.btn-default(type='button', @click='filter("hard")', :class="{'btn-primary': rank == 'hard'}") Hard
         table.table.table-striped
           tr
             th Name

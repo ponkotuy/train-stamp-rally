@@ -7,9 +7,14 @@ $(document).ready ->
         current: 0
         size: 10
         last: 1
+      lineName: ""
     methods:
       getDiagrams: ->
-        API.getJSON '/api/diagrams', {page: @pagination.current + 1, count: @pagination.size}, (json) =>
+        params =
+          page: @pagination.current + 1
+          count: @pagination.size
+          lineName: if @lineName then @lineName else undefined
+        API.getJSON '/api/diagrams', params, (json) =>
           @diagrams = json.data
           @pagination.total = json.pagination.total
           @pagination.last = Math.min(json.pagination.last, 10)

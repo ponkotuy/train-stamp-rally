@@ -1,6 +1,10 @@
 script(src='/js/creator/diagrams.js')
 #diagrams
   h2 Diagrams
+  form.form-inline(@submit.prevent, @submit='getDiagrams()')
+    label.control-label(for='lineName') From line name
+    input#lineName.form-control(type='text', v-model='lineName')
+    button.btn.btn-default(type='submit') Search
   ul.pagination
     li.clickable(:class='{disabled: pagination.current == 0}')
       a(aria-label='Previous', @click='next(pagination.current - 1)')
