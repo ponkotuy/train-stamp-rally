@@ -112,7 +112,7 @@ $(document).ready ->
             @starts = starts.join(', ')
     ready: ->
       @getTypes()
-      @getStations ->
+      @getStations =>
         @setUpdate()
     watch:
       stops: ->
