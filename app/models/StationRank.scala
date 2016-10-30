@@ -9,7 +9,7 @@ sealed abstract class StationRank(val value: Int, val name: String)
 object StationRank {
   case object Top extends StationRank(1, "中心駅") // Tokyo, Nagoya, Osaka
   case object Major extends StationRank(2, "主要駅") // Shinjuku, Nagano, Sapporo etc...
-  case object Large extends StationRank(3, "特急駅") // Limited Express stops
+  case object Large extends StationRank(3, "乗換駅") // Transfer stations
   case object Middle extends StationRank(4, "快速駅") // Rapid stops
   case object Local extends StationRank(5, "末端駅") // others
 

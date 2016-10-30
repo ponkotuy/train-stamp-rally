@@ -58,7 +58,6 @@ modalVue = (gameId) ->
       @game = game
       @setStations()
   ready: ->
-    console.log(gameId)
     @gameId = gameId
 
 missionVue = (gameId) ->

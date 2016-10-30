@@ -6,5 +6,25 @@ h2 Lines
       th ID
       th Name
     tr(v-for='line in lines')
-      td {{ line.id }}
-      td {{ line.name }}
+      td(v-text='line.id')
+      td
+        a.clickable(@click='openModal(line)', v-text='line.name')
+.modal#lineModal.fade(role='dialog')
+  .modal-dialog(role='document')
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+          span(aria-hidden='true') &times;
+        h3(v-text='line.name')
+      .modal-body
+        table.table
+          thead
+            tr
+              th Name
+              th Rank
+              th Distance
+          tbody
+            tr(v-for='station in stations')
+              th(v-text='station.station.name')
+              th(v-text='station.station.rank.value + ":" + station.station.rank.name')
+              th(v-text='station.km + "km"')

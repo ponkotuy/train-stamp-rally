@@ -9,6 +9,7 @@ POST /api/account controllers.Accounts.createAccount()
 
 GET /api/lines controllers.Lines.list()
 POST /api/line controllers.Lines.create()
+GET /api/line/:lineId/stations controllers.Lines.lineStations(lineId: Long)
 
 GET /api/diagram/:diagramId controllers.Diagrams.show(diagramId: Long)
 GET /api/diagrams controllers.Diagrams.list()
