@@ -100,7 +100,6 @@ $(document).ready ->
         starts = _.flatMap @starts.split(","), (raw) ->
           start = raw.trim()
           if start then [start] else []
-        console.log(starts)
         if starts.length < 1
           window.alert('列車が存在しません')
           return null
