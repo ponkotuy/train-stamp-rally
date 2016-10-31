@@ -11,9 +11,13 @@ $(document).ready ->
       deleteStation: (idx) ->
         @stations.splice(idx, 1)
       postLine: ->
+        if !@lineName
+          window.alert('Required line name.')
+          return
+        stations = @stations.map (st) -> {name: st.name, km: parseInt(st.km), rankValue: parseInt(st.rankValue)}
         API.postJSON
           url: '/api/line'
-          data: {name: @lineName, stations: @stations}
+          data: {name: @lineName, stations: stations}
           success: ->
             location.reload(false)
       loadCSV: ->
