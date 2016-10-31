@@ -70,26 +70,40 @@ $(document).ready ->
       deleteStop: (idx) ->
         @stops.splice(idx, 1)
       submit: ->
-        API.postJSON
-          url: '/api/diagram'
-          data: @createData()
-          success: ->
-            location.reload(false)
+        data = @createData()
+        if data
+          API.postJSON
+            url: '/api/diagram'
+            data: data
+            success: ->
+              location.reload(false)
       updateDiagram: ->
-        if @update
+        data = @createData()
+        if @update and data
           API.putJSON
             url: "/api/diagram/#{@update}"
-            data: @createData()
+            data: data
             success: ->
               location.href = location.pathname
       createData: ->
+        isAlert = false
         stops = _.flatMap @stops, (s) =>
+          if !s.name then return []
           id = @getLineStationId(s.name)
           if id
             [{lineStationId: id, arrival: parseInt(s.arrival), departure: parseInt(s.departure)}]
-          else []
-        starts = for s in @starts.split(",")
-          s.trim()
+          else
+            if !isAlert then window.alert("該当の路線or駅が見つかりません: #{s.name}")
+            isAlert = true
+            []
+        if isAlert then return null
+        starts = _.flatMap @starts.split(","), (raw) ->
+          start = raw.trim()
+          if start then [start] else []
+        console.log(starts)
+        if starts.length < 1
+          window.alert('列車が存在しません')
+          return null
         {name: @name, trainType: parseInt(@trainType), subType: @subType, starts: starts, stops: stops}
       clear: ->
         location.href = location.pathname
