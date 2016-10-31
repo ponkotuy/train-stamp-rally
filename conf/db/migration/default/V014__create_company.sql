@@ -1,0 +1,11 @@
+
+CREATE TABLE company (
+        id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        `name` VARCHAR(128) NOT NULL
+) ENGINE=InnoDB , DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO company (`name`) values ('JR');
+
+ALTER TABLE line ADD company_id BIGINT NOT NULL DEFAULT 1;
+
+ALTER TABLE line ADD FOREIGN KEY (company_id) REFERENCES company(id);

@@ -30,6 +30,8 @@ GET /api/station/:stationId controllers.Stations.show(stationId: Long)
 GET /api/line_stations controllers.Stations.lineStationList()
 GET /api/line_station/:lineStationId controllers.Stations.lineStation(lineStationId: Long)
 
+GET /api/companies controllers.Companies.list()
+
 GET /api/scrape/train/:lineId/:trainId controllers.Scraper.train(lineId: Long, trainId: Long)
 
 GET /api/games controllers.Games.list()

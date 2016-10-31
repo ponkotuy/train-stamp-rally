@@ -17,7 +17,7 @@ class Lines @Inject()(json4s: Json4s) extends Controller with AuthElement with A
   implicit val formats = DefaultFormats + StationRankSerializer
 
   def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    Ok(Extraction.decompose(Line.findAll(Seq(Line.column.id))))
+    Ok(Extraction.decompose(Line.findAll(Seq(Line.defaultAlias.id))))
   }
 
   def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>

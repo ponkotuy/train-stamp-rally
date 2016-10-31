@@ -4,9 +4,11 @@ h2 Lines
   table.table.table-striped.table-condensed
     tr
       th ID
+      th Company
       th Name
     tr(v-for='line in lines')
       td(v-text='line.id')
+      td(v-text='line.company.name')
       td
         a.clickable(@click='openModal(line)', v-text='line.name')
 .modal#lineModal.fade(role='dialog')

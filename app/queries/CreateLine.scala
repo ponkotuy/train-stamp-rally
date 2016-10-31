@@ -2,8 +2,8 @@ package queries
 
 import models.{Line, Station, StationRank}
 
-case class CreateLine(name: String, stations: Seq[CreateStation]) {
-  def line = Line(id = 0L, name = name)
+case class CreateLine(name: String, stations: Seq[CreateStation], companyId: Long) {
+  def line = Line(id = 0L, name = name, companyId = companyId)
 }
 
 case class CreateStation(name: String, km: Double, rankValue: Int) {

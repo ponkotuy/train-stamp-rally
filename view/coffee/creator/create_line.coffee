@@ -3,8 +3,10 @@ $(document).ready ->
     el: '#createLine'
     data:
       lineName: ''
-      stations: [{name: '', km: 0.0, rankValue: 3}]
+      stations: [{name: '', km: 0.0, rankValue: 3}, {name: '', km: 1.1, rankValue: 3}]
       csv: ''
+      companies: []
+      company: 1
     methods:
       addStation: ->
         @stations.push {name: '', km: 0.0, rankValue: 5}
@@ -17,10 +19,15 @@ $(document).ready ->
         stations = @stations.map (st) -> {name: st.name, km: parseInt(st.km), rankValue: parseInt(st.rankValue)}
         API.postJSON
           url: '/api/line'
-          data: {name: @lineName, stations: stations}
+          data: {name: @lineName, stations: stations, companyId: parseInt(@company)}
           success: ->
             location.reload(false)
       loadCSV: ->
         lines = @csv.split('\n').map (line) -> line.split('\t')
         @stations = lines.map (line) ->
           {name: line[0], km: parseFloat(line[1] ? '0'), rankValue: parseInt(line[2] ? '5')}
+      getCompanies: ->
+        API.getJSON '/api/companies', (json) =>
+          @companies = json
+    ready: ->
+      @getCompanies()
