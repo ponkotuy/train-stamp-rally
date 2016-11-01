@@ -16,7 +16,7 @@ $(document).ready ->
         if !@lineName
           window.alert('Required line name.')
           return
-        stations = @stations.map (st) -> {name: st.name, km: parseInt(st.km), rankValue: parseInt(st.rankValue)}
+        stations = @stations.map (st) -> {name: st.name, km: parseFloat(st.km), rankValue: parseInt(st.rankValue)}
         API.postJSON
           url: '/api/line'
           data: {name: @lineName, stations: stations, companyId: parseInt(@company)}
