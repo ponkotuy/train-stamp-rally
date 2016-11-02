@@ -21,5 +21,5 @@ object Line extends SkinnyCRUDMapperWithId[Long, Line] {
   ).byDefault
 
   def save(line: Line)(implicit session: DBSession): Long =
-    createWithAttributes('name -> line.name)
+    createWithAttributes('name -> line.name, 'companyId -> line.companyId)
 }
