@@ -17,7 +17,7 @@ h2 Lines
       .modal-header
         button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') &times;
-        h3(v-text='line.name')
+        h3(v-text='line.company.name + " " + line.name')
       .modal-body
         table.table
           thead
