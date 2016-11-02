@@ -80,3 +80,28 @@ failure = (jqXHR) ->
       clear: ->
         @message = undefined
         @type = undefined
+
+@companySelector =
+  data:
+    companies: [{id: 1, name: 'JR'}]
+    company: 1
+  methods:
+    getCompanies: ->
+      API.getJSON '/api/companies', (json) =>
+        @companies = json
+  ready: ->
+    @getCompanies()
+
+@trainTypeSelector =
+  data:
+    trainTypes: [{value: 1, name: '普通'}]
+    trainType: 1
+  methods:
+    getTypes: ->
+      API.getJSON '/api/train_types', (json) =>
+        @trainTypes = json
+  ready: ->
+    @getTypes()
+
+@copyObject = (src) ->
+  $.extend(true, {}, src)

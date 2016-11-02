@@ -1,10 +1,9 @@
 $(document).ready ->
   new Vue
     el: '#createDiagram'
+    mixins: [trainTypeSelector]
     data:
       update: null
-      types: []
-      trainType: 1
       name: ""
       subType: ""
       stops: [{departure: "0"}, {}]
@@ -17,9 +16,6 @@ $(document).ready ->
       matcher: undefined
       scrape: ""
     methods:
-      getTypes: ->
-        API.getJSON '/api/train_types', (json) =>
-          @types = json
       getStations: (done) ->
         API.getJSON '/api/line_stations', (json) =>
           @stations = json
@@ -124,7 +120,6 @@ $(document).ready ->
               (new TrainTime(train.start.hour, train.start.minutes)).fourDigit()
             @starts = starts.join(', ')
     ready: ->
-      @getTypes()
       @getStations =>
         @setUpdate()
     watch:

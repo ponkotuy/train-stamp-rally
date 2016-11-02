@@ -1,12 +1,11 @@
 $(document).ready ->
   new Vue
     el: '#createLine'
+    mixins: [companySelector]
     data:
       lineName: ''
       stations: [{name: '', km: 0.0, rankValue: 3}, {name: '', km: 1.1, rankValue: 3}]
       csv: ''
-      companies: []
-      company: 1
     methods:
       addStation: ->
         @stations.push {name: '', km: 0.0, rankValue: 5}
@@ -26,8 +25,3 @@ $(document).ready ->
         lines = @csv.split('\n').map (line) -> line.split('\t')
         @stations = lines.map (line) ->
           {name: line[0], km: parseFloat(line[1] ? '0'), rankValue: parseInt(line[2] ? '5')}
-      getCompanies: ->
-        API.getJSON '/api/companies', (json) =>
-          @companies = json
-    ready: ->
-      @getCompanies()
