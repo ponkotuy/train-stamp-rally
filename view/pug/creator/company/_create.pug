@@ -1,0 +1,11 @@
+script(src='/js/creator/create_company.js')
+#createCompany
+  h2 Create
+  form.form-inline(@submit.prevent, @submit='submit()')
+    .form-group
+      label.col-sm-3.control-label(for='name') Name
+      .col-sm-9
+        input#name.form-control(type='text', v-model='name')
+    .form-group
+      .col-sm-offset-3
+        button.btn.btn-primary(type='submit') Create

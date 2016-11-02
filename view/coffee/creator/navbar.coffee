@@ -4,6 +4,7 @@ $(document).ready ->
     data:
       categories: [
         {name: 'mission', role: 1},
+        {name: 'company', role: 0},
         {name: 'line', role: 0},
         {name: 'diagram', role: 0},
         {name: 'validator', role: 0}

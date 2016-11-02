@@ -1,0 +1,10 @@
+script(src='/js/creator/companies.js')
+h2 Companies
+#companies
+  table.table.table-striped.table-condensed
+    tr
+      th ID
+      th Name
+    tr(v-for='company in companies')
+      td(v-text='company.id')
+      td(v-text='company.name')
