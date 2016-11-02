@@ -20,10 +20,7 @@ libraryDependencies ++= Seq(
   "org.springframework.security" % "spring-security-web" % "4.1.3.RELEASE",
   "ch.qos.logback" % "logback-classic" % "1.1.7" % "runtime",
   "org.slf4j" % "slf4j-api" % "1.7.21",
-  "net.liftweb" %% "lift-util" % "2.6.2",
-  "com.google.api-client" % "google-api-client" % googleLibVer,
-  "com.google.oauth-client" % "google-oauth-client-jetty" % googleLibVer,
-  "com.google.apis" % "google-api-services-sheets" % ("v4-rev32-" + googleLibVer)
+  "net.liftweb" %% "lift-util" % "2.6.2"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
