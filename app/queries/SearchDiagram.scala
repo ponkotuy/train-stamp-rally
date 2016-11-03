@@ -18,7 +18,8 @@ sealed abstract class SearchDiagram {
 object SearchDiagram {
   case object All extends SearchDiagram {
     override def search()(implicit session: DBSession): Any = {
-      import Diagram.{trainRef, stopStationRef, defaultAlias => d}
+      import DefaultAliases.d
+      import Diagram.{stopStationRef, trainRef}
       Diagram.joins(trainRef, stopStationRef).findAll(Seq(d.id.desc))
           .map(DiagramResponse.fromDiagram)
     }
@@ -28,7 +29,8 @@ object SearchDiagram {
 
   case class Paging(pageNo: Int, size: Int, lineName: Option[String]) extends SearchDiagram {
     override def search()(implicit session: DBSession): WithPage[Seq[DiagramResponse]] = {
-      import Diagram.{trainRef, stopStationRef, defaultAlias => d}
+      import DefaultAliases.d
+      import Diagram.{stopStationRef, trainRef}
       val pagination = Pagination.page(pageNo).per(size)
       val where = lineName.map(whereLineName).getOrElse(sqls"true")
       val data = Diagram.joins(trainRef, stopStationRef)
@@ -45,11 +47,11 @@ object SearchDiagram {
     }
 
     private def whereLineName(name: String)(implicit session: DBSession): SQLSyntax = {
-      val l = Line.defaultAlias
-      val lineIds = Line.findAllBy(sqls.like(Line.column.name, s"%${name}%")).map(_.id)
-      val lineStationIds = LineStation.findAllBy(sqls.in(LineStation.column.lineId, lineIds)).map(_.id)
-      val diagramIds = StopStation.findAllBy(sqls.in(StopStation.column.lineStationId, lineStationIds)).map(_.diagramId)
-      sqls.in(Diagram.defaultAlias.id, diagramIds)
+      import DefaultAliases.{d, l, ls, ss}
+      val lineIds = Line.findAllBy(sqls.like(l.name, s"%${name}%")).map(_.id)
+      val lineStationIds = LineStation.findAllBy(sqls.in(ls.lineId, lineIds)).map(_.id)
+      val diagramIds = StopStation.findAllBy(sqls.in(ss.lineStationId, lineStationIds)).map(_.diagramId)
+      sqls.in(d.id, diagramIds)
     }
 
     override def tuple = (None, None, Some(pageNo), Some(size), lineName)
@@ -66,8 +68,9 @@ object SearchDiagram {
 
   case class TimeSearch(stationId: Long, time: TrainTime) extends SearchDiagram {
     override def search()(implicit session: DBSession) = {
-      val lineStations = LineStation.findAllBy(sqls.eq(LineStation.column.stationId, stationId))
-      val stops = StopStation.findAllBy(sqls.in(StopStation.column.lineStationId, lineStations.map(_.id)))
+      import DefaultAliases.{ls, ss}
+      val lineStations = LineStation.findAllBy(sqls.eq(ls.stationId, stationId))
+      val stops = StopStation.findAllBy(sqls.in(ss.lineStationId, lineStations.map(_.id)))
       val diagramIds = stops.map(_.diagramId).distinct
       val lineStationIdTable: Map[Long, Long] = stops.map { ls => ls.diagramId -> ls.lineStationId }(breakOut)
       val diagrams = Diagram.joins(Diagram.stopStationRef, Diagram.trainRef).findAllByIds(diagramIds: _*)
@@ -101,8 +104,9 @@ object SearchDiagram {
     Some(sd.tuple)
 
   private[this] def findDiagramIds(stationId: Long)(implicit session: DBSession): Seq[Long] = {
-    val lineStations = LineStation.findAllBy(sqls.eq(LineStation.column.stationId, stationId))
-    val stops = StopStation.findAllBy(sqls.in(StopStation.column.lineStationId, lineStations.map(_.id)))
+    import DefaultAliases.{ls, ss}
+    val lineStations = LineStation.findAllBy(sqls.eq(ls.stationId, stationId))
+    val stops = StopStation.findAllBy(sqls.in(ss.lineStationId, lineStations.map(_.id)))
     stops.map(_.diagramId).distinct
   }
 
