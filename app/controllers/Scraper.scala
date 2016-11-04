@@ -7,15 +7,15 @@ import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import net.liftweb.util.Html5
 import org.json4s.{DefaultFormats, Extraction}
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.Controller
 import scrape.model.{TimeTablePage, TrainPage}
 
 import scala.io.Codec
 import scala.xml._
 
 class Scraper @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
-  import json4s._
   import Responses._
+  import json4s._
 
   implicit val formats = DefaultFormats
 

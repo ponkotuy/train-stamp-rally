@@ -21,8 +21,8 @@ object TrainPage {
     implicit def rightBias[A, B](e: Either[A, B]) = e.right
     for {
       container <- (xml \\ "div" find(_ \ "@id" contains Text("container02"))).toRight("container")
-      bigTable <- (container \ "table").lift(4).toRight("table")
-      trs = bigTable \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr"
+      table <- (container \\ "table" find(_ \ "@cellpadding" contains Text("5"))).toRight("table")
+      trs = table \ "tbody" \ "tr"
       name <- extractValueFromTr(trs, 0)(norm).toRight("name")
       number <- extractValueFromTr(trs, 1)(norm).toRight("number")
       code = extractValueFromTr(trs, 2)(norm).flatMap { it => Try(it.toInt).toOption }
