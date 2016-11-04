@@ -16,17 +16,19 @@ case class TrainPage(
 object TrainPage {
   import utils.ParseHelper._
 
-  def fromXML(xml: NodeSeq, url: String): Option[TrainPage] = {
-    val container = xml \\ "div" filter(_ \ "@id" contains Text("container02"))
+  def fromXML(xml: NodeSeq, url: String): Either[String, TrainPage] = {
+    import scala.language.implicitConversions
+    implicit def rightBias[A, B](e: Either[A, B]) = e.right
     for {
-      bigTable <- (container \ "table").lift(4)
+      container <- (xml \\ "div" find(_ \ "@id" contains Text("container02"))).toRight("container")
+      bigTable <- (container \ "table").lift(4).toRight("table")
       trs = bigTable \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr" \ "td" \ "table" \ "tbody" \ "tr"
-      name <- extractValueFromTr(trs, 0)(norm)
-      number <- extractValueFromTr(trs, 1)(norm)
+      name <- extractValueFromTr(trs, 0)(norm).toRight("name")
+      number <- extractValueFromTr(trs, 1)(norm).toRight("number")
       code = extractValueFromTr(trs, 2)(norm).flatMap { it => Try(it.toInt).toOption }
-      car <- extractValueFromTr(trs, 3)(normList(','))
-      remark <- extractValueFromTr(trs, 4)(normList(','))
-      day <- extractValueFromTr(trs, 5)(norm)
+      car <- extractValueFromTr(trs, 3)(normList(',')).toRight("car")
+      remark <- extractValueFromTr(trs, 4)(normList(',')).toRight("remark")
+      day <- extractValueFromTr(trs, 5)(norm).toRight("day")
       stops = trs.view(8, trs.length).flatMap(StopDetail.fromXML).toList
     } yield { TrainPage(name, number, code, stops, url, car, remark, day) }
   }
