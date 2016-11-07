@@ -35,6 +35,7 @@ POST /api/company controllers.Companies.create()
 POST /api/company/:companyId/type/:trainType/fares controllers.Companies.createFares(companyId: Long, trainType: Int)
 
 GET /api/scrape/train/:lineId/:trainId controllers.Scraper.train(lineId: String, trainId: String)
+GET /api/scrape/station/:lineId/:pageName controllers.Scraper.station(lineId: String, pageName: String)
 
 GET /api/games controllers.Games.list()
 GET /api/game/:missionId controllers.Games.show(missionId: Long)
