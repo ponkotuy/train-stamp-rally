@@ -69,7 +69,7 @@ object StationPage {
 
   private case class MinutesTrain(dest: String, typ: Option[String], minutes: Int, add: Option[String]) {
     def withHour(hour: Int): StationTrain =
-      StationTrain(dest, typ, Stop.Time(hour, minutes), add)
+      StationTrain(dest, typ, Stop.Time(hour % 24, minutes), add)
   }
 }
 
