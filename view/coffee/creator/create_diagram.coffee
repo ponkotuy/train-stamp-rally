@@ -46,7 +46,7 @@ $(document).ready ->
               {name: "#{stop.line.name} #{stop.station.name}", arrival: stop.arrival, departure: stop.departure}
             starts = json.trains.map (train) ->
               (new TrainTime(train.start.hour, train.start.minutes)).fourDigit()
-            @starts = starts.join(', ')
+            @pushStarts(starts)
     ready: ->
       @getStations =>
         @setUpdate()
