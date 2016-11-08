@@ -26,7 +26,7 @@ script(src='/js/creator/create_diagram.js')
         textarea#starts.form-control(type='text', v-model='startsText')
     .form-group
       .col-sm-1.col-sm-offset-3
-        label Pattern
+        label.control-label Pattern
       .col-sm-2
         input#patternStart.form-control(type='text', v-model='pattern.start')
       .col-sm-2
@@ -38,7 +38,7 @@ script(src='/js/creator/create_diagram.js')
   form.form-horizontal(@submit.prevent, @submit='scrapeStation()')
     .form-group
       .col-sm-2.col-sm-offset-3
-        label えきから時刻表の駅ページURL
+        label.control-label えきから時刻表の駅ページURL
       .col-sm-5
         input.form-control(type='text', v-model='stationUrl')
       .col-sm-2
