@@ -11,7 +11,7 @@ h2 Companies
       td(v-text='company.name')
       td
         button.btn.btn-default.btn-xs(
-          type='butto', v-for='type in company.types', v-text='type.name', @click='openModal(company, type)')
+          type='button', v-for='type in company.types', v-text='type.name', @click='openModal(company, type)')
 
 #fareModal.modal.fade(role='dialog')
   .modal-dialog(role='document')
