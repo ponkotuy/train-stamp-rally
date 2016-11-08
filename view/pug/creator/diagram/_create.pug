@@ -15,7 +15,7 @@ script(src='/js/creator/create_diagram.js')
       label.col-sm-3.control-label(for='trainType') TrainType
       .col-sm-9
         select#trainType.form-control(v-model='trainType')
-          option(v-for='t in trainTypes', value='{{ t.value }}') {{ t.name }}
+          option(v-for='t in trainTypes', :value='t.value', v-text='t.name')
     .form-group
       label.col-sm-3.control-label(for='subType') Subtype
       .col-sm-9
