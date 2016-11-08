@@ -51,9 +51,5 @@ $(document).ready ->
       @getStations =>
         @setUpdate()
 
-parseTime = (str) ->
-  num = parseInt(str)
-  new TrainTime(Math.floor(num / 100), num % 100)
-
 trainFromMinutes = (minutes) ->
   new TrainTime(Math.floor(minutes / 60), minutes % 60)

@@ -16,7 +16,7 @@
         result = now.fourDigit()
         now.addMinutes(parseInt(@pattern.period))
         result
-      pushStarts(times)
+      @pushStarts(times)
     pushStarts: (times) ->
       @startsText += times.join(', ')
     startsData: ->
@@ -74,3 +74,7 @@ createModal = (submitF) ->
 
 parseScrapeUrl = (url) ->
   url.match(/\/ekijikoku\/(\d+)\/(.+).htm/).slice(1, 3)
+
+parseTime = (str) ->
+  num = parseInt(str)
+  new TrainTime(Math.floor(num / 100), num % 100)
