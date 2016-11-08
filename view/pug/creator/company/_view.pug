@@ -5,6 +5,28 @@ h2 Companies
     tr
       th ID
       th Name
+      th Fares
     tr(v-for='company in companies')
       td(v-text='company.id')
       td(v-text='company.name')
+      td
+        button.btn.btn-default.btn-xs(
+          type='butto', v-for='type in company.types', v-text='type.name', @click='openModal(company, type)')
+
+#fareModal.modal.fade(role='dialog')
+  .modal-dialog(role='document')
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+          span(aria-hidden='true') &times;
+        h3(v-text='company.name + trainType.name + "運賃"')
+      .modal-body
+        table.table.table-striped.table-condensed
+          thead
+            tr
+              th km
+              th Cost
+          tbody
+            tr(v-for='fare in fares')
+              td(v-text='fare.km')
+              td(v-text='fare.cost')

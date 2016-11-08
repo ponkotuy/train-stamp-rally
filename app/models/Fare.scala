@@ -21,4 +21,17 @@ object Fare extends SkinnyCRUDMapperWithId[Long, Fare] {
       'km -> fare.km,
       'cost -> fare.cost
     )
+
+  def existsFare()(implicit session: DBSession): Seq[FareType] = withSQL {
+    val f = defaultAlias
+    select(sqls.distinct(f.companyId, f.trainType)).from(Fare as f)
+  }.map(FareType.extract).list().apply()
+
+  case class FareType(companyId: Long, trainType: TrainType)
+  object FareType {
+    def extract(rs: WrappedResultSet): FareType = {
+      val f = defaultAlias
+      FareType(rs.long(f.companyId), TrainType.find(rs.int(f.trainType)).getOrElse(TrainType.Local))
+    }
+  }
 }
