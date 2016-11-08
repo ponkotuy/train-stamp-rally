@@ -48,7 +48,7 @@
       @stops.splice(idx, 1)
     stopsData: ->
       isAlert = false
-      _.flatMap @stops, (s) =>
+      stops = _.flatMap @stops, (s) =>
         if !s.name then return []
         id = @getLineStationId(s.name)
         if id
@@ -58,6 +58,7 @@
           isAlert = true
           []
       if isAlert then return null
+      stops
 
   watch:
     stops: ->

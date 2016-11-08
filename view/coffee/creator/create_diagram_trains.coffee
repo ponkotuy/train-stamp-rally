@@ -26,6 +26,7 @@
       if starts.length < 1
         window.alert('列車が存在しません')
         return null
+      starts
     scrapeStation: ->
       @modal.setUrl(@stationUrl)
       $(modalId).modal('show')
@@ -53,6 +54,10 @@ createModal = (submitF) ->
           @trainAttrs = for label, trains of groups
             times = trains.map (train) -> new TrainTime(train.time.hour, train.time.minutes).fourDigit()
             {label: label, trains: times, check: true}
+          @trainAttrs.sort (x, y) ->
+            if x.label < y.label then -1
+            else if x.label > y.label then 1
+            else 0
       setUrl: (url) ->
         @url = url
     watch:
