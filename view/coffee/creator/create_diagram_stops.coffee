@@ -46,6 +46,16 @@
       @stops.splice(idx + 1, 0, add)
     deleteStop: (idx) ->
       @stops.splice(idx, 1)
+      if idx == 0 and @stops.length > 0 # 出発駅変更に伴う処理
+        @stops[0].arrival = ""
+        diff = parseInt(@stops[0].departure)
+        @stops[0].departure = 0
+        for stop, idx in @stops
+          if idx != 0
+            if stop.arrival
+              stop.arrival = parseInt(stop.arrival) - diff
+            if stop.departure
+              stop.departure = parseInt(stop.departure) - diff
     stopsData: ->
       isAlert = false
       stops = _.flatMap @stops, (s) =>
