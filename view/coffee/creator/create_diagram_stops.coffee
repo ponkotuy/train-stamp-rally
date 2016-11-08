@@ -76,9 +76,13 @@
 
 stationMatcher = (xs) ->
   (q, cb) ->
-    substrRegex = new RegExp(q, 'i')
-    matches = _.filter xs, (x) -> substrRegex.test(x.station.name)
-    cb(matches)
+    equals = _.filter xs, (x) -> q == x.station.name
+    if equals.length == 0
+      substrRegex = new RegExp(q, 'i')
+      matches = _.filter xs, (x) -> substrRegex.test(x.station.name)
+      cb(matches)
+    else
+      cb(equals)
 
 parseScrapeUrl = (url) ->
   url.match(/\/detail\/(\d+)\/(\d+).htm/).slice(1, 3)

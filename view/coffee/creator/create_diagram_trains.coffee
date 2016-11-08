@@ -32,6 +32,7 @@
       $(modalId).modal('show')
   ready: ->
     @modal = createModal(@pushStarts)
+    @modal.setUrl('')
 
 modalId = '#startsModal'
 createModal = (submitF) ->
@@ -42,7 +43,6 @@ createModal = (submitF) ->
       trainAttrs: []
       candidateText: ""
       candidates: []
-      selectedAttrs: []
     methods:
       submit: ->
         submitF(@candidates)
@@ -53,7 +53,7 @@ createModal = (submitF) ->
           groups = _.groupBy json, (train) -> "[#{train.typ ? '普通'}] #{train.dest}"
           @trainAttrs = for label, trains of groups
             times = trains.map (train) -> new TrainTime(train.time.hour, train.time.minutes).fourDigit()
-            {label: label, trains: times, check: true}
+            {label: label, trains: times, check: false}
           @trainAttrs.sort (x, y) ->
             if x.label < y.label then -1
             else if x.label > y.label then 1
