@@ -26,7 +26,8 @@ class Scraper @Inject()(json4s: Json4s) extends Controller with AuthElement with
     StationPage.fromXml(xml) match {
       case Left(str) => notFound(str)
       case Right(station) =>
-        Ok(Extraction.decompose(station.trains.map(_.replaceAbbr(station.abbr))))
+        val trains = station.trains.filterNot(_.add.contains("◆"))
+        Ok(Extraction.decompose(trains.map(_.replaceAbbr(station.abbr))))
     }
   }
 
