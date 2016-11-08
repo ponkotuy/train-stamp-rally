@@ -1,6 +1,8 @@
 link(rel='stylesheet' href='/css/typeaheadjs.css')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js')
 script(src='/js/creator/train_time.js')
+script(src='/js/creator/create_diagram_stops.js')
+script(src='/js/creator/create_diagram_trains.js')
 script(src='/js/creator/create_diagram.js')
 #createDiagram
   h2 Create
@@ -33,6 +35,29 @@ script(src='/js/creator/create_diagram.js')
         input#patternPeriod.form-control(type='number', v-model='pattern.period')
       .col-sm-2
         button.btn.btn-default.form-control(type='button', @click='pushPattern()') Push
+  form.form-horizontal(@submit.prevent, @submit='scrapeStation()')
+    .form-group
+      .col-sm-2.col-sm-offset-3
+        label えきから時刻表の駅ページURL
+      .col-sm-5
+        input.form-control(type='text', v-model='stationUrl')
+      .col-sm-2
+        button.btn.btn-default.form-control(type='submit') Scrape
+  .modal#startModal.fade(role='dialog')
+    .modal-dialog(role='document')
+      .modal-content
+        .modal-header
+          button.close(type='button', data-dismiss='modal', aria-label='Close')
+            span(aria-hidden='true') &times;
+          h3 'Select trains'
+        .modal-body
+          form(@submit.prevent, @submit='')
+            .checkbox(v-for='attr in trainAttrs')
+              label
+                input(type='checkbox', v-model='attr.check', v-text='attr.label')
+            .textarea.form-control(rows=3, v-model='candidates', readonly)
+            button.btn.btn-primary(type='submit')
+  form.form-horizontal
     .form-group
       label.col-sm-6.control-label Station
       label.col-sm-2.control-label Arrival(minutes)
@@ -50,12 +75,13 @@ script(src='/js/creator/create_diagram.js')
       .col-sm-1
         button.btn.btn-warning.form-control(type='button', @click='deleteStop($index)')
           span.glyphicon.glyphicon-minus
+  form.form-horizontal(@submit.prevent, @submit='getScrape()')
     .form-group
       label.col-sm-3.control-label えきから時刻表の列車詳細ページURL
       .col-sm-7
         input.form-control(type='text', v-model='scrape')
       .col-sm-2
-        button.btn.btn-default.form-control(type='button', @click='getScrape()') Scrape
+        button.btn.btn-default.form-control(type='submit') Scrape
   button.btn.btn-success.btn-lg(type='button', v-if='update', @click='updateDiagram()') Update
   button.btn.btn-primary.btn-lg(type='button', @click='submit()') Send ALL
   button.btn.btn-warning.btn-lg(type='button', @click='clear()') Clear
