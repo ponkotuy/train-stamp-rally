@@ -20,7 +20,7 @@
         @setAutoCompleteAll()
         done()
     getScrape: ->
-      ids = @parseScrapeUrl(@scrape)
+      ids = parseScrapeUrl(@scrape)
       API.getJSON "/api/scrape/train/#{ids[0]}/#{ids[1]}", (json) =>
         start = json.stops[0].departure
         startTime = new TrainTime(start.hour, start.minutes)
@@ -46,8 +46,6 @@
       @stops.splice(idx + 1, 0, add)
     deleteStop: (idx) ->
       @stops.splice(idx, 1)
-    parseScrapeUrl: (url) ->
-      url.match(/\/detail\/(\d+)\/(\d+).htm/).slice(1, 3)
     stopsData: ->
       isAlert = false
       _.flatMap @stops, (s) =>
@@ -70,3 +68,6 @@ stationMatcher = (xs) ->
     substrRegex = new RegExp(q, 'i')
     matches = _.filter xs, (x) -> substrRegex.test(x.station.name)
     cb(matches)
+
+parseScrapeUrl = (url) ->
+  url.match(/\/detail\/(\d+)\/(\d+).htm/).slice(1, 3)
