@@ -109,6 +109,9 @@ failure = (jqXHR) ->
 # Require getPageData methods
 # args (page, done)
 # page.current: 0 padding page number
+# done args (obj)
+# obj.total: total count of data
+# obj.last: last page of data
 @pagination =
   data:
     pagination:

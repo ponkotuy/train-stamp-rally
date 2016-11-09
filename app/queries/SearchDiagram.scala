@@ -37,12 +37,7 @@ object SearchDiagram {
           .findAllByWithPagination(where, pagination, Seq(d.id.desc))
           .map(DiagramResponse.fromDiagram)
       val count = Diagram.countBy(where)
-      val page = Page(
-        total = count,
-        size = size,
-        current = pageNo,
-        last = ((count + size - 1) / size).toInt
-      )
+      val page = Page(count, size, pageNo)
       WithPage(page, data)
     }
 
