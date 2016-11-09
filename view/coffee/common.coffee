@@ -105,3 +105,29 @@ failure = (jqXHR) ->
 
 @copyObject = (src) ->
   $.extend(true, {}, src)
+
+# Require getPageData methods
+# args (page, done)
+# page.current: 0 padding page number
+@pagination =
+  data:
+    pagination:
+      current: 0
+      last: 1
+  methods:
+    getData: ->
+      @getPageData @pagination, (page) =>
+        @pagination.total = page.total
+        @pagination.last = page.last
+    parsePageHash: ->
+      page = fromURLParameter(location.hash.slice(1))?.page ? 1
+      @pagination.current = page - 1
+    next: (page) ->
+      @pagination.current = page ? @pagination.current + 1
+  ready: ->
+    @parsePageHash()
+    @getData()
+  watch:
+    'pagination.current': (current)->
+      @getData()
+      location.hash = "#page=#{parseInt(current) + 1}"
