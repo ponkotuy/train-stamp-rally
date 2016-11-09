@@ -16,6 +16,7 @@ $(document).ready ->
       submit: ->
         API.postJSON
           url: "/api/company/#{@company}/type/#{@trainType}/fares"
-          data: {fares: @fares}
+          fares = @fares.map (f) -> {km: parseFloat(f.km), cost: parseInt(f.cost)}
+          data: {fares: fares}
           success: ->
             location.reload(false)
