@@ -6,7 +6,8 @@ mainVue = ->
   mixins: [formatter, missionParam]
   data:
     game: {}
-    trains: []
+    lines: []
+    fromLines: []
     trainModal: null
   methods:
     getGame: ->
@@ -17,7 +18,24 @@ mainVue = ->
         @trainModal = new Vue(modalVue(@game.id))
     getDiagrams: ->
       API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
-        @trains = json
+        trains = json.map (train) =>
+          train.stops = _.chain(train.stops)
+            .reverse()
+            .uniqBy('station.id')
+            .filter (stop) -> stop.arrival or stop.departure
+            .reverse()
+            .value()
+          train
+        for train in trains
+          for stop in train.stops
+            @lines[stop.line.id] = stop.line
+        fromLines = _.groupBy trains, (train) => @here(train).line.id
+        @fromLines = for lineId, xs of fromLines
+          ordered = _.chain(xs)
+            .orderBy (x) -> x.subType
+            .orderBy (x) -> x.trainType.value
+            .value()
+          _.extend(@lines[lineId], {trains: ordered})
     openModal: (train) ->
       @trainModal.setData(train, @game)
       $(modalId).modal('show')

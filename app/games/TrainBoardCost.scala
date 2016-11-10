@@ -1,6 +1,6 @@
 package games
 
-import models.{Company, Game, Station}
+import models.{Game, Station}
 import responses.TrainResponse
 import scalikejdbc.AutoSession
 import utils.{FeeCalculator, TrainTime}
