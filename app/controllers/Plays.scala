@@ -29,12 +29,12 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
         _ <- Either.cond(game.stationId == b.fromStation, Unit, BadRequest("Wrong fromStation."))
         train <- TrainResponse.fromTrainId(b.trainId).toRight(notFound("Train"))
         startLine <- train.stops.headOption.map(_.line).toRight(notFound("Stops"))
-        company <- startLine.company.toRight(notFound("Line's company"))
+        companyId = startLine.companyId
         stopIds = train.stops.map(_.station.id)
         _ <- Either.cond(stopIds.contains(b.toStation) && stopIds.contains(b.fromStation), Unit, BadRequest("Wrong trainId."))
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.indexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
       } yield {
-        val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation, company).apply(game)
+        val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation, companyId).apply(game)
         val gp = GameProgress.defaultAlias
         GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).foreach { progress =>
           if(progress.arrivalTime.isEmpty) {

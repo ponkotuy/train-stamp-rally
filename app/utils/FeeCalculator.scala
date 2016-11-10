@@ -5,27 +5,28 @@ import scalikejdbc._
 
 object FeeCalculator {
   import models.DefaultAliases.f
-  def calc(typ: TrainType, company: Company, distance: Double)(implicit session: DBSession): Int = {
+  def calc(typ: TrainType, companyId: Long, distance: Double)(implicit session: DBSession): Int = {
     val additional = if(typ == TrainType.Local) 0
     else
-      findFare(typ, company, Some(distance))
-          .orElse(findFare(typ, company, None))
-          .orElse(findFare(typ, Company.JR, Some(distance)))
-          .orElse(findFare(typ, Company.JR, None))
+      findFare(typ, companyId, Some(distance))
+          .orElse(findFare(typ, companyId, None))
+          .orElse(findFare(typ, Company.JR.id, Some(distance)))
+          .orElse(findFare(typ, Company.JR.id, None))
           .getOrElse(throw new FeeCalculatorException)
-    val base = findFare(TrainType.Local, company, Some(distance))
-        .orElse(findFare(TrainType.Local, company, None))
-        .orElse(findFare(TrainType.Local, Company.JR, Some(distance)))
-        .orElse(findFare(TrainType.Local, Company.JR, None))
+    val base = findFare(TrainType.Local, companyId, Some(distance))
+        .orElse(findFare(TrainType.Local, companyId, None))
+        .orElse(findFare(TrainType.Local, Company.JR.id, Some(distance)))
+        .orElse(findFare(TrainType.Local, Company.JR.id, None))
         .getOrElse(throw new FeeCalculatorException)
     base + additional
   }
 
-  private[this] def findFare(typ: TrainType, company: Company, distance: Option[Double])(implicit session: DBSession): Option[Int] = {
+  private[this] def findFare(typ: TrainType, companyId: Long, distance: Option[Double])(implicit session: DBSession): Option[Int] = {
     val where = sqls.eq(f.trainType, typ.value)
-        .and.eq(f.companyId, company.id)
+        .and.eq(f.companyId, companyId)
         .and(distance.map { d => sqls.ge(f.km, d) })
     val orderings = if(distance.isDefined) Seq(f.km) else Seq(f.km.desc)
+    println(where)
     Fare.findAllByWithLimitOffset(where, limit = 1, orderings = orderings).headOption.map(_.cost)
   }
 

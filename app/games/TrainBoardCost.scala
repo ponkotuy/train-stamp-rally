@@ -18,9 +18,9 @@ case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: 
 }
 
 object TrainBoardCost {
-  def calc(train: TrainResponse, fromStation: Long, toStation: Long, company: Company): TrainBoardCost = {
+  def calc(train: TrainResponse, fromStation: Long, toStation: Long, companyId: Long): TrainBoardCost = {
     val distance = calcDistance(train, fromStation, toStation)
-    val fee = FeeCalculator.calc(train.trainType, company, distance)(AutoSession)
+    val fee = FeeCalculator.calc(train.trainType, companyId, distance)(AutoSession)
     val station = train.stops.find(_.station.id == toStation).get
     val time = station.arrival.orElse(station.departure).get
     TrainBoardCost(distance, fee, time, station.station)
