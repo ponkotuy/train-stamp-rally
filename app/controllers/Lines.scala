@@ -14,9 +14,9 @@ import responses.{Page, WithPage}
 import scalikejdbc._
 
 class Lines @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+  import Lines._
   import Responses._
   import json4s._
-  import Lines._
   implicit val formats = DefaultFormats + StationRankSerializer
 
   def list() = StackAction(parse.form(Paging.form), AuthorityKey -> NormalUser) { implicit req =>
@@ -31,6 +31,7 @@ class Lines @Inject()(json4s: Json4s) extends Controller with AuthElement with A
   def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateLine].fold(JSONParseError) { line =>
       createLine(line)
+      LineStationsCache.clear()
       Success
     }
   }
@@ -52,7 +53,6 @@ object Lines {
       stations.foreach { case (create, stId) =>
         LineStation(0L, lineId, stId, create.km).save()
       }
-      LineStationsCache.clear()
       lineId
     }
   }
