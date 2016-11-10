@@ -36,7 +36,7 @@
     setAutoComplete: (elem) ->
       elem.typeahead('destroy')
       design = {hint: true, highlight: true}
-      config = {name: 'stations', display: 'name', source: @matcher}
+      config = {name: 'stations', display: 'name', source: @matcher, limit: 100}
       elem.typeahead(design, config)
     setAutoCompleteAll: ->
       @setAutoComplete($('.autoCompleteStation'))
@@ -78,8 +78,7 @@ stationMatcher = (xs) ->
   (q, cb) ->
     equals = _.filter xs, (x) -> q == x.station.name
     if equals.length == 0
-      substrRegex = new RegExp(q, 'i')
-      matches = _.filter xs, (x) -> substrRegex.test(x.station.name)
+      matches = _.filter xs, (x) -> x.station.name.startsWith(q) or x.station.name.endsWith(q)
       cb(matches)
     else
       cb(equals)
