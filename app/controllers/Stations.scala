@@ -2,6 +2,7 @@ package controllers
 
 import authes.AuthConfigImpl
 import authes.Role.NormalUser
+import caches.LineStationsCache
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
@@ -22,12 +23,12 @@ class Stations @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   }
 
   def lineStationList() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    import LineStation.{defaultAlias, lineRef, stationRef}
-    val all = LineStation.joins(lineRef, stationRef).findAll(Seq(defaultAlias.id))
-    Ok(Extraction.decompose(all))
+    Ok(LineStationsCache())
   }
 
   def lineStation(lineStationId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(LineStation.joins(LineStation.stationRef).findById(lineStationId)))
   }
 }
+
+
