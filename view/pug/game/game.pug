@@ -13,7 +13,7 @@ html(lang=ja)
             h1(v-text='game.station.name + "駅"')
             h3(v-text='dateFormat(game.time)')
             p 使用金額:{{ game.money }}円 移動距離:{{ game.distance.toFixed(1) }}km
-            .panel.panel-default(v-for='line in fromLines')
+            .panel(v-for='line in fromLines', :class='{"panel-info": line.name.endsWith("新幹線")}')
               .panel-heading(v-text='line.name')
               .panel-body
                 table.table
