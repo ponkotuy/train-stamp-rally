@@ -2,6 +2,7 @@ package controllers
 
 import authes.AuthConfigImpl
 import authes.Role.{Administrator, NormalUser}
+import caches.LineStationsCache
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
@@ -51,6 +52,7 @@ object Lines {
       stations.foreach { case (create, stId) =>
         LineStation(0L, lineId, stId, create.km).save()
       }
+      LineStationsCache.clear()
       lineId
     }
   }
