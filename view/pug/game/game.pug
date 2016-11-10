@@ -36,6 +36,9 @@ html(lang=ja)
               span(aria-hidden='true') &times;
             h3(v-text='train.subType + " " + train.name')
           .modal-body
+            .text-right
+              button.btn.btn-default.btn-sm(v-if='isAll', @click='switchAll()') 主要駅表示
+              button.btn.btn-default.btn-sm(v-if='!isAll', @click='switchAll()') 全駅表示
             table.table
               thead
                 tr
@@ -43,7 +46,7 @@ html(lang=ja)
                   th Arrival
                   th Departure
               tbody
-                tr(v-for='stop in stations')
+                tr(v-for='stop in stations', v-if='isAll || stop.isMain')
                   td
                     a(@click='board(stop.station.id)', href='#', v-if='$index != 0', v-text='stop.station.name')
                     span(v-if='$index == 0')

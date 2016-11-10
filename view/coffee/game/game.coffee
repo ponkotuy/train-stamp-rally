@@ -26,16 +26,22 @@ mainVue = ->
             .reverse()
             .value()
           train
-        for train in trains
-          for stop in train.stops
-            @lines[stop.line.id] = stop.line
-        fromLines = _.groupBy trains, (train) => @here(train).line.id
-        @fromLines = for lineId, xs of fromLines
-          ordered = _.chain(xs)
-            .orderBy (x) -> x.subType
-            .orderBy (x) -> x.trainType.value
-            .value()
-          _.extend(@lines[lineId], {trains: ordered})
+        @saveLines(trains)
+        @saveFromLines(trains)
+    saveLines: (trains) ->
+      for train in trains
+        for stop in train.stops
+          @lines[stop.line.id] = stop.line
+    saveFromLines: (trains) ->
+      fromLines = _.groupBy trains, (train) => @here(train).line.id
+      @fromLines = for lineId, xs of fromLines
+        ordered = _.chain(xs)
+          .orderBy (x) => @timeFormat(@here(x).departure)
+          .orderBy (x) -> x.subType
+          .orderBy (x) -> 0 < (x.stops[0].lineStation.km - x.stops[1].lineStation.km)
+          .orderBy (x) -> -x.trainType.value
+          .value()
+        _.extend(@lines[lineId], {trains: ordered})
     openModal: (train) ->
       @trainModal.setData(train, @game)
       $(modalId).modal('show')
@@ -55,6 +61,7 @@ modalVue = (gameId) ->
     train: {}
     game: {}
     stations: []
+    isAll: false
   methods:
     board: (to) ->
       API.putJSON
@@ -69,12 +76,15 @@ modalVue = (gameId) ->
     setStations: ->
       @stations = _.dropWhile @train.stops, (stop) => stop.station.id != @game.station.id
       dests = @progresses.map (p) -> p.station.id
-      @stations = _.filter @stations, (st) ->
-        st.station.rank.value <= 3 or _.includes(dests, st.station.id)
+      @stations = @stations.map (st, idx) =>
+        isMain = st.station.rank.value <= 3 or _.includes(dests, st.station.id) or idx == @stations.length - 1
+        _.extend(st, {isMain: isMain})
     setData: (train, game) ->
       @train = train
       @game = game
       @setStations()
+    switchAll: ->
+      @isAll = !@isAll
   ready: ->
     @gameId = gameId
 

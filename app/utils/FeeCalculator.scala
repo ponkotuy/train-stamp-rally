@@ -26,7 +26,6 @@ object FeeCalculator {
         .and.eq(f.companyId, companyId)
         .and(distance.map { d => sqls.ge(f.km, d) })
     val orderings = if(distance.isDefined) Seq(f.km) else Seq(f.km.desc)
-    println(where)
     Fare.findAllByWithLimitOffset(where, limit = 1, orderings = orderings).headOption.map(_.cost)
   }
 
