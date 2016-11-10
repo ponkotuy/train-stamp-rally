@@ -1,7 +1,7 @@
 script(src='/js/creator/diagrams.js')
 #diagrams
   h2 Diagrams
-  form.form-inline(@submit.prevent, @submit='getDiagrams()')
+  form.form-inline(@submit.prevent, @submit='getData()')
     label.control-label(for='lineName') From line name
     input#lineName.form-control(type='text', v-model='lineName')
     button.btn.btn-default(type='submit') Search
