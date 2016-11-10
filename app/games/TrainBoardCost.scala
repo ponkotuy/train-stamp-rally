@@ -1,12 +1,10 @@
 package games
 
-import models.{Game, Station}
+import models.{Company, Game, Station}
 import responses.TrainResponse
+import scalikejdbc.AutoSession
 import utils.{FeeCalculator, TrainTime}
 
-/**
-  * Created by yosuke on 16/10/13.
-  */
 case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: Station) {
   def apply(game: Game): Game =
     game.copy(
@@ -20,9 +18,9 @@ case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: 
 }
 
 object TrainBoardCost {
-  def calc(train: TrainResponse, fromStation: Long, toStation: Long): TrainBoardCost = {
+  def calc(train: TrainResponse, fromStation: Long, toStation: Long, company: Company): TrainBoardCost = {
     val distance = calcDistance(train, fromStation, toStation)
-    val fee = FeeCalculator.calc(train.trainType, distance)
+    val fee = FeeCalculator.calc(train.trainType, company, distance)(AutoSession)
     val station = train.stops.find(_.station.id == toStation).get
     val time = station.arrival.orElse(station.departure).get
     TrainBoardCost(distance, fee, time, station.station)

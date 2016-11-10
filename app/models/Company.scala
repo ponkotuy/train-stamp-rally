@@ -16,4 +16,6 @@ object Company extends SkinnyCRUDMapperWithId[Long, Company] {
 
   def save(company: Company)(implicit session: DBSession): Long =
     createWithAttributes('name -> company.name)
+
+  lazy val JR = Company(1L, "JR")
 }

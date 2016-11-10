@@ -6,4 +6,6 @@ object DefaultAliases {
   val ss = StopStation.defaultAlias
   val d = Diagram.defaultAlias
   val f = Fare.defaultAlias
+  val g = Game.defaultAlias
+  val gp = GameProgress.defaultAlias
 }

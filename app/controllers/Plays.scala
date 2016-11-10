@@ -6,7 +6,7 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import games.TrainBoardCost
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{AccountSerializer, Game, GameProgress, Score}
+import models._
 import org.json4s._
 import play.api.mvc.{Controller, Result}
 import queries.{Board, Clear}
@@ -28,11 +28,13 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
             .toRight(notFound("Mission"))
         _ <- Either.cond(game.stationId == b.fromStation, Unit, BadRequest("Wrong fromStation."))
         train <- TrainResponse.fromTrainId(b.trainId).toRight(notFound("Train"))
+        startLine <- train.stops.headOption.map(_.line).toRight(notFound("Stops"))
+        company <- startLine.company.toRight(notFound("Line's company"))
         stopIds = train.stops.map(_.station.id)
         _ <- Either.cond(stopIds.contains(b.toStation) && stopIds.contains(b.fromStation), Unit, BadRequest("Wrong trainId."))
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.indexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
       } yield {
-        val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation).apply(game)
+        val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation, company).apply(game)
         val gp = GameProgress.defaultAlias
         GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).foreach { progress =>
           if(progress.arrivalTime.isEmpty) {
@@ -48,14 +50,13 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
   }
 
   def clear(missionId: Long) = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
+    import DefaultAliases.{g, gp}
     DB localTx { implicit session =>
-      val g = Game.defaultAlias
       val result = for {
         cl <- req.body.extractOpt[Clear].toRight(JSONParseError)
         _ <- Either.cond(cl.isValid, Unit, BadRequest("Invalid rate value"))
         game <- Game.findBy(sqls.eq(g.accountId, loggedIn.id).and.eq(g.missionId, missionId))
             .toRight(notFound("Mission"))
-        gp = GameProgress.defaultAlias
         progresses = GameProgress.findAllBy(sqls.eq(gp.gameId, game.id))
         _ <- Either.cond(progresses.forall(_.arrivalTime.isDefined), Unit, BadRequest("Not cleared."))
       } yield {
