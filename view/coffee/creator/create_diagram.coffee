@@ -50,6 +50,12 @@ $(document).ready ->
     ready: ->
       @getStations =>
         @setUpdate()
+    watch:
+      'trainType': (newValue) ->
+        if !@subType and newValue != 1
+          type = @findTypeFromValue(newValue)
+          if type
+            @subType = type.name
 
 trainFromMinutes = (minutes) ->
   new TrainTime(Math.floor(minutes / 60), minutes % 60)

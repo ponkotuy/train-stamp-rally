@@ -100,6 +100,8 @@ failure = (jqXHR) ->
     getTypes: ->
       API.getJSON '/api/train_types', (json) =>
         @trainTypes = json
+    findTypeFromValue: (n) ->
+      _.find @trainTypes, (t) -> t.value == n
   ready: ->
     @getTypes()
 
