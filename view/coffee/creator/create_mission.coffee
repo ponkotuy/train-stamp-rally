@@ -12,8 +12,9 @@ $(document).ready ->
           @stationMaster = json
           @setAutoComplete($('.autoCompleteStation'))
       setAutoComplete: (elem) ->
+        elem.typeahead('destroy')
         design = {hint: true, highlight: true}
-        config = {name: 'stations', display: 'name', source: stationMatcher(@stationMaster)}
+        config = {name: 'stations', display: 'name', source: stationMatcher(@stationMaster), limit: 100}
         elem.typeahead(design, config)
       submit: ->
         stations = _.flatMap @stations, (s) =>
@@ -28,7 +29,7 @@ $(document).ready ->
             location.reload(false)
       addStation: ->
         @stations.push({name: ""})
-        @setAutoComplete($('.autoCompleteStation:last'))
+        @setAutoComplete($('.autoCompleteStation'))
       findStationId: (name) ->
         st = _.find @stationMaster, (s) -> s.name == name
         st?.id
@@ -40,7 +41,7 @@ $(document).ready ->
       @getStations()
     watch:
       stations: ->
-        @setAutoComplete($('.autoCompleteStation:last'))
+        @setAutoComplete($('.autoCompleteStation'))
 
 stationMatcher = (xs) ->
   (q, cb) ->
