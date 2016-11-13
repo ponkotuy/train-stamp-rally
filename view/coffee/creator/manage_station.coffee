@@ -29,6 +29,9 @@ $(document).ready ->
       search: ->
         API.getJSON '/api/stations', {q: @name}, (json) =>
           @stations = json
+          @stations.forEach (station) ->
+            API.getJSON "/api/station/#{station.id}/lines", (json) ->
+              Vue.set(station, 'lines', json)
       update: (id) ->
         manager.setStation(id)
   new Vue

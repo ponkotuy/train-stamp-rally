@@ -38,6 +38,12 @@ class Stations @Inject()(json4s: Json4s) extends Controller with AuthElement wit
     Ok(Extraction.decompose(Station.findById(stationId)))
   }
 
+  def lines(stationId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    import models.DefaultAliases.ls
+    val lineStations = LineStation.joins(LineStation.lineRef).findAllBy(sqls.eq(ls.stationId, stationId))
+    Ok(Extraction.decompose(lineStations))
+  }
+
   def lineStationList() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(LineStationsCache())
   }
