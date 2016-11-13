@@ -19,10 +19,10 @@ class Validators @Inject()(json4s: Json4s) extends Controller with AuthElement w
 
   def list() = StackAction(AuthorityKey -> Administrator) { implicit req =>
     import LineStation.{lineRef, stationRef}
-    val profiler = MethodProfiler.nop
+    val profiler = MethodProfiler.Nop
     val errors = profiler("all") {
       val diagrams = profiler("diagrams") {
-        Diagram.findAll()(AutoSession)
+        Diagram.findAllIds()(AutoSession)
       }
       val stops = profiler("stops") {
         StopStation.findAll()
@@ -37,10 +37,10 @@ class Validators @Inject()(json4s: Json4s) extends Controller with AuthElement w
         val validator = new DiagramValidator(stops, stations)
         diagrams.flatMap(validator.validate)
       } ++ profiler("stationStopValidator") {
-        new StationStopValidator(diagrams).validate(stations)
+        new StationStopValidator(stops).validate(stations)
       } ++ profiler("lackTrainValidator") {
         val validator = new LackTrainValidator(trains)
-        diagrams.flatMap { d => validator.validate(d.id) }
+        diagrams.flatMap(validator.validate)
       }
     }
     Ok(Extraction.decompose(errors))

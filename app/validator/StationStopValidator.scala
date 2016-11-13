@@ -1,16 +1,14 @@
 package validator
 
-import models.{Diagram, LineStation}
+import models.{LineStation, StopStation}
 
 import scala.collection.breakOut
 
-// diagrams: 全diagramが必要. stop_stationがjoinされている必要がある
-class StationStopValidator(diagrams: Seq[Diagram]) {
+class StationStopValidator(allStops: Seq[StopStation]) {
   import StationStopValidator._
 
   def validate(stations: Seq[LineStation]): Seq[Error] = {
-    val stationIds: Set[Long] =
-      diagrams.flatMap(_.stops.map(_.lineStationId))(breakOut)
+    val stationIds: Set[Long] = allStops.map(_.lineStationId)(breakOut)
     stations.flatMap { st =>
       if(stationIds.contains(st.id)) None
       else {

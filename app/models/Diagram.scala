@@ -27,6 +27,7 @@ case class Diagram(
 
 object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
   override def defaultAlias: Alias[Diagram] = createAlias("d")
+  lazy val d = defaultAlias
 
   override def extract(rs: WrappedResultSet, n: ResultName[Diagram]): Diagram = autoConstruct(rs, n, "stops", "trains")
 
@@ -44,6 +45,10 @@ object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
     on = (d, t) => sqls.eq(d.id, t.diagramId),
     merge = (d, ts) => d.copy(trains = ts.sortBy(_.start))
   )
+
+  def findAllIds()(implicit session: DBSession) = withSQL {
+    select(d.id).from(Diagram as d)
+  }.map(_.long(1)).list().apply()
 
   def save(d: Diagram)(implicit session: DBSession): Long =
     createWithAttributes(params(d):_*)

@@ -1,37 +1,37 @@
 package validator
 
-import models.{Diagram, LineStation, StopStation}
+import models.{LineStation, StopStation}
 
 class DiagramValidator (allStops: Seq[StopStation], allLineStations: Seq[LineStation]) {
-  def validate(diagram: Diagram): Seq[Error] = {
-    val stops = allStops.filter(_.diagramId == diagram.id)
-    if(stops.size < 2) { return List(new LackStopsError(diagram)) }
+  def validate(diagramId: Long): Seq[Error] = {
+    val stops = allStops.filter(_.diagramId == diagramId)
+    if(stops.size < 2) { return List(new LackStopsError(diagramId)) }
     stops.sliding(2).flatMap { case Seq(x, y) =>
       val lineStationX = allLineStations.find(_.id == x.lineStationId).get
       val lineStationY = allLineStations.find(_.id == y.lineStationId).get
       if(lineStationX.lineId != lineStationY.lineId &&
-          lineStationX.stationId != lineStationY.stationId) Some(new LineConnectionError(diagram, x, y))
+          lineStationX.stationId != lineStationY.stationId) Some(new LineConnectionError(diagramId, x, y))
       else None
     }.toSeq
   }
 
-  abstract class DiagramError(diagram: Diagram) extends Error {
+  abstract class DiagramError(diagramId: Long) extends Error {
     def content: String
     override def message: String =
-      s"DiagramId = ${diagram.id}: ${content}"
+      s"DiagramId = ${diagramId}: ${content}"
 
-    override def url: Option[String] = Some(s"/creator/diagram/index.html?edit=${diagram.id}")
+    override def url: Option[String] = Some(s"/creator/diagram/index.html?edit=${diagramId}")
   }
 
   class LineConnectionError(
-      diagram: Diagram,
+      diagramId: Long,
       stop1: StopStation,
-      stop2: StopStation) extends DiagramError(diagram) {
+      stop2: StopStation) extends DiagramError(diagramId) {
     override def content: String =
       s"Not connect from ${stop1.lineStationId} to ${stop2.lineStationId}"
   }
 
-  class LackStopsError(diagram: Diagram) extends DiagramError(diagram) {
+  class LackStopsError(diagramId: Long) extends DiagramError(diagramId) {
     override def content: String = "Lack of stops"
   }
 }

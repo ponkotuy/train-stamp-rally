@@ -25,7 +25,7 @@ object MethodProfiler {
     def diff(): Long = System.nanoTime() - time
   }
 
-  def nop = NopProfiler
+  def Nop = NopProfiler
 }
 
 class ProfilerImpl() extends MethodProfiler {
