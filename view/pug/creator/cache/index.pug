@@ -1,0 +1,15 @@
+doctype html
+html(lang=ja)
+  head
+    include ../../template/_header
+    script(src='/js/creator/manage_cache.js')
+    title Cache manager
+  body
+    include ../../template/_navbar
+    .container(role=main)
+      include ../_navbar
+      h1.page-header Cache manager
+      form#cache(role='form')
+        .form-group
+          button.btn.btn-warning.btn-raised(type='button', @click='clearCache()') Clear Cache
+          p cacheをclearするとcacheによる不都合を解消することができますが、一時的にアプリケーションの動作が重くなります。

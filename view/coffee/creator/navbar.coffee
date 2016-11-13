@@ -8,6 +8,7 @@ $(document).ready ->
         {name: 'line', role: 0},
         {name: 'diagram', role: 0},
         {name: 'validator', role: 0}
+        {name: 'cache', role: 0}
       ]
       category:  ''
     methods:

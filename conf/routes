@@ -54,4 +54,6 @@ GET /api/game/:missionId/ranking/distance controllers.Plays.rankingDistance(miss
 
 GET /api/validator controllers.Validators.list()
 
+DELETE /api/cache controllers.Caches.clear()
+
 GET /*file controllers.MyAssets.at(path="/public", file)
