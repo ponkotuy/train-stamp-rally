@@ -7,6 +7,15 @@ script(src='https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead
       .col-sm-9
         input#createName.form-control(type='text', v-model='name')
     .form-group
+      label.col-sm-3.control-label(for='createRank') Rank
+      .col-sm-9
+        select#createRank.form-control(v-model='rank')
+          option(value=1) Top
+          option(value=2) Major
+          option(value=3) Large
+          option(value=4) Middle
+          option(value=5) Local
+    .form-group
       label.col-sm-3.control-label(for='lineName') Line name
       .col-sm-7
         input#lineName.form-control(type='text', v-model='lineName')

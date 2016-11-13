@@ -3,7 +3,7 @@ $(document).ready ->
     el: '#manager'
     data:
       name: ''
-      rank: 0
+      rank: 5
       stationId: null
     methods:
       update: ->
@@ -12,7 +12,7 @@ $(document).ready ->
             url: "/api/station/#{@stationId}"
             data:
               name: @name
-              rankValue: @rank
+              rankValue: parseInt(@rank)
             success: ->
               location.reload(false)
       setStation: (id) ->
@@ -72,7 +72,7 @@ $(document).ready ->
             url: "/api/line_station/#{station.id}"
             data:
               name: @name
-              rankValue: @rank
+              rankValue: parseInt(@rank)
             success: ->
               location.reload(false)
       lineAutoComplete: ->
