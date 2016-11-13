@@ -5,7 +5,6 @@ import responses.{DiagramResponse, DiagramStationResponse}
 object DiagramValidator {
   def validate(diagram: DiagramResponse): Seq[Error] = {
     if(diagram.stops.size < 2) { return List(new LackStopsError(diagram)) }
-    if(diagram.trains.size < 1) { return List(new LackTrainsError(diagram)) }
     diagram.stops.sliding(2).flatMap { case Seq(x, y) =>
       if(x.line.id != y.line.id && x.station.id != y.station.id) Some(new LineConnectionError(diagram, x, y))
       else None
@@ -31,8 +30,15 @@ object DiagramValidator {
   class LackStopsError(diagram: DiagramResponse) extends DiagramError(diagram) {
     override def content: String = "Lack of stops"
   }
+}
 
-  class LackTrainsError(diagram: DiagramResponse) extends DiagramError(diagram) {
-    override def content: String = "Lack of trains"
-  }
+class LackTrainValidator(diagrams: Set[Long]) {
+  def validate(diagramId: Long): Option[Error] =
+    if(diagrams.contains(diagramId)) None else Some(new LackTrainsError(diagramId))
+}
+
+class LackTrainsError(diagramId: Long) extends Error {
+  override def message: String = s"DiagramId = ${diagramId}: Lack of trains"
+
+  override def url: Option[String] = Some(s"/creator/diagram/index.html?edit=${diagramId}")
 }

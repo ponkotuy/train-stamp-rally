@@ -16,6 +16,7 @@ case class Train(
 
 object Train extends SkinnyCRUDMapperWithId[Long, Train] {
   override def defaultAlias: Alias[Train] = createAlias("t")
+  lazy val t = defaultAlias
 
   override def extract(rs: WrappedResultSet, n: ResultName[Train]): Train = autoConstruct(rs, n, "diagram", "stops")
 
@@ -32,6 +33,10 @@ object Train extends SkinnyCRUDMapperWithId[Long, Train] {
     on = (t, ss) => sqls.eq(t.diagramId, ss.diagramId),
     merge = (t, sss) => t.copy(stops = sss)
   )
+
+  def allDiagramIds()(implicit session: DBSession) = withSQL {
+    select(t.diagramId).from(Train as t)
+  }.map(_.long(1)).list().apply()
 
   def save(t: Train)(implicit session: DBSession): Long =
     createWithAttributes('diagramId -> t.diagramId, 'start -> t.start.toString)
