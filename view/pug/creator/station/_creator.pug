@@ -1,0 +1,19 @@
+script(src='https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js')
+#creator
+  h3 Create station
+  form.form-horizontal(@submit.prevent, @submit='create()')
+    .form-group
+      label.col-sm-3.control-label(for='createName') Name
+      .col-sm-9
+        input#createName.form-control(type='text', v-model='name')
+    .form-group
+      label.col-sm-3.control-label(for='lineName') Line name
+      .col-sm-7
+        input#lineName.form-control(type='text', v-model='lineName')
+      .col-sm-2
+        button.form-control.btn.btn-default(type='button', @click='updateStations()') Set stations
+    .form-group
+      label.col-sm-3.control-label(for='stationName') Old station name
+      .col-sm-9
+        input#stationName.form-control(type='text', v-model='stationName')
+    button.btn.btn-primary(type='submit') Create

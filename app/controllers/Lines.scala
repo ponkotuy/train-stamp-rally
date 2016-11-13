@@ -13,18 +13,29 @@ import queries.{CreateLine, Paging}
 import responses.{Page, WithPage}
 import scalikejdbc._
 
-class Lines @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+import scala.concurrent.ExecutionContext
+
+class Lines @Inject()(json4s: Json4s, _ec: ExecutionContext) extends Controller with AuthElement with AuthConfigImpl {
   import Lines._
   import Responses._
   import json4s._
   implicit val formats = DefaultFormats + StationRankSerializer
+  implicit val ec = _ec
 
-  def list() = StackAction(parse.form(Paging.form), AuthorityKey -> NormalUser) { implicit req =>
+  val optionalPaging = parse.using { req =>
+    if(req.getQueryString("page").isDefined) parse.form(Paging.form).map(Some(_))
+    else parse.ignore(None)
+  }
+
+  def list() = StackAction(optionalPaging, AuthorityKey -> NormalUser) { implicit req =>
     import models.DefaultAliases.l
-    val paging = req.body
-    val data = Line.findAllWithPagination(paging.pagination, Seq(l.id.desc))
-    val count = Line.count()
-    val result = WithPage(Page(count, paging.size, paging.page), data)
+    val result = req.body.fold[Any] {
+      Line.findAll(Seq(l.id.asc))
+    } { paging =>
+      val data = Line.findAllWithPagination(paging.pagination, Seq(l.id.desc))
+      val count = Line.count()
+      WithPage(Page(count, paging.size, paging.page), data)
+    }
     Ok(Extraction.decompose(result))
   }
 

@@ -6,8 +6,9 @@ $(document).ready ->
         {name: 'mission', role: 1},
         {name: 'company', role: 0},
         {name: 'line', role: 0},
+        {name: 'station', role: 0},
         {name: 'diagram', role: 0},
-        {name: 'validator', role: 0}
+        {name: 'validator', role: 0},
         {name: 'cache', role: 0}
       ]
       category:  ''

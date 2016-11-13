@@ -136,3 +136,13 @@ failure = (jqXHR) ->
     'pagination.current': (current)->
       @getData()
       location.hash = "#page=#{parseInt(current) + 1}"
+
+# f: (element) -> testing string
+@regexMatcherBy = (f) ->
+  (xs) ->
+    (q, cb) ->
+      substrRegex = new RegExp(q, 'i')
+      matches = _.filter xs, (x) -> substrRegex.test(f(x))
+      cb(matches)
+
+@defaultTypeaheadDesign = {hint: true, highlight: true}

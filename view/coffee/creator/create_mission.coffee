@@ -13,9 +13,8 @@ $(document).ready ->
           @setAutoComplete($('.autoCompleteStation'))
       setAutoComplete: (elem) ->
         elem.typeahead('destroy')
-        design = {hint: true, highlight: true}
         config = {name: 'stations', display: 'name', source: stationMatcher(@stationMaster), limit: 100}
-        elem.typeahead(design, config)
+        elem.typeahead(defaultTypeaheadDesign, config)
       submit: ->
         stations = _.flatMap @stations, (s) =>
           x = @findStationId(s.name)
@@ -43,8 +42,4 @@ $(document).ready ->
       stations: ->
         @setAutoComplete($('.autoCompleteStation'))
 
-stationMatcher = (xs) ->
-  (q, cb) ->
-    substrRegex = new RegExp(q, 'i')
-    matches = _.filter xs, (x) -> substrRegex.test(x.name)
-    cb(matches)
+stationMatcher = regexMatcherBy (x) -> x.name

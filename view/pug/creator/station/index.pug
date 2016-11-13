@@ -1,0 +1,14 @@
+doctype html
+html(lang=ja)
+  head
+    include ../../template/_header
+    script(src='/js/creator/manage_station.js')
+    title Station manager
+  body
+    include ../../template/_navbar
+    .container(role=main)
+      include ../_navbar
+      h1.page_header Station manager
+      include _viewer
+      include _manager
+      include _creator

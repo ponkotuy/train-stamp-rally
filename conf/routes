@@ -25,10 +25,12 @@ GET /api/missions controllers.Missions.list(rank: String ?= "all")
 GET /api/mission/random controllers.Missions.random(size: Int ?= 6)
 POST /api/mission controllers.Missions.create()
 
-GET /api/stations controllers.Stations.list()
+GET /api/stations controllers.Stations.list(q: Option[String] ?= None)
+PUT /api/station/:stationId controllers.Stations.update(stationId: Long)
 GET /api/station/:stationId controllers.Stations.show(stationId: Long)
 GET /api/line_stations controllers.Stations.lineStationList()
 GET /api/line_station/:lineStationId controllers.Stations.lineStation(lineStationId: Long)
+PUT /api/line_station/:lineStationId controllers.Stations.replace(lineStationId: Long)
 
 GET /api/companies controllers.Companies.list()
 POST /api/company controllers.Companies.create()

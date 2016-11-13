@@ -1,14 +1,9 @@
 package queries
 
-import models.{Line, Station, StationRank}
+import models.Line
 
-case class CreateLine(name: String, stations: Seq[CreateStation], companyId: Long) {
+case class CreateLine(name: String, stations: Seq[CreateLineStation], companyId: Long) {
   def line = Line(id = 0L, name = name, companyId = companyId)
 }
 
-case class CreateStation(name: String, km: Double, rankValue: Int) {
-  def rank: Option[StationRank] = StationRank.find(rankValue)
-  def station: Option[Station] = rank.map { r =>
-    Station(id = 0L, name = name, rank = r)
-  }
-}
+case class CreateLineStation(name: String, km: Double, rankValue: Int) extends CreateStation

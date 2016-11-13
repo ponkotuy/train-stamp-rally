@@ -1,0 +1,17 @@
+#search
+  form.form-inline(@submit.prevent, @submit='search()')
+    .form-group
+      label(for='searchName') Name
+      input#searchName.form-control(type='text', v-model='name')
+      button.btn.btn-primary(type='submit')
+        span.glyphicon.glyphicon-search(aria-hidden='true')
+        | Search
+  table.table.table-condensed.table-hover
+    thead
+      tr
+        th ID
+        th Name
+    tbody
+      tr.clickable(v-for='station in stations', @click='update(station.id)')
+        td(v-text='station.id')
+        td(v-text='station.name')

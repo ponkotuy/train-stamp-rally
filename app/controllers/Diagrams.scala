@@ -13,9 +13,9 @@ import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc._
 
 class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+  import Diagrams._
   import Responses._
   import json4s._
-  import Diagrams._
 
   implicit val formats = DefaultFormats + TrainTypeSerializer + StationRankSerializer
 
@@ -38,8 +38,8 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
 
   def update(diagramId: Long) = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
-      updateDiagram(diagramId, diagram)
-      Success
+      if(updateDiagram(diagramId, diagram) == 0) notFound(s"Diagram id=${diagramId}")
+      else Success
     }
   }
 
