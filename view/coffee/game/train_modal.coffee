@@ -9,6 +9,7 @@
     game: {}
     stations: []
     isAll: false
+    costs: []
   methods:
     board: (to) ->
       API.putJSON

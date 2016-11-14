@@ -12,6 +12,7 @@ POST /api/line controllers.Lines.create()
 GET /api/line/:lineId/stations controllers.Lines.lineStations(lineId: Long)
 
 GET /api/diagram/:diagramId controllers.Diagrams.show(diagramId: Long)
+GET /api/diagram/:diagramId/cost controllers.Diagrams.cost(diagramId: Long, from: Long)
 GET /api/diagrams controllers.Diagrams.list()
 POST /api/diagram controllers.Diagrams.create()
 PUT /api/diagram/:diagramId controllers.Diagrams.update(diagramId: Long)

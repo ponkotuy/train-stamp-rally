@@ -1,7 +1,7 @@
 package games
 
 import models.{Game, Station}
-import responses.TrainResponse
+import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc.AutoSession
 import utils.{FeeCalculator, TrainTime}
 
@@ -17,6 +17,8 @@ case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: 
     )
 }
 
+case class TrainCost(station: Station, distance: Double, fee: Int)
+
 object TrainBoardCost {
   def calc(train: TrainResponse, fromStation: Long, toStation: Long, companyId: Long): TrainBoardCost = {
     val distance = calcDistance(train, fromStation, toStation)
@@ -24,6 +26,21 @@ object TrainBoardCost {
     val station = train.stops.find(_.station.id == toStation).get
     val time = station.arrival.orElse(station.departure).get
     TrainBoardCost(distance, fee, time, station.station)
+  }
+
+  def calcDiagram(diagram: DiagramResponse, fromStation: Long): Seq[TrainCost] = {
+    val distances = diagram.stops.find(_.station.id == fromStation).map { start =>
+      val stops = diagram.stops.dropWhile(_.station.id != fromStation)
+      val distances = stops.sliding(2).map { xs =>
+        val Seq(x, y) = xs
+        if (x.line.id == y.line.id) math.abs(x.lineStation.km - y.lineStation.km) else 0.0
+      }.scanLeft(0.0)(_ + _)
+      stops.zip(distances.toSeq)
+    }.getOrElse(Nil)
+    distances.map { case (stop, distance) =>
+      val fee = FeeCalculator.calc(diagram.trainType, diagram.stops.head.line.companyId, distance)
+      TrainCost(stop.station, distance, fee)
+    }
   }
 
   private def calcDistance(train: TrainResponse, fromStation: Long, toStation: Long): Double = {
