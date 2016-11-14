@@ -46,6 +46,8 @@ html(lang=ja)
                   th Station
                   th Arrival
                   th Departure
+                  th Fee
+                  th Distance
               tbody
                 tr(v-for='stop in stations', v-if='isAll || stop.isMain')
                   td
@@ -55,3 +57,5 @@ html(lang=ja)
                   td(v-if='$index == 0') --
                   td(v-if='$index != 0', v-text='timeFormat(stop.arrival)')
                   td(v-text='timeFormat(stop.departure)')
+                  td(v-text='stop.fee + "円"')
+                  td(v-text='stop.distance.toFixed(1) + "km"')

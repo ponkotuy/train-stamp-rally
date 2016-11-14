@@ -4,7 +4,7 @@ import authes.AuthConfigImpl
 import authes.Role.{Administrator, NormalUser}
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
-import games.TrainBoardCost
+import games.TrainCost
 import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s._
@@ -27,7 +27,7 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
 
   def cost(diagramId: Long, from: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     DiagramResponse.fromId(diagramId)(AutoSession).fold(notFound(s"diagram id=${diagramId}")) { diagram =>
-      Ok(Extraction.decompose(TrainBoardCost.calcDiagram(diagram, from)))
+      Ok(Extraction.decompose(TrainCost.calcDiagram(diagram, from)))
     }
   }
 

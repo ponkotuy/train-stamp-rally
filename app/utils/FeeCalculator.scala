@@ -6,6 +6,7 @@ import scalikejdbc._
 object FeeCalculator {
   import models.DefaultAliases.f
   def calc(typ: TrainType, companyId: Long, distance: Double)(implicit session: DBSession): Int = {
+    if(distance < 0.1) return 0
     val additional = if(typ == TrainType.Local) 0
     else
       findFare(typ, companyId, Some(distance))
