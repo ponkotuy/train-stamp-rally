@@ -16,7 +16,7 @@ html(lang=ja)
             .panel(v-for='line in fromLines', :class='{"panel-info": line.name.endsWith("新幹線")}')
               .panel-heading(v-text='line.name')
               .panel-body
-                table.table
+                table.table.table-hover
                   tr.clickable(v-for='train in line.trains', @click='openModal(train)', :class='{success: train.trainType.value == 2, danger: train.trainType.value == 3, info: train.trainType.value == 4}')
                     td(v-text='train.subType + " " + train.name + " " + train.stops[train.stops.length - 1].station.name + "行"')
                     td(v-text='timeFormat(here(train).departure)')
