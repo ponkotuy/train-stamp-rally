@@ -9,6 +9,7 @@
     game: {}
     stations: []
     isAll: false
+    costs: []
   methods:
     board: (to) ->
       API.putJSON
@@ -30,6 +31,14 @@
       @train = train
       @game = game
       @setStations()
+      @getCosts()
+    getCosts: ->
+      API.getJSON "/api/diagram/#{@train.diagramId}/cost", {from: @game.station.id}, (json) =>
+        for station in @stations
+          cost = _.find json, (x) -> x.station.id == station.station.id
+          if cost?
+            Vue.set(station, 'distance', cost.distance)
+            Vue.set(station, 'fee', cost.fee)
     switchAll: ->
       @isAll = !@isAll
   ready: ->

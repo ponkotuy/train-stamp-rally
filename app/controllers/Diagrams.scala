@@ -4,6 +4,7 @@ import authes.AuthConfigImpl
 import authes.Role.{Administrator, NormalUser}
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
+import games.TrainCost
 import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s._
@@ -22,6 +23,12 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   def show(diagramId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     val diagram = DiagramResponse.fromId(diagramId)(AutoSession)
     Ok(Extraction.decompose(diagram))
+  }
+
+  def cost(diagramId: Long, from: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    DiagramResponse.fromId(diagramId)(AutoSession).fold(notFound(s"diagram id=${diagramId}")) { diagram =>
+      Ok(Extraction.decompose(TrainCost.calcDiagram(diagram, from)))
+    }
   }
 
   def list() = StackAction(parse.form(SearchDiagram.form), AuthorityKey -> NormalUser) { implicit req =>
