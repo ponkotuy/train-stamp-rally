@@ -15,7 +15,7 @@ mainVue = ->
         @game = json
         new Vue(missionVue(@game.id))
         @getDiagrams()
-        @trainModal = new Vue(modalVue(@game.id))
+        @trainModal = new Vue(trainModalVue(@game.id))
     getDiagrams: ->
       API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
         trains = json.map (train) =>
@@ -44,7 +44,7 @@ mainVue = ->
         _.extend(@lines[lineId], {trains: ordered})
     openModal: (train) ->
       @trainModal.setData(train, @game)
-      $(modalId).modal('show')
+      $(trainModalId).modal('show')
     here: (train) ->
       _.find train.stops, (stop) => stop.station.id == @game.station.id
   ready: ->
@@ -52,60 +52,8 @@ mainVue = ->
       location.href = '/game/index.html'
     @getGame()
 
-modalId = '#trainModal'
-
-modalVue = (gameId) ->
-  el: modalId
-  mixins: [formatter, progress]
-  data:
-    train: {}
-    game: {}
-    stations: []
-    isAll: false
-  methods:
-    board: (to) ->
-      API.putJSON
-        url: '/api/game/train'
-        data:
-          missionId: @game.missionId
-          trainId: @train.id
-          fromStation: @game.station.id
-          toStation: to
-        success: ->
-          location.reload(false)
-    setStations: ->
-      @stations = _.dropWhile @train.stops, (stop) => stop.station.id != @game.station.id
-      dests = @progresses.map (p) -> p.station.id
-      @stations = @stations.map (st, idx) =>
-        isMain = st.station.rank.value <= 3 or _.includes(dests, st.station.id) or idx == @stations.length - 1
-        _.extend(st, {isMain: isMain})
-    setData: (train, game) ->
-      @train = train
-      @game = game
-      @setStations()
-    switchAll: ->
-      @isAll = !@isAll
-  ready: ->
-    @gameId = gameId
-
 missionVue = (gameId) ->
   el: '#mission'
   mixins: [progress]
   compiled: ->
     @gameId = gameId
-
-progress =
-  mixins: [missionParam]
-  data:
-    gameId: 0
-    progresses: []
-  methods:
-    getProgresses: ->
-      API.getJSON "/api/game/#{@gameId}/progresses", (json) =>
-        @progresses = json
-        if _.every(@progresses, (p) -> p.arrivalTime)
-          location.href = "/game/clear.html?mission=#{@missionId}"
-  ready: ->
-    @setMission ->
-      location.href = '/game/index.html'
-    @getProgresses()
