@@ -1,12 +1,13 @@
 package models
 
 object DefaultAliases {
-  val ls = LineStation.defaultAlias
-  val l = Line.defaultAlias
-  val s = Station.defaultAlias
-  val ss = StopStation.defaultAlias
-  val d = Diagram.defaultAlias
-  val f = Fare.defaultAlias
-  val g = Game.defaultAlias
-  val gp = GameProgress.defaultAlias
+  def ls = LineStation.defaultAlias
+  def l = Line.defaultAlias
+  def s = Station.defaultAlias
+  def sss = Mission.stationRefAlias
+  def ss = StopStation.defaultAlias
+  def d = Diagram.defaultAlias
+  def f = Fare.defaultAlias
+  def g = Game.defaultAlias
+  def gp = GameProgress.defaultAlias
 }

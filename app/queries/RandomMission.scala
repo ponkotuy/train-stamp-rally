@@ -1,6 +1,7 @@
 package queries
 
 import models.{Station, StationRank}
+import play.api.data.validation.{Constraint, Invalid, Valid, ValidationError}
 import scalikejdbc._
 
 import scala.collection.breakOut
@@ -9,7 +10,6 @@ import scala.util.Random
 case class RandomMission(name: String, start: Station, stations: Seq[Station])
 
 object RandomMission {
-
   val random = new Random
 
   // sizeは6の倍数が好ましい
@@ -66,4 +66,9 @@ object RankRate {
   val values = Seq(Easy, Medium, Hard)
   def find(name: String): Option[RankRate] = values.find(_.name == name)
   def findSize(size: Int): RankRate = values.find(size < _.size).getOrElse(Hard)
+
+  val constraint = Constraint[String]("rankrate") { o =>
+    val strs: Set[String] = values.map(_.name)(breakOut)
+    if(strs.contains(o)) Valid else Invalid(ValidationError("rankrate.value", o))
+  }
 }

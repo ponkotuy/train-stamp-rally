@@ -15,7 +15,7 @@ case class GameProgress(
 }
 
 object GameProgress extends SkinnyNoIdCRUDMapper[GameProgress] {
-  override def defaultAlias: Alias[GameProgress] = createAlias("gp")
+  override val defaultAlias: Alias[GameProgress] = createAlias("gp")
 
   override def extract(rs: WrappedResultSet, n: ResultName[GameProgress]): GameProgress = autoConstruct(rs, n, "station")
 

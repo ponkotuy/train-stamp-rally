@@ -24,7 +24,7 @@ case class Game(
 }
 
 object Game extends SkinnyCRUDMapperWithId[Long, Game] {
-  override def defaultAlias: Alias[Game] = createAlias("g")
+  override val defaultAlias: Alias[Game] = createAlias("g")
 
   override def extract(rs: WrappedResultSet, n: ResultName[Game]): Game = autoConstruct(rs, n, "station")
 

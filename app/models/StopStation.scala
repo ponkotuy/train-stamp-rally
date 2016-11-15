@@ -15,7 +15,7 @@ case class StopStation(
 }
 
 object StopStation extends SkinnyCRUDMapperWithId[Long, StopStation] {
-  override def defaultAlias: Alias[StopStation] = createAlias("ss")
+  override val defaultAlias: Alias[StopStation] = createAlias("ss")
 
   override def extract(rs: WrappedResultSet, n: ResultName[StopStation]): StopStation = autoConstruct(rs, n, "diagram")
 
