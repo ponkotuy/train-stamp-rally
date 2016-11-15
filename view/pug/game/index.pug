@@ -23,16 +23,16 @@ html(lang=ja)
             th Score
             th
           tr(v-for='m in missions')
-            td(v-text='m.mission.name')
+            td
+              a(v-text='m.mission.name', href='javascript:void(0)', @click.stop, @click='openModal(m.mission)')
             td(v-text='m.mission.startStation.name')
             td(v-text='m.mission.stations.length + "駅"')
-            //td.wrap
-            //  span.label.label-default(v-for='station in m.mission.stations', v-text='station.name')
             td
               template(v-if='m.score')
                 span(v-text='dateFormat(m.score.time)')
                 span.head-space(v-text='m.score.money + "円"')
                 span.head-space(v-text='m.score.distance.toFixed(1) + "km"')
+              span(v-if='!m.score') --
             td
               button.btn.btn-primary.btn-xs(@click='start(m)', v-if='!m.game') Start
               button.btn.btn-primary.btn-xs(@click='gameContinue(m)', v-if='m.game') Continue
@@ -56,3 +56,13 @@ html(lang=ja)
               span.label.label-default(v-for='station in mission.stations', v-text='station.name')
             .col-offset-sm-3.col-sm-9
               button.btn.btn-primary(type='button', @click='start()') START
+      .modal.fade#stationModal(role='dialog')
+        .modal-dialog(role='document')
+          .modal-content
+            .modal-header
+              button.close(type='button', data-dismiss='modal', aria-label='Close')
+                span(aria-hidden='true') &times;
+              h3(v-text='mission.name')
+            .modal-body
+              ul
+                li(v-for='station in mission.stations', v-text='station.name + "駅"')
