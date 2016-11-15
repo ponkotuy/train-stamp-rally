@@ -24,10 +24,12 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
   override def extract(rs: WrappedResultSet, n: ResultName[Mission]): Mission =
     autoConstruct(rs, n, "stations", "startStation", "rate")
 
+  lazy val stationRefAlias = Station.createAlias("sss")
+
   lazy val stationsRef = hasManyThrough[MissionStation, Station](
     through = MissionStation -> MissionStation.defaultAlias,
     throughOn = (m, ms) => sqls.eq(m.id, ms.missionId),
-    many = Station -> Station.createAlias("ss"),
+    many = Station -> stationRefAlias,
     on = (ms, s) => sqls.eq(ms.stationId, s.id),
     merge = (m, sts) => m.copy(stations = sts.sortBy(_.id))
   )

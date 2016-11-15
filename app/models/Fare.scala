@@ -8,7 +8,7 @@ case class Fare(id: Long, companyId: Long, trainType: TrainType, km: Double, cos
 }
 
 object Fare extends SkinnyCRUDMapperWithId[Long, Fare] {
-  override def defaultAlias: Alias[Fare] = createAlias("f")
+  override val defaultAlias: Alias[Fare] = createAlias("f")
   override def extract(rs: WrappedResultSet, n: ResultName[Fare]): Fare = autoConstruct(rs, n)
 
   override def idToRawValue(id: Long): Any = id

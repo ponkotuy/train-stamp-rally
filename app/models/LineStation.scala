@@ -14,7 +14,7 @@ case class LineStation(
 }
 
 object LineStation extends SkinnyCRUDMapperWithId[Long, LineStation] {
-  override def defaultAlias: Alias[LineStation] = createAlias("ls")
+  override val defaultAlias: Alias[LineStation] = createAlias("ls")
 
   override def extract(rs: WrappedResultSet, n: ResultName[LineStation]): LineStation =
     autoConstruct(rs, n, "line", "station")

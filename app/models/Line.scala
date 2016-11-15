@@ -8,7 +8,7 @@ case class Line(id: Long, name: String, companyId: Long, company: Option[Company
 }
 
 object Line extends SkinnyCRUDMapperWithId[Long, Line] {
-  override def defaultAlias: Alias[Line] = createAlias("l")
+  override val defaultAlias: Alias[Line] = createAlias("l")
 
   override def extract(rs: WrappedResultSet, n: ResultName[Line]): Line = autoConstruct(rs, n, "company")
 

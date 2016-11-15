@@ -22,7 +22,7 @@ GET /api/train/:trainId controllers.Diagrams.train(trainId: Long)
 
 GET /api/train_types controllers.Diagrams.trainTypes()
 
-GET /api/missions controllers.Missions.list(rank: String ?= "all")
+GET /api/missions controllers.Missions.list()
 GET /api/mission/random controllers.Missions.random(size: Int ?= 6)
 POST /api/mission controllers.Missions.create()
 

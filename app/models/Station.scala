@@ -9,7 +9,7 @@ case class Station(id: Long, name: String, rank: StationRank) {
 }
 
 object Station extends SkinnyCRUDMapperWithId[Long, Station] {
-  override def defaultAlias: Alias[Station] = createAlias("s")
+  override val defaultAlias: Alias[Station] = createAlias("s")
 
   override def extract(rs: WrappedResultSet, n: ResultName[Station]): Station = autoConstruct(rs, n)
 
