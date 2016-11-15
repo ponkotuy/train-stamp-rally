@@ -10,8 +10,8 @@ case class SearchMissions(rank: Option[RankRate], score: Boolean) {
 object SearchMissions {
   val form = Form(
     mapping(
-      "rank" -> optional(text(minLength = 1).verifying(RankRate.constraint).transform(RankRate.find(_).get, _.toString)),
-      "score" -> optional(boolean).transform(_.getOrElse(false), Some(_))
+      "rank" -> optional(text(minLength = 1).verifying(RankRate.constraint).transform[RankRate](RankRate.find(_).get, _.toString)),
+      "score" -> optional(boolean).transform[Boolean](_.getOrElse(false), Some(_))
     )(SearchMissions.apply)(SearchMissions.unapply)
   )
 }

@@ -22,7 +22,7 @@ object Score extends SkinnyCRUDMapperWithId[Long, Score] {
   override def idToRawValue(id: Long): Any = id
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
-  override def defaultAlias: Alias[Score] = createAlias("sc")
+  override val defaultAlias: Alias[Score] = createAlias("sc")
 
   override def extract(rs: WrappedResultSet, n: ResultName[Score]): Score = autoConstruct(rs, n, "account")
 

@@ -10,4 +10,5 @@ object DefaultAliases {
   def f = Fare.defaultAlias
   def g = Game.defaultAlias
   def gp = GameProgress.defaultAlias
+  def sc = Score.defaultAlias
 }

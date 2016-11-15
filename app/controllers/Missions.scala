@@ -5,23 +5,26 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Mission, StationRankSerializer}
+import models.{Mission, Score, StationRankSerializer}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.Controller
-import queries.{CreateMission, RandomMission, RankRate, SearchMissions}
+import queries.{CreateMission, RandomMission, SearchMissions}
+import responses.{MinScore, MissionScore}
 import scalikejdbc._
 
 class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
+  import Missions._
 
   implicit val formats = DefaultFormats + StationRankSerializer
 
   def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    SearchMissions.form.bindFromRequest().fold(BadRequest(_), search => {
+    SearchMissions.form.bindFromRequest().fold(badRequest, search => {
       val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef).findAll()
-      val filtered = missions.filter(search.filter)
-      Ok(Extraction.decompose(filtered.sortBy(-_.rate)))
+      val filtered = missions.filter(search.filter).sortBy(-_.rate)
+      val result = if(search.score) withScores(loggedIn.id, filtered)(AutoSession) else filtered
+      Ok(Extraction.decompose(result))
     })
   }
 
@@ -36,6 +39,23 @@ class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement wit
         val missionId = mission.mission.save()
         mission.missionStations(missionId).foreach(_.save())
         Ok(missionId.toString)
+      }
+    }
+  }
+}
+
+object Missions {
+  def withScores(accountId: Long, missions: Seq[Mission])(implicit session: DBSession): Seq[MissionScore] = {
+    import models.DefaultAliases.sc
+    val scores = Score.findAllBy(sqls.eq(sc.accountId, accountId).and.in(sc.missionId, missions.map(_.id)))
+    missions.map { mission =>
+      val xs = scores.filter(_.missionId == mission.id)
+      if(xs.isEmpty) MissionScore(mission, None)
+      else {
+        val time = xs.map(_.time).min
+        val distance = xs.map(_.distance).min
+        val money = xs.map(_.money).min
+        MissionScore(mission, Some(MinScore(time, distance, money)))
       }
     }
   }
