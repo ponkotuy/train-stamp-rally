@@ -1,6 +1,7 @@
 # require calling getStations when ready
 @diagramStops =
   data:
+    stopsCount: 1
     stops: [{departure: "0"}, {}]
     stations: []
     matcher: undefined
@@ -71,8 +72,10 @@
       stops
 
   watch:
-    stops: ->
-      @setAutoCompleteAll()
+    stops: (newValues) ->
+      if @stopsCount < newValues.length
+        @setAutoCompleteAll()
+      @stopsCount = newValues.length
 
 stationMatcher = (xs) ->
   (q, cb) ->
