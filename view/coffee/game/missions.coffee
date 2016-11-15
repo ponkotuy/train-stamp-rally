@@ -1,4 +1,12 @@
 $(document).ready ->
+  modal = new Vue
+    el: modalId
+    data:
+      mission: {}
+    methods:
+      setMission: (mission) ->
+        @mission = mission
+
   new Vue
     el: '#missions'
     mixins: [formatter]
@@ -25,6 +33,9 @@ $(document).ready ->
       filter: (name) ->
         @rank = name
         @getMissions()
+      openModal: (mission) ->
+        modal.setMission(mission)
+        $(modalId).modal('show')
     ready: ->
       @getMissions()
 
@@ -46,3 +57,5 @@ $(document).ready ->
           success: (id) ->
             API.post "/api/game/#{id}", {}, ->
               location.href = "/game/game.html?mission=#{id}"
+
+modalId = '#stationModal'
