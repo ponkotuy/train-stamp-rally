@@ -9,16 +9,26 @@ $(document).ready ->
 
   new Vue
     el: '#missions'
-    mixins: [formatter]
+    mixins: [formatter, pagination]
     data:
       missions: []
       games: []
       rank: undefined
+      stationName: ''
+      missionName: ''
     methods:
-      getMissions: ->
-        API.getJSON '/api/missions', {rank: @rank, score: true}, (json) =>
-          @missions = json
+      getPageData: (page, done) ->
+        q =
+          rank: @rank
+          score: true
+          page: page.current + 1
+          size: 10
+          station_name: emptyUndef(@stationName)
+          name: emptyUndef(@missionName)
+        API.getJSON '/api/missions', q, (json) =>
+          @missions = json.data
           @getGames()
+          done(json.pagination)
       getGames: ->
         API.getJSON '/api/games', (games) =>
           @missions.forEach (mission) ->
@@ -32,12 +42,10 @@ $(document).ready ->
           @gameContinue(mission)
       filter: (name) ->
         @rank = name
-        @getMissions()
+        @getData()
       openModal: (mission) ->
         modal.setMission(mission)
         $(modalId).modal('show')
-    ready: ->
-      @getMissions()
 
   new Vue
     el: '#random'
@@ -59,3 +67,5 @@ $(document).ready ->
               location.href = "/game/game.html?mission=#{id}"
 
 modalId = '#stationModal'
+emptyUndef = (str) ->
+  if str then str else undefined
