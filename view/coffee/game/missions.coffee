@@ -16,6 +16,7 @@ $(document).ready ->
       rank: undefined
     methods:
       getPageData: (page, done) ->
+        console.log(page)
         API.getJSON '/api/missions', {rank: @rank, score: true, page: page.current + 1, size: 10}, (json) =>
           @missions = json.data
           @getGames()
@@ -33,12 +34,10 @@ $(document).ready ->
           @gameContinue(mission)
       filter: (name) ->
         @rank = name
-        @getPageData()
+        @getData()
       openModal: (mission) ->
         modal.setMission(mission)
         $(modalId).modal('show')
-#    ready: ->
-#      @getMissions()
 
   new Vue
     el: '#random'
