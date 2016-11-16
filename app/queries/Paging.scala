@@ -6,6 +6,8 @@ import skinny.Pagination
 
 case class Paging(page: Int, size: Int) {
   def pagination = Pagination.page(page).per(size)
+  def from = (page - 1) * size
+  def to = page * size
 }
 
 object Paging {
