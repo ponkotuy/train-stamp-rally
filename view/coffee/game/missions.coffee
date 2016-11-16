@@ -9,16 +9,17 @@ $(document).ready ->
 
   new Vue
     el: '#missions'
-    mixins: [formatter]
+    mixins: [formatter, pagination]
     data:
       missions: []
       games: []
       rank: undefined
     methods:
-      getMissions: ->
-        API.getJSON '/api/missions', {rank: @rank, score: true}, (json) =>
-          @missions = json
+      getPageData: (page, done) ->
+        API.getJSON '/api/missions', {rank: @rank, score: true, page: page.current + 1, size: 10}, (json) =>
+          @missions = json.data
           @getGames()
+          done(json.pagination)
       getGames: ->
         API.getJSON '/api/games', (games) =>
           @missions.forEach (mission) ->
@@ -32,12 +33,12 @@ $(document).ready ->
           @gameContinue(mission)
       filter: (name) ->
         @rank = name
-        @getMissions()
+        @getPageData()
       openModal: (mission) ->
         modal.setMission(mission)
         $(modalId).modal('show')
-    ready: ->
-      @getMissions()
+#    ready: ->
+#      @getMissions()
 
   new Vue
     el: '#random'

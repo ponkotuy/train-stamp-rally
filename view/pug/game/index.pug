@@ -15,6 +15,15 @@ html(lang=ja)
             button.btn.btn-default(type='button', @click='filter("easy")', :class="{'btn-primary': rank == 'easy'}") Easy
             button.btn.btn-default(type='button', @click='filter("medium")', :class="{'btn-primary': rank == 'medium'}") Medium
             button.btn.btn-default(type='button', @click='filter("hard")', :class="{'btn-primary': rank == 'hard'}") Hard
+        ul.pagination
+          li.clickable(:class='{disabled: pagination.current == 0}')
+            a(aria-label='Previous', @click='next(pagination.current - 1)')
+              span(aria-hidden='true') &laquo;
+          li.clickable(v-for='i in pagination.last', :class='{active: pagination.current == i}')
+            a(v-text='i + 1', @click='next(i)')
+          li.clickable(:class='{disabled: (pagination.last - 1) <= pagination.current}')
+            a(aria-label='Next', @click='next()')
+              span(aria-hidden='true') &raquo;
         table.table.table-striped
           tr
             th Name
