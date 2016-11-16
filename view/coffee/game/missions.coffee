@@ -14,10 +14,18 @@ $(document).ready ->
       missions: []
       games: []
       rank: undefined
+      stationName: ''
+      missionName: ''
     methods:
       getPageData: (page, done) ->
-        console.log(page)
-        API.getJSON '/api/missions', {rank: @rank, score: true, page: page.current + 1, size: 10}, (json) =>
+        q =
+          rank: @rank
+          score: true
+          page: page.current + 1
+          size: 10
+          station_name: emptyUndef(@stationName)
+          name: emptyUndef(@missionName)
+        API.getJSON '/api/missions', q, (json) =>
           @missions = json.data
           @getGames()
           done(json.pagination)
@@ -59,3 +67,5 @@ $(document).ready ->
               location.href = "/game/game.html?mission=#{id}"
 
 modalId = '#stationModal'
+emptyUndef = (str) ->
+  if str then str else undefined

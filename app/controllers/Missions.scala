@@ -21,8 +21,9 @@ class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement wit
 
   def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     SearchMissions.form.bindFromRequest().fold(badRequest, search => {
-      val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef).findAll()
-      val filtered = missions.filter(search.filter).sortBy(-_.rate)
+      val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef).findAllBy(search.where)
+      val filter = search.filter()(AutoSession)
+      val filtered = missions.filter(filter.apply).sortBy(-_.rate)
       val result = if(search.score) withScores(loggedIn.id, filtered)(AutoSession) else filtered
       val withPage = Paging.form.bindFromRequest().value.fold[Any](result) { p =>
         val total = result.size

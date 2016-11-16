@@ -19,7 +19,7 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
   override def idToRawValue(id: Long): Any = id
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
-  override def defaultAlias: Alias[Mission] = createAlias("m")
+  override val defaultAlias: Alias[Mission] = createAlias("m")
 
   override def extract(rs: WrappedResultSet, n: ResultName[Mission]): Mission =
     autoConstruct(rs, n, "stations", "startStation", "rate")
