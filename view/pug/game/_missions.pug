@@ -1,0 +1,54 @@
+script(src='/js/game/missions.js')
+h1.page-header Select mission
+#missions
+  ul.pagination
+    li.clickable(:class='{disabled: pagination.current == 0}')
+      a(aria-label='Previous', @click='next(pagination.current - 1)')
+        span(aria-hidden='true') &laquo;
+    li.clickable(v-for='i in pagination.last', :class='{active: pagination.current == i}')
+      a(v-text='i + 1', @click='next(i)')
+    li.clickable(:class='{disabled: (pagination.last - 1) <= pagination.current}')
+      a(aria-label='Next', @click='next()')
+        span(aria-hidden='true') &raquo;
+  table.table.table-striped
+    tr
+      th Name
+      th Start
+      th Stations
+      th Score
+      th
+    tr(v-for='m in missions')
+      td
+        a(v-text='m.mission.name', href='javascript:void(0)', @click.stop, @click='openModal(m.mission)')
+      td(v-text='m.mission.startStation.name')
+      td(v-text='m.mission.stations.length + "駅"')
+      td
+        template(v-if='m.score')
+          span(v-text='dateFormat(m.score.time)')
+          span.head-space(v-text='m.score.money + "円"')
+          span.head-space(v-text='m.score.distance.toFixed(1) + "km"')
+        span(v-if='!m.score') --
+      td
+        button.btn.btn-primary.btn-xs(@click='start(m)', v-if='!m.game') Start
+        button.btn.btn-primary.btn-xs(@click='gameContinue(m)', v-if='m.game') Continue
+        button.btn.btn-warning.btn-xs(@click='start(m)', v-if='m.game') Restart
+  form.form-horizontal(@submit.prevent, @submit='getData()')
+    .form-group
+      label.col-sm-3.control-label(for='rankSelector') 難易度で絞り込み
+      .col-sm-9
+        #rankSelector.btn-group(role='group')
+          button.btn.btn-default(type='button', @click='filter(undefined)', :class="{'btn-primary': !rank}") ALL
+          button.btn.btn-default(type='button', @click='filter("easy")', :class="{'btn-primary': rank == 'easy'}") Easy
+          button.btn.btn-default(type='button', @click='filter("medium")', :class="{'btn-primary': rank == 'medium'}") Medium
+          button.btn.btn-default(type='button', @click='filter("hard")', :class="{'btn-primary': rank == 'hard'}") Hard
+    .form-group
+      label.col-sm-3.control-label(for='stationName') 駅名で絞り込み
+      .col-sm-9
+        input#stationName.form-control(type='text', v-model='stationName')
+    .form-group
+      label.col-sm-3.control-label(for='searchMissionName') mission名で絞り込み
+      .col-sm-9
+        input#searchMissionName.form-control(type='text', v-model='missionName')
+    .form-group
+      .col-sm-9.col-sm-offset-3
+        button.btn.btn-primary(type='submit') Search

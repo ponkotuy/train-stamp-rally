@@ -1,0 +1,20 @@
+script(src='/js/game/random_mission.js')
+#random
+  h2 Play random mission
+  .btn-group(role='group')
+    button.btn.btn-default(type='button', @click='getRandom(6)') Easy
+    button.btn.btn-default(type='button', @click='getRandom(12)') Medium
+    button.btn.btn-default(type='button', @click='getRandom(24)') Hard
+  #createdMission(v-if='mission')
+    form.form-horizontal
+      label.col-sm-3.control-label(for='missionName') Name
+      .col-sm-9
+        input#missionName.form-control(type='text', v-model='mission.name')
+      label.col-sm-3.control-label Mission Start
+      .col-sm-9
+        p(v-text='mission.start.name')
+      label.col-sm-3.control-label Stations
+      .col-sm-9
+        span.label.label-default(v-for='station in mission.stations', v-text='station.name')
+      .col-offset-sm-3.col-sm-9
+        button.btn.btn-primary(type='button', @click='start()') START
