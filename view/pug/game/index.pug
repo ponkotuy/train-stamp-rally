@@ -86,5 +86,16 @@ html(lang=ja)
                 span(aria-hidden='true') &times;
               h3(v-text='mission.name')
             .modal-body
+              h4 駅リスト
               ul
                 li(v-for='station in mission.stations', v-text='station.name + "駅"')
+              #ranking
+                h4 所要時間Ranking
+                ol
+                  li(v-for='rank in times') {{ rank.account.name }}: {{ dateFormat(rank.time) }}
+                h4 使用金額Ranking
+                ol
+                  li(v-for='rank in moneys') {{ rank.account.name }}: {{ rank.money }}円
+                h4 移動距離Ranking
+                ol
+                  li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km
