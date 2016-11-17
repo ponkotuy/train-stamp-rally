@@ -4,7 +4,7 @@ $(document).ready ->
     data:
       name: ""
       stationMaster: []
-      stations: [{name: ""}]
+      stations: [{name: ""}, {name: ""}, {name: ""}]
       startStation: ""
     methods:
       getStations: ->
