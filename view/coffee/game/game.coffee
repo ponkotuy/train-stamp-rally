@@ -33,7 +33,7 @@ mainVue = ->
         for stop in train.stops
           @lines[stop.line.id] = stop.line
     saveFromLines: (trains) ->
-      fromLines = _.groupBy trains, (train) => @here(train).line.id
+      fromLines = _.groupBy @trainDay(trains), (train) => @here(train).line.id
       @fromLines = for lineId, xs of fromLines
         ordered = _.chain(xs)
           .orderBy (x) => @timeFormat(@here(x).departure)
@@ -47,6 +47,18 @@ mainVue = ->
       $(trainModalId).modal('show')
     here: (train) ->
       _.find train.stops, (stop) => stop.station.id == @game.station.id
+    trainDay: (trains) ->
+      trains.map (t) =>
+        t.stops = t.stops.map (stop) =>
+          if stop.arrival
+            stop.arrival.day = if @isAfter(stop.arrival) then 0 else 1
+          if stop.departure
+            stop.departure.day = if @isAfter(stop.departure) then 0 else 1
+          stop
+        t
+    isAfter: (time) ->
+      now = @game.time
+      (now.hour * 60 + now.minutes) <= (time.hour * 60 + now.minutes)
   ready: ->
     @setMission ->
       location.href = '/game/index.html'

@@ -51,7 +51,7 @@ failure = (jqXHR) ->
     dateFormat: (date) ->
       "#{date.day}日目 #{@twoDigit(date.hour)}:#{@twoDigit(date.minutes)}"
     timeFormat: (time) ->
-      "#{@twoDigit(time.hour)}:#{@twoDigit(time.minutes)}"
+      "#{if time?.day == 1 then '翌' else ''}#{@twoDigit(time.hour)}:#{@twoDigit(time.minutes)}"
     timeFormatAPI: (time) ->
       @twoDigit(time.hour) + @twoDigit(time.minutes)
     twoDigit: (int) ->

@@ -31,7 +31,7 @@ $(document).ready ->
             if game
               Vue.set(mission, 'game', game)
       gameContinue: (mission) ->
-        location.href = "/game/game.html?mission=#{mission.mission.id}"
+        location.href = "/game/game.html?mission=#{mission.id}"
       start: (mission) ->
         API.post "/api/game/#{mission.id}", {}, =>
           @gameContinue(mission)

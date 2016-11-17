@@ -51,7 +51,7 @@ html(lang=ja)
               tbody
                 tr(v-for='stop in stations', v-if='isAll || stop.isMain')
                   td
-                    a(@click='board(stop.station.id)', href='#', v-if='$index != 0', v-text='stop.station.name')
+                    a(@click='board(stop.station.id)', href='javascript:void(0)', v-if='$index != 0', v-text='stop.station.name')
                     span(v-if='$index == 0')
                       strong(v-text='stop.station.name')
                   td(v-if='$index == 0') --
