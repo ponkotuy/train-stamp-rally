@@ -38,8 +38,9 @@ $(document).ready ->
       @getMoneys()
       @getDistances()
 
+  modalId = '#complete'
   new Vue
-    el: '#finish'
+    el: modalId
     mixins: [missionParam]
     methods:
       clear: (rate) ->
@@ -48,10 +49,13 @@ $(document).ready ->
           data:
             rate: rate
           success: ->
-            location.href = '/game/index.html'
+            $(modalID).modal('hide')
     ready: ->
       @setMission ->
         location.href = '/game/index.html'
+      $(modalId).modal('show')
+      $(modalId).modal 'closed.bs.alert', ->
+        @clear(1)
 
 missionVue = (gameId) ->
   el: '#mission'

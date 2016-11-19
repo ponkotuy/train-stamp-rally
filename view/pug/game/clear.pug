@@ -17,13 +17,6 @@ html(lang=ja)
           template(v-for='progress in progresses')
             dt(v-text='progress.station.name')
             dd(v-text='dateFormat(progress.arrivalTime)')
-      #finish
-        h4 Mission評価してランキングに登録する
-        .btn-group(role='group')
-          button.btn.btn-primary.btn-lg(@click='clear(3)')
-            span.glyphicon.glyphicon-thumbs-up
-          button.btn.btn-primary.btn-lg(@click='clear(-3')
-            span.glyphicon.glyphicon-thumbs-down
       #ranking
         h2 Ranking
         .row
@@ -39,3 +32,16 @@ html(lang=ja)
             h3 移動距離
             ol
               li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km
+      #complete.modal.fade(role='dialog')
+        .modal-dialog(rol='document')
+          .modal-content
+            .modal-header
+              h3 Mission Complete
+            .modal-body
+              p Did you like this mission?
+            .modal-footer
+              button.btn.btn-primary.btn-lg(@click='clear(3)')
+                span.glyphicon.glyphicon-thumbs-up
+              button.btn.btn-default.btn-lg(@click='clear(1)') ○
+              button.btn.btn-primary.btn-lg(@click='clear(-3')
+                span.glyphicon.glyphicon-thumbs-down

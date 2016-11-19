@@ -19,7 +19,7 @@ h1.page-header Select mission
       th
     tr(v-for='m in missions')
       td
-        a(v-text='m.mission.name', href='javascript:void(0)', @click.stop, @click='openModal(m.mission)')
+        a(v-text='m.mission.name', href='javascript:void(0)', @click.stop, @click='openModal(m)')
       td(v-text='m.mission.startStation.name')
       td(v-text='m.mission.stations.length + "駅"')
       td
@@ -29,9 +29,9 @@ h1.page-header Select mission
           span.head-space(v-text='m.score.distance.toFixed(1) + "km"')
         span(v-if='!m.score') --
       td
-        button.btn.btn-primary.btn-xs(@click='start(m.mission)', v-if='!m.game') Start
-        button.btn.btn-primary.btn-xs(@click='gameContinue(m.mission)', v-if='m.game') Continue
-        button.btn.btn-warning.btn-xs(@click='start(m.mission)', v-if='m.game') Restart
+        button.btn.btn-primary.btn-xs(@click='start(m)', v-if='!m.game') Start
+        button.btn.btn-primary.btn-xs(@click='gameContinue(m)', v-if='m.game') Continue
+        button.btn.btn-warning.btn-xs(@click='start(m)', v-if='m.game') Restart
   form.form-horizontal(@submit.prevent, @submit='getData()')
     .form-group
       label.col-sm-3.control-label(for='rankSelector') 難易度で絞り込み

@@ -3,9 +3,10 @@
 
 @stationModal =
   el: stationModalId
-  mixins: [formatter]
+  mixins: [formatter, startMission]
   data:
     mission: {}
+    game: {}
     times: []
     moneys: []
     distances: []
@@ -18,13 +19,13 @@
       @getMoneys()
       @getDistances()
     getTimes: ->
-      API.getJSON "/api/game/#{@mission.id}/ranking/time", (json) =>
+      API.getJSON "/api/game/#{@mission.mission.id}/ranking/time", (json) =>
         @times = json
     getMoneys: ->
-      API.getJSON "/api/game/#{@mission.id}/ranking/money", (json) =>
+      API.getJSON "/api/game/#{@mission.mission.id}/ranking/money", (json) =>
         @moneys = json
     getDistances: ->
-      API.getJSON "/api/game/#{@mission.id}/ranking/distance", (json) =>
+      API.getJSON "/api/game/#{@mission.mission.id}/ranking/distance", (json) =>
         @distances = json
   watch: ->
     'mission.id': ->

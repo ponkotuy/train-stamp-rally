@@ -4,7 +4,7 @@ $(document).ready ->
 
   new Vue
     el: '#missions'
-    mixins: [formatter, pagination]
+    mixins: [formatter, pagination, startMission]
     data:
       missions: []
       games: []
@@ -27,7 +27,7 @@ $(document).ready ->
       getGames: ->
         API.getJSON '/api/games', (games) =>
           @missions.forEach (mission) ->
-            game = _.find games, (g) -> g.missionId == mission.id
+            game = _.find games, (g) -> g.missionId == mission.mission.id
             if game
               Vue.set(mission, 'game', game)
       gameContinue: (mission) ->
@@ -42,6 +42,5 @@ $(document).ready ->
         modal.setMission(mission)
         $(stationModalId).modal('show')
 
-  new Vue
 emptyUndef = (str) ->
   if str then str else undefined

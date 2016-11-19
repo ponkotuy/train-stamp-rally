@@ -9,7 +9,7 @@ script(src='/js/game/station_modal.js')
       .modal-body
         h4 駅リスト
         ul
-          li(v-for='station in mission.stations', v-text='station.name + "駅"')
+          li(v-for='station in mission.mission.stations', v-text='station.name + "駅"')
         #ranking
           h4 所要時間Ranking
           ol
@@ -20,3 +20,7 @@ script(src='/js/game/station_modal.js')
           h4 移動距離Ranking
           ol
             li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km
+      .modal-footer
+        button.btn.btn-primary(type='button', @click='start(mission)', v-if='!mission.game') Start
+        button.btn.btn-primary(type='button', @click='gameContinue(mission)', v-if='mission.game') Continue
+        button.btn.btn-warning(type='button', @click='start(mission)', v-if='mission.game') Restart
