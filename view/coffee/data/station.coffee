@@ -39,5 +39,13 @@ $(document).ready ->
         _.find train.stops, (stop) => stop.station.id == @station.id
       isLast: (idx, xs) ->
         idx == xs.length - 1
+      jumpStation: (stationId) ->
+        location.search = "id=#{stationId}"
+        @getStation()
+      stationSize: (station) ->
+        'text-success': station.id == @station.id
+        'large': station.id == @station.id
+        'text-info': station.rank.value <= 3 && station.id != @station.id
+        'text-bold': station.rank.value <= 4
     ready: ->
       @getStation()
