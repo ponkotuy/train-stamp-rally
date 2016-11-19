@@ -78,7 +78,7 @@ object Diagrams {
       StopStation.deleteBy(sqls.eq(StopStation.column.diagramId, id))
       Train.deleteBy(sqls.eq(Train.column.diagramId, id))
       diagram.trains(id).foreach(_.save())
-      diagram.stops.foreach { stop => stop.stopStation(id).save() }
+      diagram.stops.foreach(_.stopStation(id).save())
       diagram.diagram.copy(id = id).update()
     }
   }

@@ -1,0 +1,31 @@
+doctype html
+html(lang=ja)
+  head
+    include ../template/_header
+    title Station Detail
+    script(src='/js/data/station.js')
+    style
+      |.strong {
+      |  font-weight: bold;
+      |  margin-left: 5px;
+      |  margin-right: 5px;
+      |}
+  body
+    #main.container(role='main')
+      h1.page-header(v-text='station.name')
+      h3 所属路線
+      ul
+        li(v-for='line in lines')
+          span(v-text='line.line.name')
+          small(v-text='line.km.toFixed(1) + "km"')
+      h3 停車する列車
+      .panel(v-for='line in lines', :class='{"panel-info": line.line.name.endsWith("新幹線")}')
+        .panel-heading(v-text='line.line.name')
+        .panel-body
+          table.table.table-condensed.table-striped
+            tr(v-for='train in line.trains', :class='trainColor(train.trainType.value)')
+              th(v-text='train.subType + " " + train.name')
+              td
+                template(v-for='stop in train.stops', v-if='isLast($index, train.stops) || $index == 0 || stop.station.rank.value <= 3')
+                  span(v-text='stop.station.name', :class='{strong: stop.station.id == station.id}')
+                  span(v-if='!isLast($index, train.stops)') ->

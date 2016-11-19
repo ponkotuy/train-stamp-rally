@@ -3,7 +3,7 @@ $(document).ready ->
 
 mainVue = ->
   el: '#game'
-  mixins: [formatter, missionParam]
+  mixins: [formatter, missionParam, trainTypeColorClass]
   data:
     game: {}
     lines: []
@@ -22,7 +22,7 @@ mainVue = ->
           train.stops = _.chain(train.stops)
             .reverse()
             .uniqBy('station.id')
-            .filter (stop) -> stop.arrival or stop.departure
+            .filter (stop) -> stop.arrival? or stop.departure?
             .reverse()
             .value()
           train

@@ -146,3 +146,12 @@ failure = (jqXHR) ->
       cb(matches)
 
 @defaultTypeaheadDesign = {hint: true, highlight: true}
+
+@trainTypeColorClass =
+  methods:
+    trainColor: (value) ->
+      switch value
+        when 2 then 'success'
+        when 3 then 'danger'
+        when 4 then 'info'
+        else ''

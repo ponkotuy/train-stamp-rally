@@ -56,6 +56,7 @@ object SearchDiagram {
     override def search()(implicit session: DBSession) = {
       val diagramIds = findDiagramIds(stationId)
       Diagram.joins(Diagram.stopStationRef).findAllByIds(diagramIds:_*)
+          .map(DiagramResponse.fromDiagram)
     }
 
     override def tuple = (Some(stationId), None, None, None, None)

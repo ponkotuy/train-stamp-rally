@@ -18,17 +18,16 @@ html(lang=ja)
               .panel-heading(v-text='line.name')
               .panel-body
                 table.table.table-hover
-                  tr.clickable(v-for='train in line.trains', @click='openModal(train)', :class='{success: train.trainType.value == 2, danger: train.trainType.value == 3, info: train.trainType.value == 4}')
+                  tr.clickable(v-for='train in line.trains', @click='openModal(train)', :class='trainColor(train.trainType.value)')
                     td(v-text='train.subType + " " + train.name + " " + train.stops[train.stops.length - 1].station.name + "行"')
                     td(v-text='timeFormat(here(train).departure)')
         .col-sm-3
           #mission
             h2 目的地
             div(v-for='progress in progresses', :class='{"text-success": progress.arrivalTime, "text-danger": !progress.arrivalTime}')
-              h4(v-if='progress.arrivalTime')
-                span.glyphicon.glyphicon-ok(v-text='progress.station.name')
-              h4(v-if='!progress.arrivalTime')
-                span.glyphicon.glyphicon-remove(v-text='progress.station.name')
+              h4
+                span.glyphicon(:class='{"glyphicon-ok": progress.arrivalTime, "glyphicon-remove": !progress.arrivalTime}')
+                a(v-text='progress.station.name', href='/data/station.html?id={{progress.station.id}}', target='_blank')
     .modal#trainModal.fade(role='dialog')
       .modal-dialog(role='document')
         .modal-content
