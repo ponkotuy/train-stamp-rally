@@ -21,6 +21,7 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
   implicit val format = DefaultFormats
 
   def board() = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
+    import DefaultAliases.gp
     DB localTx { implicit session =>
       val result: Either[Result, Result] = for {
         b <- req.body.extractOpt[Board].toRight(JSONParseError)
@@ -35,14 +36,13 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.indexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
       } yield {
         val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation, companyId).apply(game)
-        val gp = GameProgress.defaultAlias
-        GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).foreach { progress =>
+        val fixedGame: Game = GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).fold(afterGame) { progress =>
           if(progress.arrivalTime.isEmpty) {
             progress.copy(arrivalTime = Some(afterGame.time.addMinutes(-1))).update()
             afterGame.copy(time = afterGame.time.addMinutes(5)) // スタンプを押すのに5分
-          }
+          } else afterGame
         }
-        afterGame.update()
+        fixedGame.update()
         Success
       }
       result.merge
