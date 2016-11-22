@@ -30,7 +30,7 @@ object TrainPage {
       remark <- extractValueFromTr(trs, 4)(normList(',')).toRight("remark")
       day <- extractValueFromTr(trs, 5)(norm).toRight("day")
       stops = trs.view(8, trs.length).flatMap(StopDetail.fromXML).toList
-    } yield { TrainPage(name.replace('ヶ', 'ケ'), number, code, stops, url, car, remark, day) }
+    } yield { TrainPage(name.replace(norm("ヶ"), "ケ"), number, code, stops, url, car, remark, day) }
   }
 
   private def extractValueFromTr[A](xml: NodeSeq, index: Int)(f: String => A): Option[A] = for {

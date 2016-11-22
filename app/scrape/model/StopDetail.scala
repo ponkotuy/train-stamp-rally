@@ -7,7 +7,7 @@ case class StopDetail(
     name: String,
     url: String,
     code: Option[Int],
-    no: Option[Int],
+    no: Option[String],
     departure: TrainRun,
     arrive: TrainRun)
 
@@ -28,7 +28,7 @@ object StopDetail {
       name = xs.head
       code = xs.lift(1).flatMap(ReCode.findFirstMatchIn(_)).map(_.group(1).toInt)
       Seq(arr, dep) = ys.map(TrainRun.fromString)
-      no = tds.lift(2).map(norm).filter(_.nonEmpty).map(_.toInt)
+      no = tds.lift(2).map(norm).filter(_.nonEmpty)
     } yield StopDetail(name, normURL(url.text), code, no, dep, arr)
   }
 
