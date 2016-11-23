@@ -21,7 +21,7 @@ mainVue = ->
         trains = json.map (train) =>
           train.stops = _.chain(train.stops)
             .reverse()
-            .uniqBy('station.id')
+            .uniqBy (obj) -> JSON.stringify({a: obj.station.id, b: obj.arrival, c: obj.departure})
             .filter (stop) -> stop.arrival? or stop.departure?
             .reverse()
             .value()
