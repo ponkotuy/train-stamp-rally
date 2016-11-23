@@ -17,7 +17,7 @@ trait AuthConfigImpl extends AuthConfig {
 
   override val idTag: ClassTag[Id] = implicitly[ClassTag[Id]]
 
-  override def sessionTimeoutInSeconds: Int = 3600
+  override def sessionTimeoutInSeconds: Int = 7.days.toSeconds.toInt
 
   override def resolveUser(id: Id)(implicit context: ExecutionContext): Future[Option[User]] =
     Future.successful(Account.findById(id))
@@ -45,6 +45,6 @@ trait AuthConfigImpl extends AuthConfig {
 
   override lazy val tokenAccessor = new CookieTokenAccessor(
     cookieSecureOption = false,
-    cookieMaxAge = Some(7.days.toSeconds.toInt)
+    cookieMaxAge = Some(sessionTimeoutInSeconds)
   )
 }
