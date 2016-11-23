@@ -14,7 +14,7 @@ $(document).ready ->
         location.href = '/game/index.html'
       @getGame()
 
-  new Vue
+  ranking = new Vue
     el: '#ranking'
     mixins: [formatter, missionParam]
     data:
@@ -31,12 +31,14 @@ $(document).ready ->
       getDistances: ->
         API.getJSON "/api/game/#{@missionId}/ranking/distance", (json) =>
           @distances = json
+      reload: ->
+        @getTimes()
+        @getMoneys()
+        @getDistances()
     ready: ->
       @setMission ->
         location.href = '/game/index.html'
-      @getTimes()
-      @getMoneys()
-      @getDistances()
+      @reload()
 
   modalId = '#complete'
   new Vue
@@ -49,7 +51,8 @@ $(document).ready ->
           data:
             rate: rate
           success: ->
-            $(modalID).modal('hide')
+            $(modalId).modal('hide')
+            ranking.reload()
     ready: ->
       @setMission ->
         location.href = '/game/index.html'
