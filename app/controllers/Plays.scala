@@ -85,8 +85,8 @@ object Plays {
   implicit val format = DefaultFormats + AccountSerializer
 
   private def ranking(typ: RankingType, missionId: Long): JValue = {
-    val scores = Score.joins(Score.accountRef)
-        .findAllByWithLimitOffset(sqls.eq(Score.column.missionId, missionId), 20, 0, Seq(typ.column))
+    val sc = Score.column
+    val scores = Score.ranking(typ.column, sqls.eq(sc.missionId, missionId), 20)(AutoSession)
     Extraction.decompose(scores)
   }
 }
@@ -94,7 +94,7 @@ object Plays {
 sealed abstract class RankingType(val column: SQLSyntax)
 
 object RankingType {
-  val sc = Score.defaultAlias
+  val sc = Score.column
   case object Time extends RankingType(sc.time)
   case object Money extends RankingType(sc.money)
   case object Distance extends RankingType(sc.distance)
