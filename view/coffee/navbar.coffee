@@ -2,7 +2,7 @@ $(document).ready ->
   new Vue
     el: '#navs'
     data:
-      categories: ['game', 'creator']
+      categories: ['readme', 'game', 'creator']
       category: ''
       account: null
     methods:
