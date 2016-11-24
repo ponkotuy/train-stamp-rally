@@ -16,14 +16,14 @@ $(document).ready ->
           API.getJSON "/api/station/#{id}/lines", (json) =>
             @lines = json
           API.getJSON "/api/diagrams", {station: id}, (json) =>
-            trains = json.map (train) =>
+            trains = _.flatMap json, (train) =>
               train.stops = _.chain(train.stops)
                 .reverse()
                 .uniqBy('station.id')
                 .filter (stop) -> stop.arrival? or stop.departure?
                 .reverse()
                 .value()
-              train
+              if @here(train) then [train] else []
             @saveFromLines(trains)
       saveFromLines: (trains) ->
         fromLines = _.groupBy trains, (train) => @here(train).line.id
