@@ -9,7 +9,8 @@ script(src='/js/game/station_modal.js')
       .modal-body
         h4 駅リスト
         ul
-          li(v-for='station in mission.mission.stations', v-text='station.name + "駅"')
+          li(v-for='station in mission.mission.stations')
+            a(v-text='station.name + "駅"', :href='"/data/station.html?id=" + station.id', target='_blank')
         #ranking
           h4 所要時間Ranking
           ol
