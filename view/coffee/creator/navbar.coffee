@@ -9,7 +9,8 @@ $(document).ready ->
         {name: 'station', role: 0},
         {name: 'diagram', role: 0},
         {name: 'validator', role: 0},
-        {name: 'cache', role: 0}
+        {name: 'cache', role: 0},
+        {name: 'release', role: 0}
       ]
       category:  ''
     methods:

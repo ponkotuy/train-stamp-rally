@@ -12,4 +12,5 @@ object DefaultAliases {
   def gp = GameProgress.defaultAlias
   def sc = Score.defaultAlias
   def m = Mission.defaultAlias
+  def h = History.defaultAlias
 }

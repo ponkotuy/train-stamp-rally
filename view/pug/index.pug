@@ -3,6 +3,7 @@ html(lang=ja)
   head
     include template/_header
     title Train Stamp Rally
+    script(src='/js/creator/histories.js')
   body
     include template/_navbar
   .container(role=main)
@@ -13,3 +14,9 @@ html(lang=ja)
       a.btn.btn-primary.btn-lg(href='/auth/account.html') アカウント登録
       a.btn.btn-primary.btn-lg(href='/readme/index.html') 説明書
       a.btn.btn-primary.btn-lg(href='https://gitter.im/ponkotuy/train-stamp-rally') 開発室(Gitter)
+    #histories
+      h3 更新履歴
+      dl.dl-horizontal
+        template(v-for='history in histories')
+          dt(v-text='format(history.created)')
+          dd(v-text='history.message')

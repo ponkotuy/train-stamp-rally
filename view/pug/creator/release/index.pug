@@ -1,0 +1,33 @@
+doctype html
+html(lang=ja)
+  head
+    include ../../template/_header
+    title Release
+    script(src='/js/creator/histories.js')
+    script(src='/js/creator/release.js')
+  body
+    include ../../template/_navbar
+    .container(role=main)
+      include ../_navbar
+      #histories
+        table.table.table-condensed.table-striped
+          thead
+            tr
+              th ID
+              th Date
+              th Message
+          tbody
+            tr(v-for='history in histories')
+              th(v-text='history.id')
+              td(v-text='format(history.created)')
+              td(v-text='history.message')
+      h2 Create
+      #create
+        form.form-horizontal(@submit.prevent, @submit='submit()')
+          .form-group
+            label.col-sm-3.control-label(for='message') Message
+            .col-sm-9
+              input#message.form-control(type='text', v-model='message')
+          .form-group
+            .col-sm-offset-3
+              button.btn.btn-primary(type='submit') Create

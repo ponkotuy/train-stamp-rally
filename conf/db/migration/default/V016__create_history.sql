@@ -1,0 +1,6 @@
+
+CREATE TABLE history(
+        id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+        message TEXT NOT NULL,
+        created BIGINT NOT NULL
+) ENGINE=InnoDB, DEFAULT CHARSET=utf8mb4;

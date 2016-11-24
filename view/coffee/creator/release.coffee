@@ -1,12 +1,12 @@
 $(document).ready ->
   new Vue
-    el: '#createCompany'
+    el: '#create'
     data:
-      name: ''
+      message: ''
     methods:
       submit: ->
         API.postJSON
-          url: '/api/company'
-          data: {name: @name}
+          url: '/api/history'
+          data: {message: @message}
           success: ->
             location.reload(false)

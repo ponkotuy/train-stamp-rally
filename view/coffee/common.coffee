@@ -155,3 +155,8 @@ failure = (jqXHR) ->
         when 3 then 'danger'
         when 4 then 'info'
         else ''
+
+@momentFormat =
+  methods:
+    format: (millis) ->
+      moment(millis).format('YYYY-MM-DD')
