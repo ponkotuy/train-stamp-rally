@@ -67,7 +67,7 @@ object Diagrams {
   private def createDiagram(diagram: CreateDiagram, release: Long): Long = {
     DB localTx { implicit session =>
       val diagramId = diagram.diagram(Some(release)).save()
-      diagram.trains(diagramId, Some(release)).foreach(_.save())
+      diagram.trains(diagramId).foreach(_.save())
       diagram.stops.foreach { stop => stop.stopStation(diagramId).save() }
       diagramId
     }
@@ -78,7 +78,7 @@ object Diagrams {
       Diagram.findById(id).map { db =>
         StopStation.deleteBy(sqls.eq(StopStation.column.diagramId, id))
         Train.deleteBy(sqls.eq(Train.column.diagramId, id))
-        diagram.trains(id, db.release).foreach(_.save())
+        diagram.trains(id).foreach(_.save())
         diagram.stops.foreach(_.stopStation(id).save())
         diagram.diagram(db.release).copy(id = id).update()
       }.getOrElse(0)
