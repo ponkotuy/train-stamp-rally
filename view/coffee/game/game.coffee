@@ -38,6 +38,10 @@ mainVue = ->
           .value()
         line = @lines[obj.id]
         _.extend(true, line, {trains: ordered, name: "#{line.name} #{obj.dist}"})
+      @fromLines = _.chain(@fromLines)
+        .orderBy (x) -> x.name
+        .orderBy (x) -> x.id
+        .value()
     openModal: (train) ->
       @trainModal.setData(train, @game)
       $(trainModalId).modal('show')
