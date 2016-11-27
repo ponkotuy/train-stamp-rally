@@ -1,2 +1,2 @@
 
-ALTER TABLE diagram ADD `release` BIGINT;
+ALTER TABLE diagram ADD staging BIGINT;

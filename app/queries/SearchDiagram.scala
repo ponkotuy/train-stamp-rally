@@ -54,8 +54,10 @@ object SearchDiagram {
 
   case class StationSearch(stationId: Long) extends SearchDiagram {
     override def search()(implicit session: DBSession) = {
+      import DefaultAliases.d
       val diagramIds = findDiagramIds(stationId)
-      Diagram.joins(Diagram.stopStationRef).findAllByIds(diagramIds:_*)
+      val where = sqls.in(d.id, diagramIds).and.isNull(d.staging)
+      Diagram.joins(Diagram.stopStationRef).findAllBy(where)
           .map(DiagramResponse.fromDiagram)
     }
 
@@ -64,12 +66,13 @@ object SearchDiagram {
 
   case class TimeSearch(stationId: Long, time: TrainTime) extends SearchDiagram {
     override def search()(implicit session: DBSession) = {
-      import DefaultAliases.{ls, ss}
+      import DefaultAliases.{ls, ss, d}
       val lineStations = LineStation.findAllBy(sqls.eq(ls.stationId, stationId))
       val stops = StopStation.findAllBy(sqls.in(ss.lineStationId, lineStations.map(_.id)))
       val diagramIds = stops.map(_.diagramId).distinct
       val lineStationIdTable: Map[Long, Long] = stops.map { ls => ls.diagramId -> ls.lineStationId }(breakOut)
-      val diagrams = Diagram.joins(Diagram.stopStationRef, Diagram.trainRef).findAllByIds(diagramIds: _*)
+      val where = sqls.in(d.id, diagramIds).and.isNull(d.staging)
+      val diagrams = Diagram.joins(Diagram.stopStationRef, Diagram.trainRef).findAllBy(where)
       diagrams.flatMap { d =>
         d.nextTrain(lineStationIdTable(d.id), time).map { train =>
           TrainResponse.fromTrainDiagram(train, d)
