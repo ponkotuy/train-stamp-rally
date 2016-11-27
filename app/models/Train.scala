@@ -8,6 +8,7 @@ case class Train(
     id: Long,
     diagramId: Long,
     start: TrainTime,
+    release: Option[Long],
     diagram: Option[Diagram] = None,
     stops: Seq[StopStation] = Nil
 ) {
@@ -39,5 +40,5 @@ object Train extends SkinnyCRUDMapperWithId[Long, Train] {
   }.map(_.long(1)).list().apply()
 
   def save(t: Train)(implicit session: DBSession): Long =
-    createWithAttributes('diagramId -> t.diagramId, 'start -> t.start.toString)
+    createWithAttributes('diagramId -> t.diagramId, 'start -> t.start.toString, 'release -> t.release)
 }

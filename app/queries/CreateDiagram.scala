@@ -10,8 +10,9 @@ case class CreateDiagram(
     starts: Seq[String],
     stops: Seq[CreateStopStation]
 ) {
-  def diagram = Diagram(0L, name, trainTypeOpt.getOrElse(TrainType.Local), subType)
-  def trains(diagramId: Long) = starts.flatMap(TrainTime.fromString).map { time => Train(0L, diagramId, time) }
+  def diagram(release: Option[Long]) = Diagram(0L, name, trainTypeOpt.getOrElse(TrainType.Local), subType, release)
+  def trains(diagramId: Long, release: Option[Long]) =
+    starts.flatMap(TrainTime.fromString).map { time => Train(0L, diagramId, time, release) }
   def trainTypeOpt: Option[TrainType] = TrainType.find(trainType)
 }
 

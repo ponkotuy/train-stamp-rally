@@ -10,6 +10,7 @@ case class Diagram(
     name: String,
     trainType: TrainType,
     subType: String,
+    release: Option[Long],
     stops: Seq[StopStation] = Nil,
     trains: Seq[Train] = Nil
 ) extends DiagramTrait {
@@ -59,7 +60,8 @@ object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
   def params(d: Diagram) = Seq(
     'name -> d.name,
     'trainType -> d.trainType.value,
-    'subType -> d.subType
+    'subType -> d.subType,
+    'release -> d.release
   )
 
   override val defaultOrderings = Seq(column.id)
