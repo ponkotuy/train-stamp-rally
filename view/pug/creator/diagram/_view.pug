@@ -24,12 +24,12 @@ script(src='/js/creator/diagrams.js')
       th To
       th
     tr(v-for='diagram in diagrams')
-      td {{ diagram.id }}
-      td {{ diagram.name }}
-      td {{ diagram.trainType.name }}
-      td {{ diagram.subType }}
-      td {{ diagram.stops[0].station.name }}
-      td {{ diagram.stops[diagram.stops.length - 1].station.name }}
+      td(v-text='diagram.id')
+      td(v-text='diagram.name')
+      td(v-text='diagram.trainType.name')
+      td(v-text='diagram.subType')
+      td(v-text='diagram.stops[0].station.name')
+      td(v-text='diagram.stops[diagram.stops.length - 1].station.name')
       td
         button.btn.btn-xs(type='button', @click='edit(diagram.id)') Copy
         button.btn.btn-xs.btn-danger(type='button', @click='delete(diagram.id)') Delete

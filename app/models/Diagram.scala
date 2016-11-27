@@ -10,6 +10,7 @@ case class Diagram(
     name: String,
     trainType: TrainType,
     subType: String,
+    staging: Option[Long],
     stops: Seq[StopStation] = Nil,
     trains: Seq[Train] = Nil
 ) extends DiagramTrait {
@@ -45,7 +46,7 @@ object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
     merge = (d, ts) => d.copy(trains = ts.sortBy(_.start))
   )
 
-  def findAllIds()(implicit session: DBSession) = withSQL {
+  def findAllIds()(implicit session: DBSession): List[Long] = withSQL {
     import DefaultAliases.d
     select(d.id).from(Diagram as d)
   }.map(_.long(1)).list().apply()
@@ -59,7 +60,8 @@ object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
   def params(d: Diagram) = Seq(
     'name -> d.name,
     'trainType -> d.trainType.value,
-    'subType -> d.subType
+    'subType -> d.subType,
+    'staging -> d.staging
   )
 
   override val defaultOrderings = Seq(column.id)

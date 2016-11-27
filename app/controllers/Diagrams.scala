@@ -38,7 +38,7 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
 
   def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
-      createDiagram(diagram)
+      createDiagram(diagram, loggedIn.id)
       Success
     }
   }
@@ -64,9 +64,9 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
 }
 
 object Diagrams {
-  private def createDiagram(diagram: CreateDiagram): Long = {
+  private def createDiagram(diagram: CreateDiagram, release: Long): Long = {
     DB localTx { implicit session =>
-      val diagramId = diagram.diagram.save()
+      val diagramId = diagram.diagram(Some(release)).save()
       diagram.trains(diagramId).foreach(_.save())
       diagram.stops.foreach { stop => stop.stopStation(diagramId).save() }
       diagramId
@@ -75,11 +75,13 @@ object Diagrams {
 
   private def updateDiagram(id: Long, diagram: CreateDiagram): Int = {
     DB localTx { implicit session =>
-      StopStation.deleteBy(sqls.eq(StopStation.column.diagramId, id))
-      Train.deleteBy(sqls.eq(Train.column.diagramId, id))
-      diagram.trains(id).foreach(_.save())
-      diagram.stops.foreach(_.stopStation(id).save())
-      diagram.diagram.copy(id = id).update()
+      Diagram.findById(id).map { db =>
+        StopStation.deleteBy(sqls.eq(StopStation.column.diagramId, id))
+        Train.deleteBy(sqls.eq(Train.column.diagramId, id))
+        diagram.trains(id).foreach(_.save())
+        diagram.stops.foreach(_.stopStation(id).save())
+        diagram.diagram(db.staging).copy(id = id).update()
+      }.getOrElse(0)
     }
   }
 

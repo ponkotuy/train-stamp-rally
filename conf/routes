@@ -61,6 +61,8 @@ GET /api/validator controllers.Validators.list()
 GET /api/histories controllers.Histories.list()
 POST /api/history controllers.Histories.create()
 
+GET /api/releases controllers.Releases.list()
+
 DELETE /api/cache controllers.Caches.clear()
 
 GET /*file controllers.MyAssets.at(path="/public", file)
