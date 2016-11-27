@@ -29,5 +29,29 @@ html(lang=ja)
             .col-sm-9
               input#message.form-control(type='text', v-model='message')
           .form-group
+            label.col-sm-3.control-label(for='release') Release No.
+            .col-sm-9
+              select#release.form-control(v-model='release')
+                option(v-for='r in releaseSelector', :value='r.id', v-text='r.name')
+          .form-group
             .col-sm-offset-3
               button.btn.btn-primary(type='submit') Create
+
+        h2 Releases
+        div(v-for='r in releases')
+          h3(v-text='"No. " + r.id')
+          table.table.table-striped.table-condensed
+            tr
+              th ID
+              th Name
+              th Type
+              th SubType
+              th From
+              th To
+            tr(v-for='diagram in r.diagrams')
+              td(v-text='diagram.id')
+              td(v-text='diagram.name')
+              td(v-text='diagram.trainType.name')
+              td(v-text='diagram.subType')
+              td(v-text='diagram.stops[0].station.name')
+              td(v-text='diagram.stops[diagram.stops.length - 1].station.name')

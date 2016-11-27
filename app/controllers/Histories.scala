@@ -5,11 +5,11 @@ import authes.Role.Administrator
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.History
+import models.{Diagram, History}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
 import queries.CreateHistory
-import scalikejdbc.AutoSession
+import scalikejdbc._
 
 class Histories @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import controllers.Responses._
@@ -24,8 +24,13 @@ class Histories @Inject()(json4s: Json4s) extends Controller with AuthElement wi
 
   def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateHistory].fold(JSONParseError) { his =>
-      his.history().save()(AutoSession)
-      Success
+      DB.localTx { implicit session =>
+        his.release.foreach { r =>
+          Diagram.updateBy(sqls.eq(Diagram.column.staging, r)).withAttributes('staging -> None)
+        }
+        his.history().save()
+        Success
+      }
     }
   }
 }
