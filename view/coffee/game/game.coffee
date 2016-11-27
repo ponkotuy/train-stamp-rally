@@ -18,23 +18,16 @@ mainVue = ->
         @trainModal = new Vue(trainModalVue(@game.id))
     getDiagrams: ->
       API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
-        trains = json.map (train) =>
-          train.stops = _.chain(train.stops)
-            .reverse()
-            .uniqBy (obj) -> JSON.stringify({a: obj.station.id, b: obj.arrival, c: obj.departure})
-            .filter (stop) -> stop.arrival? or stop.departure?
-            .reverse()
-            .value()
-          train
-        @saveLines(trains)
-        @saveFromLines(trains)
+        @saveLines(json)
+        @saveFromLines(json)
     saveLines: (trains) ->
       for train in trains
         for stop in train.stops
           @lines[stop.line.id] = stop.line
     saveFromLines: (trains) ->
       fromLines = _.groupBy @trainDay(trains), (train) =>
-        dist = if 0 < (train.stops[0].lineStation.km - train.stops[1].lineStation.km) then '上り' else '下り'
+        hereId = @hereId(train)
+        dist = if 0 < (train.stops[hereId].lineStation.km - train.stops[hereId + 1].lineStation.km) then '上り' else '下り'
         JSON.stringify({id: @here(train).line.id,  dist: dist})
       @fromLines = for json, xs of fromLines
         obj = JSON.parse(json)
@@ -49,7 +42,9 @@ mainVue = ->
       @trainModal.setData(train, @game)
       $(trainModalId).modal('show')
     here: (train) ->
-      _.find train.stops, (stop) => stop.station.id == @game.station.id
+      _.findLast train.stops, (stop) => stop.station.id == @game.station.id
+    hereId: (train) ->
+      _.findLastIndex train.stops, (stop) => stop.station.id == @game.station.id
     trainDay: (trains) ->
       trains.map (t) =>
         t.stops = t.stops.map (stop) =>

@@ -29,6 +29,12 @@
         _.extend(st, {isMain: isMain})
     setData: (train, game) ->
       @train = train
+      @train.stops = _.chain(train.stops)
+        .reverse()
+        .uniqBy (obj) -> JSON.stringify({a: obj.station.id, b: obj.arrival, c: obj.departure})
+        .filter (stop) -> stop.arrival? or stop.departure?
+        .reverse()
+        .value()
       @game = game
       @setStations()
       @getCosts()
