@@ -49,7 +49,7 @@ class Lines @Inject()(json4s: Json4s, _ec: ExecutionContext) extends Controller 
 
   def lineStations(lineId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     import models.DefaultAliases.ls
-    val stations = LineStation.joins(LineStation.stationRef).findAllBy(sqls.eq(ls.lineId, lineId))
+    val stations = LineStation.joins(LineStation.stationRef).findAllBy(sqls.eq(ls.lineId, lineId), Seq(ls.km.asc))
     Ok(Extraction.decompose(stations))
   }
 }
