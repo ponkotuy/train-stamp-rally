@@ -46,9 +46,9 @@ mainVue = ->
       @trainModal.setData(train, @game)
       $(trainModalId).modal('show')
     here: (train) ->
-      _.findLast train.stops, (stop) => stop.station.id == @game.station.id
+      _.findLast _.initial(train.stops), (stop) => stop.station.id == @game.station.id
     hereId: (train) ->
-      _.findLastIndex train.stops, (stop) => stop.station.id == @game.station.id
+      _.findLastIndex _.initial(train.stops), (stop) => stop.station.id == @game.station.id
     trainDay: (trains) ->
       trains.map (t) =>
         t.stops = t.stops.map (stop) =>
