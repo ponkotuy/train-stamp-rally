@@ -3,7 +3,7 @@ $(document).ready ->
 
 mainVue = ->
   el: '#game'
-  mixins: [formatter, missionParam, trainTypeColorClass]
+  mixins: [formatter, missionParam, trainTypeColorClass, attr]
   data:
     game: {}
     lines: []
@@ -16,6 +16,7 @@ mainVue = ->
         new Vue(missionVue(@game.id))
         @getDiagrams()
         @trainModal = new Vue(trainModalVue(@game.id))
+        @getAttribution(@game.station.id)
     getDiagrams: ->
       API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
         @saveLines(json)
@@ -71,3 +72,11 @@ missionVue = (gameId) ->
   mixins: [progress]
   compiled: ->
     @gameId = gameId
+
+attr =
+  data:
+    attribution: "<p></p>"
+  methods:
+    getAttribution: (stationId) ->
+      API.get "/api/station/#{stationId}/attribution", (html) =>
+        @attribution = html

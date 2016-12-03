@@ -12,6 +12,9 @@ html(lang=ja)
         .col-sm-9
           #game
             h1(v-text='game.station.name + "駅"')
+            .img-thumbnail
+              img(:src='"/api/station/" + game.station.id + "/image"', :alt='game.station.name + "駅の画像"')
+              p.text-right.small(v-html='attribution')
             h3(v-text='dateFormat(game.time)')
             p 使用金額:{{ game.money }}円 移動距離:{{ game.distance.toFixed(1) }}km
             .panel(v-for='line in fromLines', :class='{"panel-info": line.name.endsWith("新幹線")}')
