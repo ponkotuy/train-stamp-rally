@@ -1,30 +1,37 @@
 package controllers
 
+import actors.{AttrRequest, ImageRequest, WikipediaActor}
+import akka.actor.{ActorSystem, Props}
+import akka.pattern.ask
+import akka.util.Timeout
 import authes.AuthConfigImpl
 import authes.Role.{Administrator, NormalUser}
 import caches.LineStationsCache
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{LineStation, Station, StationRankSerializer}
-import net.liftweb.util.Html5
+import models._
 import org.json4s._
-import org.json4s.native.JsonMethods
 import play.api.libs.ws.WSClient
 import play.api.mvc.Controller
 import queries.CreateStationImpl
 import scalikejdbc._
-import utils.{ImgAttr, ImgSrc, Wikipedia}
+import utils.{FutureUtil, Wikipedia}
 
+import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-class Stations @Inject()(json4s: Json4s, ws: WSClient, ec: ExecutionContext) extends Controller with AuthElement with AuthConfigImpl {
+class Stations @Inject()(json4s: Json4s, ws: WSClient, ec: ExecutionContext, system: ActorSystem)
+    extends Controller with AuthElement with AuthConfigImpl {
+  import FutureUtil._
   import Responses._
-  import Stations._
   import json4s._
-  implicit val _ec: ExecutionContext = ec
 
-  implicit lazy val wiki = new Wikipedia(ws)
+  implicit val _ec: ExecutionContext = ec
+  implicit val formats: Formats = DefaultFormats + StationRankSerializer
+  implicit val timeout: Timeout = 10.seconds
+
+  lazy val wiki = system.actorOf(Props(new WikipediaActor(new Wikipedia(ws))))
 
   def list(q: Option[String]) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     import models.DefaultAliases.s
@@ -54,23 +61,23 @@ class Stations @Inject()(json4s: Json4s, ws: WSClient, ec: ExecutionContext) ext
   }
 
   def image(stationId: Long) = AsyncStack(AuthorityKey -> NormalUser) { implicit req =>
-    Station.findById(stationId).fold(Future.successful(notFound(s"station id = ${stationId}"))) { st =>
-      for {
-        imgSrc <- getImgSrc(st.name)
-        res <- ws.url(imgSrc.withScheme).get()
-      } yield {
-        Ok(res.bodyAsBytes).as("image/jpeg")
+    val stImage: Future[StationImage] = StationImage.findById(stationId).fold {
+      (wiki ? ImageRequest(stationId)).mapTo[Option[StationImage]].flatMap(fromOption)
+    }(Future.successful)
+    stImage.map { image =>
+      image.image.fold(notFound("image")) { img =>
+        Ok(img.bytes).as("image/jpeg")
       }
     }
   }
 
   def attribution(stationId: Long) = AsyncStack(AuthorityKey -> NormalUser) { implicit req =>
-    Station.findById(stationId).fold(Future.successful(notFound(s"station id = ${stationId}"))) { st =>
-      for {
-        imgSrc <- getImgSrc(st.name)
-        fName <- Future { imgSrc.origin.get }
-        attr <- getAttribution(fName)
-      } yield Ok(attr.attribution).as(HTML)
+    if(StationImage.findById(stationId).map(_.imageId).contains(None)) Future.successful(notFound("attribution"))
+    else {
+      val attr = ImageAttribute.findById(stationId).fold {
+        (wiki ? AttrRequest(stationId)).mapTo[Option[Attr]].flatMap(fromOption)
+      }(Future.successful)
+      attr.map { a => Ok(a.attribution).as(HTML) }
     }
   }
 
@@ -95,35 +102,6 @@ class Stations @Inject()(json4s: Json4s, ws: WSClient, ec: ExecutionContext) ext
         }
         result.merge
       }
-    }
-  }
-}
-
-object Stations {
-  implicit val formats: Formats = DefaultFormats + StationRankSerializer
-
-  class NotFoundImgSrc extends Exception("Not found imgsrc")
-  def getImgSrc(stName: String)(implicit wiki: Wikipedia, ec: ExecutionContext): Future[ImgSrc] = {
-    wiki.getHTML(stName + "駅").flatMap { content =>
-      val res = for {
-        html <- Html5.parse(content.body)
-        elem <- (html \\ "img").find { img => 200 <= (img \ "@width").text.toInt }
-      } yield {
-        val srcset = (elem \ "@srcset").text
-        val imgs = Wikipedia.parseSrcSet(srcset)
-        imgs.maxBy(_.scale)
-      }
-      res.toOption.fold(Future.failed[ImgSrc](new NotFoundImgSrc))(Future.successful)
-    }
-  }
-
-  class AttributeParseError extends Exception("Parse error from attribute")
-  def getAttribution(fName: String)(implicit wiki: Wikipedia, ec: ExecutionContext): Future[ImgAttr] = {
-    wiki.getImageAttribution(fName).flatMap { res =>
-      val json = JsonMethods.parse(res.body)
-      val JObject(xs) = json \\ "extmetadata"
-      val map = xs.toMap.mapValues { x => (x \ "value").extract[String] }
-      ImgAttr.fromMap(fName, map).fold(Future.failed[ImgAttr](new AttributeParseError))(Future.successful)
     }
   }
 }

@@ -1,11 +1,15 @@
 package utils
 
+import java.net.URLDecoder
+
+import models.{Attr, ImageAttribute}
 import net.liftweb.util.Html5
 import play.api.libs.ws.WSClient
 
-import scala.xml.Elem
+import scala.xml.transform.RewriteRule
+import scala.xml.{Elem, Node}
 
-class Wikipedia(ws: WSClient) {
+class Wikipedia(val ws: WSClient) {
   import Wikipedia._
   def get(params: Seq[(String, String)]) = {
     val request = ws.url(URL)
@@ -48,25 +52,38 @@ case class ImgSrc(url: String, scale: Double) {
   lazy val origin: Option[String] = {
     for {
       fName <- url.split('/').lastOption
-    } yield url.split('-').tail.mkString("-").replace('_', ' ')
+    } yield URLDecoder.decode(url.split('-').tail.mkString("-").replace('_', ' '), "UTF-8")
   }
 }
 
-case class ImgAttr(fName: String, name: String, artist: Elem, licenseShortName: String, licenseUrl: String, credit: Elem) {
-  def attribution = <span>By {artist} ({credit}) [<a href={licenseUrl} target="_blank">{licenseShortName}</a>], <a href={url} target="_blank">via Wikimedia Commons</a></span>
-  def url = s"https://commons.wikimedia.org/wiki/File:${fName}"
+case class ImgAttr(
+    fileName: String,
+    name: String,
+    artist: Node,
+    licenseShortName: String,
+    licenseUrl: String,
+    credit: Node) extends Attr {
+  def imageAttribute(stationId: Long, now: Long): ImageAttribute =
+    new ImageAttribute(stationId, fileName, name, artist, licenseShortName, licenseShortName, credit, now)
 }
 
 object ImgAttr {
   def fromMap(fName: String, map: Map[String, String]): Option[ImgAttr] = {
     for {
       name <- map.get("ObjectName")
-      artist <- map.get("Artist").flatMap(toXML)
+      artist <- map.get("Artist").flatMap(toXML).map(pToSpan(_))
       short <- map.get("LicenseShortName")
       url <- map.get("LicenseUrl")
-      credit <- map.get("Credit").flatMap(toXML)
+      credit <- map.get("Credit").flatMap(toXML).map(pToSpan(_))
     } yield ImgAttr(fName, name, artist, short, url, credit)
   }
 
   def toXML(str: String): Option[Elem] = Html5.parse(str).toOption
+
+  object pToSpan extends RewriteRule {
+    override def transform(n: Node): Seq[Node] = n match {
+      case Elem(pre, "p", attr, scope, child@_*) => Elem(pre, "span", attr, scope, false, child:_*)
+      case other => other
+    }
+  }
 }
