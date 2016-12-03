@@ -1,5 +1,8 @@
 
 @API =
+  get: (url, a, b) ->
+    $.get(url, a, b)
+      .fail(failure)
   getJSON: (url, a, b) ->
     $.getJSON(url, a, b)
       .fail(failure)

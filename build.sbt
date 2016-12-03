@@ -7,6 +7,7 @@ val play2AuthVer = "0.14.2"
 val googleLibVer = "1.22.0"
 
 libraryDependencies ++= Seq(
+  ws,
   cache,
   "org.skinny-framework" %% "skinny-orm" % "2.2.0",
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.5.0",
@@ -20,7 +21,8 @@ libraryDependencies ++= Seq(
   "org.springframework.security" % "spring-security-web" % "4.1.3.RELEASE",
   "ch.qos.logback" % "logback-classic" % "1.1.7" % "runtime",
   "org.slf4j" % "slf4j-api" % "1.7.21",
-  "net.liftweb" %% "lift-util" % "2.6.2"
+  "net.liftweb" %% "lift-util" % "2.6.2",
+  "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
