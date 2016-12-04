@@ -1,7 +1,7 @@
 $(document).ready ->
   new Vue
     el: '#game'
-    mixins: [formatter, missionParam, startMission]
+    mixins: [formatter, missionParam]
     data:
       game: {}
       accountId: 0

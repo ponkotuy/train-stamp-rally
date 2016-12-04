@@ -1,7 +1,7 @@
 $(document).ready ->
   new Vue
     el: '#main'
-    mixins: [formatter, rankingView, startMission]
+    mixins: [formatter, rankingView]
     data:
       mission: {}
       stations: []
