@@ -9,10 +9,7 @@ html(lang=ja)
     include ../template/_navbar
     #main.container(role='main')
       h1.page-header(v-text='mission.name')
-      form.form-inline
-        a.twitter-share-button(href="https://twitter.com/share", data-size='large', data-text='{{mission.name}} Ranking', target='_blank') Tweet
-        script !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
-
+      a(href='https://twitter.com/share?text={{mission.name}}+Ranking&hashtags=TrainStampRally', target='_blank') Tweet
       .row
         .col-sm-4
           h3 所要時間 Ranking

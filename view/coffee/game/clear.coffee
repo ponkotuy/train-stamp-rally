@@ -4,6 +4,7 @@ $(document).ready ->
     mixins: [formatter, missionParam]
     data:
       game: {}
+      mission: {}
       accountId: 0
     methods:
       getGame: ->
@@ -12,11 +13,15 @@ $(document).ready ->
           new Vue missionVue(@game.id)
       setAccount: ->
         @accountId = parseInt(@params.account)
+      getMission: ->
+        API.getJSON "/api/mission/#{@missionId}", (json) =>
+          @mission = json
     ready: ->
       @setMission ->
         location.href = '/game/index.html'
       @setAccount()
       @getGame()
+      @getMission()
 
   ranking = new Vue
     el: '#ranking'
