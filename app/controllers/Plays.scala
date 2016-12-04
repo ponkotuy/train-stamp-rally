@@ -8,7 +8,7 @@ import games.TrainBoardCost
 import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s._
-import play.api.mvc.{Controller, Result}
+import play.api.mvc.{Action, Controller, Result}
 import queries.{Board, Clear}
 import responses.TrainResponse
 import scalikejdbc._
@@ -68,15 +68,15 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
     }
   }
 
-  def rankingTime(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def rankingTime(missionId: Long) = Action {
     Ok(Plays.ranking(RankingType.Time, missionId))
   }
 
-  def rankingMoney(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def rankingMoney(missionId: Long) = Action {
     Ok(Plays.ranking(RankingType.Money, missionId))
   }
 
-  def rankingDistance(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def rankingDistance(missionId: Long) = Action {
     Ok(Plays.ranking(RankingType.Distance, missionId))
   }
 }

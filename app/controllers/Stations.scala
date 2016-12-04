@@ -13,7 +13,7 @@ import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s._
 import play.api.libs.ws.WSClient
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 import queries.CreateStationImpl
 import scalikejdbc._
 import utils.{FutureUtil, Wikipedia}
@@ -50,11 +50,11 @@ class Stations @Inject()(json4s: Json4s, ws: WSClient, ec: ExecutionContext, sys
     }
   }
 
-  def show(stationId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def show(stationId: Long) = Action {
     Ok(Extraction.decompose(Station.findById(stationId)))
   }
 
-  def lines(stationId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def lines(stationId: Long) = Action {
     import models.DefaultAliases.ls
     val lineStations = LineStation.joins(LineStation.lineRef).findAllBy(sqls.eq(ls.stationId, stationId))
     Ok(Extraction.decompose(lineStations))

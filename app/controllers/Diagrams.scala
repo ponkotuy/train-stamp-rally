@@ -8,7 +8,7 @@ import games.TrainCost
 import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s._
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 import queries.{CreateDiagram, SearchDiagram}
 import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc._
@@ -31,7 +31,7 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
     }
   }
 
-  def list() = StackAction(parse.form(SearchDiagram.form), AuthorityKey -> NormalUser) { implicit req =>
+  def list() = Action(parse.form(SearchDiagram.form)) { req =>
     val diagrams = req.body.search()(AutoSession)
     Ok(Extraction.decompose(diagrams))
   }

@@ -7,7 +7,7 @@ import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import models.{Mission, Score, StationRankSerializer}
 import org.json4s.{DefaultFormats, Extraction}
-import play.api.mvc.Controller
+import play.api.mvc.{Action, Controller}
 import queries.{CreateMission, Paging, RandomMission, SearchMissions}
 import responses.{MinScore, MissionScore, Page, WithPage}
 import scalikejdbc._
@@ -18,6 +18,11 @@ class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   import json4s._
 
   implicit val formats = DefaultFormats + StationRankSerializer
+
+  def show(missionId: Long) = Action {
+    val mission = Mission.joins(Mission.stationsRef, Mission.startStationRef).findById(missionId)
+    Ok(Extraction.decompose(mission))
+  }
 
   def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     SearchMissions.form.bindFromRequest().fold(badRequest, search => {

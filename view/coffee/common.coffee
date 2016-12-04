@@ -60,13 +60,23 @@ failure = (jqXHR) ->
     twoDigit: (int) ->
       int.toLocaleString('en-IN', {minimumIntegerDigits: 2})
 
+@urlParams =
+  data:
+    params: {}
+  methods:
+    setParams: ->
+      @params = fromURLParameter(location.search.slice(1))
+  ready: ->
+    @setParams()
+
 # Game commons
 @missionParam =
   data:
     missionId: 0
+  mixins: [urlParams]
   methods:
     setMission: (failed)->
-      @missionId = parseInt(fromURLParameter(location.search.slice(1)).mission)
+      @missionId = parseInt(@params.mission)
       if !@missionId
         failed()
 

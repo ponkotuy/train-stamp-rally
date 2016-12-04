@@ -37,7 +37,6 @@ object Wikipedia {
   val DefaultParams = Map("action" -> "query", "format" -> "json")
   val URL = "https://ja.wikipedia.org/w/api.php"
 
-
   def parseSrcSet(set: String): Seq[ImgSrc] = {
     set.split(',').map { one =>
       val Array(url, scale) = one.trim.split(' ')

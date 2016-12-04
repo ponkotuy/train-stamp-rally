@@ -3,12 +3,16 @@ html(lang=ja)
   head
     include ../template/_header
     script(src='/js/game/clear.js')
+    script(src='/js/data/ranking.js')
     title Mission Clear
   body
     include ../template/_navbar
     .container(role=main)
       #game
         h1 Mission Complete!
+        form.form-inline
+          a.twitter-share-button(href="https://twitter.com/share", data-size='large', :data-text='mission.name + " Ranking"', data-url='https://train.ponkotuy.com/data/station.html?station={{missionId}}&account={{accountId}}', target='_blank') Tweet
+        script !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');
         h4 終了日時: {{ dateFormat(game.time) }}
         h4 使用金額: {{ game.money }}円
         h4 移動距離: {{ game.distance.toFixed(1) }}km
@@ -23,15 +27,15 @@ html(lang=ja)
           .col-sm-4
             h3 所要時間
             ol
-              li(v-for='rank in times') {{ rank.account.name }}: {{ dateFormat(rank.time) }}
+              li(v-for='rank in times', v-text='rank.account.name + ": " + dateFormat(rank.time)', :class='{"text-info": rank.account.id == accountId}')
           .col-sm-4
             h3 使用金額
             ol
-              li(v-for='rank in moneys') {{ rank.account.name }}: {{ rank.money }}円
+              li(v-for='rank in moneys', v-text='rank.account.name + ": " + rank.money + "円"', :class='{"text-info": rank.account.id == accountId}')
           .col-sm-4
             h3 移動距離
             ol
-              li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km
+              li(v-for='rank in distances', v-text='rank.account.name + ": " + rank.distance.toFixed(1) + "km"', :class='{"text-info": rank.account.id == accountId}')
       #complete.modal.fade(role='dialog')
         .modal-dialog(rol='document')
           .modal-content
