@@ -28,7 +28,9 @@
       data: data
       success: success
       error: failure
-  delete: (url, data, success) ->
+  delete: (url, a, b) ->
+    data = if b? then a else null
+    success = if b? then b else a
     $.ajax
       type: 'DELETE'
       url: url

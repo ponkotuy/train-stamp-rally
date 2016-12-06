@@ -10,6 +10,7 @@
     stations: []
     isAll: false
     costs: []
+    gameHistory: null
   methods:
     board: (to) ->
       API.putJSON

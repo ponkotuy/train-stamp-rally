@@ -49,10 +49,12 @@ GET /api/scrape/station/:lineId/:pageName controllers.Scraper.station(lineId: St
 GET /api/games controllers.Games.list()
 GET /api/game/:missionId controllers.Games.show(missionId: Long)
 POST /api/game/:missionId controllers.Games.create(missionId: Long)
+GET /api/game/:missionId/history controllers.Games.history(missionId: Long)
 
 GET /api/game/:gameId/progresses controllers.GameProgresses.list(gameId: Long)
 
 PUT /api/game/train controllers.Plays.board()
+DELETE /api/game/:missionId/train controllers.Plays.undo(missionId: Long)
 PUT /api/game/:missionId/clear controllers.Plays.clear(missionId: Long)
 
 GET /api/game/:missionId/ranking/time controllers.Plays.rankingTime(missionId: Long)
