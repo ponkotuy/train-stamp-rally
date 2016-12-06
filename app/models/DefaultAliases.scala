@@ -15,4 +15,5 @@ object DefaultAliases {
   def h = History.defaultAlias
   def si = StationImage.defaultAlias
   def ia = ImageAttribute.defaultAlias
+  def gh = GameHistory.defaultAlias
 }

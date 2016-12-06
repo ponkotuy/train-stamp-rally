@@ -53,6 +53,7 @@ POST /api/game/:missionId controllers.Games.create(missionId: Long)
 GET /api/game/:gameId/progresses controllers.GameProgresses.list(gameId: Long)
 
 PUT /api/game/train controllers.Plays.board()
+DELETE /api/game/:missionId/train controllers.Plays.undo(missionId: Long)
 PUT /api/game/:missionId/clear controllers.Plays.clear(missionId: Long)
 
 GET /api/game/:missionId/ranking/time controllers.Plays.rankingTime(missionId: Long)

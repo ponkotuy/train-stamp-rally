@@ -5,7 +5,7 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Game, GameProgress, Mission}
+import models.{Game, GameHistory, GameProgress, Mission}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.Controller
 import scalikejdbc._
@@ -53,6 +53,7 @@ object Games {
 
   def deleteGame(game: Game)(implicit session: DBSession): Unit = {
     GameProgress.deleteBy(sqls.eq(GameProgress.column.gameId, game.id))
+    GameHistory.deleteBy(sqls.eq(GameHistory.column.gameId, game.id))
     Game.deleteById(game.id)
   }
 }
