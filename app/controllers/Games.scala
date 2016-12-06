@@ -7,7 +7,7 @@ import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import models.{Game, GameHistory, GameProgress, Mission}
 import org.json4s.{DefaultFormats, Extraction}
-import play.api.mvc.Controller
+import play.api.mvc.{Controller, Result}
 import scalikejdbc._
 import utils.MissionTime
 
@@ -24,8 +24,9 @@ class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with A
   }
 
   def show(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    import models.DefaultAliases.g
     val game = Game.joins(Game.stationRef)
-        .findBy(sqls.eq(Game.column.accountId, loggedIn.id).and.eq(Game.column.missionId, missionId))
+        .findBy(sqls.eq(g.accountId, loggedIn.id).and.eq(g.missionId, missionId))
     Ok(Extraction.decompose(game))
   }
 
@@ -41,6 +42,22 @@ class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with A
         Success
       }
     }
+  }
+
+  def history(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    import utils.EitherUtil.eitherToRightProjection
+    import models.DefaultAliases.{g, gh}
+    val either = for {
+      game <- Game.findBy(sqls.eq(g.missionId, missionId).and.eq(g.accountId, loggedIn.id)).toRight[Result](notFound("game"))
+      history <- GameHistory.findAllByWithLimitOffset(
+        sqls.eq(gh.gameId, game.id),
+        limit = 1,
+        offset = 0,
+        Seq(gh.created.desc)).headOption.toRight(notFound("history"))
+    } yield {
+      Ok(Extraction.decompose(history))
+    }
+    either.merge
   }
 }
 

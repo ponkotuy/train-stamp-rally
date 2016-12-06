@@ -9,6 +9,7 @@ mainVue = ->
     lines: []
     fromLines: []
     trainModal: null
+    history: undefined
   methods:
     getGame: ->
       API.getJSON "/api/game/#{@missionId}", (json) =>
@@ -21,6 +22,12 @@ mainVue = ->
       API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
         @saveLines(json)
         @saveFromLines(json)
+    getHistory: ->
+      API.getJSON "/api/game/#{@missionId}/history", (json) =>
+        @history = json
+    back: ->
+      API.delete "/api/game/#{@missionId}/train", ->
+        location.reload(false)
     saveLines: (trains) ->
       for train in trains
         for stop in train.stops
@@ -66,6 +73,7 @@ mainVue = ->
     @setMission ->
       location.href = '/game/index.html'
     @getGame()
+    @getHistory()
 
 missionVue = (gameId) ->
   el: '#mission'
