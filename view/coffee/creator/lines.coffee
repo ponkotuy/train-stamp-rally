@@ -13,17 +13,17 @@ $(document).ready ->
             total: json.pagination.total
             last: json.pagination.last
       openModal: (line) ->
+        if lineModal?
+          @lineModal = modalVue()
         @lineModal.setLine(line)
         $(modalId).modal('show')
-    ready: ->
-      @lineModal = new Vue(modalVue)
 
 modalId = '#lineModal'
 
-modalVue =
+modalVue = -> new Vue
   el: modalId
   data:
-    line: {}
+    line: {company: null}
     stations: []
   methods:
     getStations: ->

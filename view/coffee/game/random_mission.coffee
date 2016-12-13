@@ -1,4 +1,4 @@
-@randomMission =
+@randomMission = -> new Vue
   el: '#random'
   data:
     mission: undefined

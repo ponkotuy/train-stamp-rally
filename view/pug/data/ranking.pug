@@ -9,7 +9,7 @@ html(lang=ja)
     include ../template/_navbar
     #main.container(role='main')
       h1.page-header(v-text='mission.name')
-      a(href='https://twitter.com/share?text={{mission.name}}+Ranking&hashtags=TrainStampRally', target='_blank') Tweet
+      a(:href="'https://twitter.com/share?text=' + mission.name + '+Ranking&hashtags=TrainStampRally'", target='_blank') Tweet
       .row
         .col-sm-4
           h3 所要時間 Ranking

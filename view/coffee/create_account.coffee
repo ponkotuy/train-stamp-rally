@@ -21,5 +21,5 @@ $(document).ready ->
           success: =>
             @alert = ""
             location.href = '/auth/session.html'
-    ready: ->
+    mounted: ->
       @message = vueMessage('#message')

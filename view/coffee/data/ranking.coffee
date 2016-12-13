@@ -11,7 +11,7 @@ $(document).ready ->
           @mission = json
       getStations: ->
 
-    ready: ->
+    mounted: ->
       @getMission()
 
 @rankingView =
@@ -37,7 +37,7 @@ $(document).ready ->
       @getDistances()
     setAccount: ->
       @accountId = parseInt(@params.account)
-  ready: ->
+  mounted: ->
     @setMission ->
       location.href = '/game/index.html'
     @setAccount()

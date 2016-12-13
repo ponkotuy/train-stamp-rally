@@ -6,8 +6,8 @@ script(src='/js/navbar.js')
     #navs.navbar-collapse.collapse.navbar-responsive-collapse
       ul.nav.navbar-nav
         li(v-for='cat in categories', :class="{'active': cat === category}")
-          a(href='/{{cat}}/index.html', v-text='camelCase(cat)')
+          a(:href='"/" + cat + "/index.html"', v-text='camelCase(cat)')
       ul.nav.navbar-nav.navbar-right
         li
           a(href='/auth/session.html', v-if='!account') Login
-          a(href='#', @click='logout()', v-if='account') {{ account.name }}(Logout)
+          a(href='#', @click='logout()', v-if='account', v-text='account.name + "(Logout)"')

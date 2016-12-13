@@ -36,7 +36,7 @@ $(document).ready ->
         API.getJSON '/api/mission/random', {size: size}, (json) =>
           @startStation = json.start.name
           @stations = json.stations.map (s) -> {name: s.name}
-    ready: ->
+    mounted: ->
       @getStations()
     watch:
       stations: ->

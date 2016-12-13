@@ -6,12 +6,12 @@ h1 Create Fare
       label.col-sm-3.control-label(for='company') Company
       .col-sm-9
         select#company.form-control(v-model='company')
-          option(v-for='c in companies', value='{{ c.id }}', v-text='c.name')
+          option(v-for='c in companies', :value='c.id', v-text='c.name')
     .form-group
       label.col-sm-3.control-label(for='trainType') Type
       .col-sm-9
         select#trainType.form-control(v-model='trainType')
-          option(v-for='type in trainTypes', value='{{ type.value }}', v-text='type.name')
+          option(v-for='type in trainTypes', :value='type.value', v-text='type.name')
     .form-group
       label.col-sm-6.control-label km
       label.col-sm-6.control-label Cost

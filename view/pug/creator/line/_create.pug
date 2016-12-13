@@ -10,14 +10,14 @@ script(src='/js/creator/create_line.js')
       label.col-sm-3.control-label(for='company') Company
       .col-sm-9
         select#company.form-control(v-model='company')
-          option(v-for='c in companies', value='{{ c.id }}', v-text='c.name')
+          option(v-for='c in companies', :value='c.id', v-text='c.name')
   h3 Stations
   form.form-horizontal
     .form-group
       label.col-sm-5.control-label Name
       label.col-sm-3.control-label Distance(km)
       label.col-sm-3.control-label Size
-    .form-group(v-for='(idx, st) in stations')
+    .form-group(v-for='(st, idx) in stations')
       .col-sm-5
         input.form-control(type='text', v-model='st.name')
       .col-sm-3

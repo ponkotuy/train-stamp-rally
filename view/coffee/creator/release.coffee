@@ -18,5 +18,5 @@ $(document).ready ->
           @releases = json
           for r in json
             @releaseSelector.push({id: r.id, name: r.id})
-    ready: ->
+    mounted: ->
       @getReleases()

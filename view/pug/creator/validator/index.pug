@@ -12,5 +12,5 @@ html(lang=ja)
       #messages
         .panel.panel-default(v-for='mes in messages')
           .panel-body
-            a(v-if='mes.url', href='{{ mes.url }}', v-text='mes.message')
+            a(v-if='mes.url', :href='mes.url', v-text='mes.message')
             span(v-if='!mes.url', v-text='mes.message')

@@ -1,6 +1,7 @@
 $(document).ready ->
-  modal = new Vue(stationModal)
-  new Vue(randomMission)
+  stationModalId = '#stationModal'
+  modal = stationModal(stationModalId)
+  randomMission()
 
   new Vue
     el: '#missions'

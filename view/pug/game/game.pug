@@ -31,7 +31,7 @@ html(lang=ja)
             div(v-for='progress in progresses', :class='{"text-success": progress.arrivalTime, "text-danger": !progress.arrivalTime}')
               h4
                 span.glyphicon(:class='{"glyphicon-ok": progress.arrivalTime, "glyphicon-remove": !progress.arrivalTime}')
-                a(v-text='progress.station.name', href='/data/station.html?id={{progress.station.id}}', target='_blank')
+                a(v-text='progress.station.name', :href="'/data/station.html?id=' + progress.station.id", target='_blank')
     .modal#trainModal.fade(role='dialog')
       .modal-dialog(role='document')
         .modal-content
@@ -52,13 +52,13 @@ html(lang=ja)
                   th Fee
                   th Distance
               tbody
-                tr(v-for='stop in stations', v-if='isAll || stop.isMain')
+                tr(v-for='(stop, idx) in stations', v-if='isAll || stop.isMain')
                   td
-                    a(@click='board(stop.station.id)', href='javascript:void(0)', v-if='$index != 0', v-text='stop.station.name')
-                    span(v-if='$index == 0')
+                    a(@click='board(stop.station.id)', href='javascript:void(0)', v-if='idx != 0', v-text='stop.station.name')
+                    span(v-if='idx == 0')
                       strong(v-text='stop.station.name')
-                  td(v-if='$index == 0') --
-                  td(v-if='$index != 0', v-text='timeFormat(stop.arrival)')
+                  td(v-if='idx == 0') --
+                  td(v-if='idx != 0', v-text='timeFormat(stop.arrival)')
                   td(v-text='timeFormat(stop.departure)')
                   td(v-text='stop.fee + "円"')
-                  td(v-text='stop.distance.toFixed(1) + "km"')
+                  td(v-text='toFixed(stop.distance, 1) + "km"')
