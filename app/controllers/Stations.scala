@@ -12,14 +12,14 @@ import play.api.mvc.Controller
 import queries.CreateStationImpl
 import scalikejdbc._
 
-class Stations @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Stations @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
   implicit val formats = DefaultFormats + StationRankSerializer
 
   def list(q: Option[String]) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     import models.DefaultAliases.s
-    val where = q.map { name => sqls.like(s.name, s"%${name}").or.like(s.name , s"${name}%") }.getOrElse(sqls"true")
+    val where = q.map { name => sqls.like(s.name, s"%${name}").or.like(s.name, s"${name}%") }.getOrElse(sqls"true")
     Ok(Extraction.decompose(Station.findAllBy(where, Seq(s.id))))
   }
 
@@ -58,7 +58,7 @@ class Stations @Inject()(json4s: Json4s) extends Controller with AuthElement wit
       station.station.fold(notFound(s"rankValue: ${station.rankValue}")) { s =>
         val result = DB localTx { implicit session =>
           val id = s.save()
-          if(LineStation.updateById(lineStationId).withAttributes('stationId -> id) == 0)
+          if (LineStation.updateById(lineStationId).withAttributes('stationId -> id) == 0)
             Left(notFound(s"lineStation id=${lineStationId}"))
           else Right(Success)
         }

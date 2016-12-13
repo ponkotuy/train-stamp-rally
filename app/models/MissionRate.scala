@@ -12,6 +12,6 @@ object MissionRate extends SkinnyNoIdCRUDMapper[MissionRate] {
 
   def upsert(missionId: Long, rate: Int)(implicit session: DBSession): Unit = {
     sql"INSERT INTO ${table} (mission_id, rate) VALUES (${missionId}, ${rate}) ON DUPLICATE KEY UPDATE rate = rate + ${rate}"
-        .update().apply()
+      .update().apply()
   }
 }

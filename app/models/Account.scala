@@ -34,10 +34,9 @@ object Account extends SkinnyCRUDMapperWithId[Long, Account] {
 }
 
 object AccountSerializer extends CustomSerializer[Account](format => (
-    {PartialFunction.empty},
-    {
-      case x: Account =>
-        ("id" -> x.id) ~ ("name" -> x.name) ~ ("role" -> x.role.value)
-    }
-    )
-)
+  { PartialFunction.empty },
+  {
+    case x: Account =>
+      ("id" -> x.id) ~ ("name" -> x.name) ~ ("role" -> x.role.value)
+  }
+))

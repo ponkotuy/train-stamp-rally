@@ -4,14 +4,15 @@ import scala.util.Try
 import scala.xml.{NodeSeq, Text}
 
 case class TrainPage(
-    name: String,
-    number: String,
-    code: Option[Int],
-    stops: List[StopDetail],
-    url: String,
-    car: List[String],
-    remark: List[String],
-    day: String)
+  name: String,
+  number: String,
+  code: Option[Int],
+  stops: List[StopDetail],
+  url: String,
+  car: List[String],
+  remark: List[String],
+  day: String
+)
 
 object TrainPage {
   import utils.ParseHelper._
@@ -20,8 +21,8 @@ object TrainPage {
     import scala.language.implicitConversions
     implicit def rightBias[A, B](e: Either[A, B]) = e.right
     for {
-      container <- (xml \\ "div" find(_ \ "@id" contains Text("container02"))).toRight("container")
-      table <- (container \\ "table" find(_ \ "@cellpadding" contains Text("5"))).toRight("table")
+      container <- (xml \\ "div" find (_ \ "@id" contains Text("container02"))).toRight("container")
+      table <- (container \\ "table" find (_ \ "@cellpadding" contains Text("5"))).toRight("table")
       trs = table \ "tbody" \ "tr"
       name <- extractValueFromTr(trs, 0)(norm).toRight("name")
       number <- extractValueFromTr(trs, 1)(norm).toRight("number")

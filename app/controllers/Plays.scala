@@ -14,7 +14,7 @@ import responses.TrainResponse
 import scalikejdbc._
 import utils.EitherUtil._
 
-class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
 
@@ -26,7 +26,7 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
       val result: Either[Result, Result] = for {
         b <- req.body.extractOpt[Board].toRight(JSONParseError)
         game <- Game.findBy(sqls.eq(Game.column.accountId, loggedIn.id).and.eq(Game.column.missionId, b.missionId))
-            .toRight(notFound("Mission"))
+          .toRight(notFound("Mission"))
         _ <- Either.cond(game.stationId == b.fromStation, Unit, BadRequest("Wrong fromStation."))
         train <- TrainResponse.fromTrainId(b.trainId).toRight(notFound("Train"))
         startLine <- train.stops.headOption.map(_.line).toRight(notFound("Stops"))
@@ -37,7 +37,7 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
       } yield {
         val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation, companyId).apply(game)
         val fixedGame: Game = GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).fold(afterGame) { progress =>
-          if(progress.arrivalTime.isEmpty) {
+          if (progress.arrivalTime.isEmpty) {
             progress.copy(arrivalTime = Some(afterGame.time.addMinutes(-1))).update()
             afterGame.copy(time = afterGame.time.addMinutes(5)) // スタンプを押すのに5分
           } else afterGame
@@ -56,7 +56,7 @@ class Plays @Inject()(json4s: Json4s) extends Controller with AuthElement with A
         cl <- req.body.extractOpt[Clear].toRight(JSONParseError)
         _ <- Either.cond(cl.isValid, Unit, BadRequest("Invalid rate value"))
         game <- Game.findBy(sqls.eq(g.accountId, loggedIn.id).and.eq(g.missionId, missionId))
-            .toRight(notFound("Mission"))
+          .toRight(notFound("Mission"))
         progresses = GameProgress.findAllBy(sqls.eq(gp.gameId, game.id))
         _ <- Either.cond(progresses.forall(_.arrivalTime.isDefined), Unit, BadRequest("Not cleared."))
       } yield {

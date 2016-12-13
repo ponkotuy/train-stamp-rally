@@ -1,4 +1,8 @@
 
+import scalariform.formatter.preferences._
+import com.typesafe.sbt.SbtScalariform
+import com.typesafe.sbt.SbtScalariform.ScalariformKeys
+
 name := "TrainStampRally"
 
 scalaVersion := "2.11.8"
@@ -24,3 +28,10 @@ libraryDependencies ++= Seq(
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)
+
+
+SbtScalariform.scalariformSettings
+
+ScalariformKeys.preferences := ScalariformKeys.preferences.value
+  .setPreference(DoubleIndentClassDeclaration, true)
+  .setPreference(SpacesAroundMultiImports, false)

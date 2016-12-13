@@ -10,7 +10,7 @@ import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.Controller
 import scalikejdbc._
 
-class GameProgresses @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class GameProgresses @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import json4s._
 
   implicit val format = DefaultFormats

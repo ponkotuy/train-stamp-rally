@@ -9,7 +9,8 @@ case class LineStation(
     stationId: Long,
     km: Double,
     line: Option[Line] = None,
-    station: Option[Station] = None) {
+    station: Option[Station] = None
+) {
   def save()(implicit session: DBSession): Long = LineStation.save(this)
 }
 

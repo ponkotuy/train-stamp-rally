@@ -11,7 +11,7 @@ import play.api.mvc.{Action, Controller}
 import queries.CreateAccount
 import scalikejdbc.AutoSession
 
-class Accounts @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Accounts @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import json4s._
   import Responses._
 

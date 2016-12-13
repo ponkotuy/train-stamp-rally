@@ -34,7 +34,7 @@ trait AuthConfigImpl extends AuthConfig {
   override def authorizationFailed(request: RequestHeader, user: User, authority: Option[Role])(implicit context: ExecutionContext): Future[Result] =
     Future.successful(Forbidden("Authorization failed"))
 
-  override def authorize(user: User, authority: Authority)(implicit context: ExecutionContext): Future[Boolean] = Future.successful{
+  override def authorize(user: User, authority: Authority)(implicit context: ExecutionContext): Future[Boolean] = Future.successful {
     (user.role, authority) match {
       case (Role.Disabled, _) => false
       case (Role.Administrator, _) => true

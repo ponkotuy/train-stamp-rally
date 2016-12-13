@@ -16,8 +16,9 @@ object RandomMission {
   def create(size: Int)(implicit session: DBSession): RandomMission = {
     val start = findStations(StationRank.Top, 1).head
     val rate = RankRate.findSize(size)
-    val stations: Seq[Station] = rate().flatMap { case (rank, rate) =>
-      findStations(rank, size / 6 * rate)
+    val stations: Seq[Station] = rate().flatMap {
+      case (rank, rate) =>
+        findStations(rank, size / 6 * rate)
     }(breakOut)
     val name = s"${rate.name.capitalize} Mission"
     RandomMission(name, start, stations)
@@ -69,6 +70,6 @@ object RankRate {
 
   val constraint = Constraint[String]("rankrate") { o =>
     val strs: Set[String] = values.map(_.name)(breakOut)
-    if(strs.contains(o)) Valid else Invalid(ValidationError("rankrate.value", o))
+    if (strs.contains(o)) Valid else Invalid(ValidationError("rankrate.value", o))
   }
 }

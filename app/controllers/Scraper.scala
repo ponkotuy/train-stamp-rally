@@ -13,7 +13,7 @@ import scrape.model.{StationPage, TrainPage}
 import scala.io.Codec
 import scala.xml._
 
-class Scraper @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Scraper @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import Scraper._
   import json4s._

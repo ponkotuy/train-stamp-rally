@@ -12,7 +12,7 @@ import scalikejdbc.AutoSession
 import utils.MethodProfiler
 import validator.{DiagramValidator, ErrorSerializer, LackTrainValidator, StationStopValidator}
 
-class Validators @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Validators @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import json4s._
 
   implicit val format = DefaultFormats + ErrorSerializer

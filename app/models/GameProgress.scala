@@ -8,7 +8,8 @@ case class GameProgress(
     gameId: Long,
     stationId: Long,
     arrivalTime: Option[MissionTime],
-    station: Option[Station] = None) {
+    station: Option[Station] = None
+) {
   def save()(implicit session: DBSession): Unit = GameProgress.save(this)
 
   def update()(implicit session: DBSession): Unit = GameProgress.update(this)

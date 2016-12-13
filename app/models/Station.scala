@@ -17,10 +17,10 @@ object Station extends SkinnyCRUDMapperWithId[Long, Station] {
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
   def save(station: Station)(implicit session: DBSession): Long =
-    createWithAttributes(params(station):_*)
+    createWithAttributes(params(station): _*)
 
   def update(station: Station)(implicit session: DBSession): Int =
-    updateById(station.id).withAttributes(params(station):_*)
+    updateById(station.id).withAttributes(params(station): _*)
 
   def params(s: Station) = Seq('name -> s.name, 'rank -> s.rank.value)
 

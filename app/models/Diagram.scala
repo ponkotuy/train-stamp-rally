@@ -52,10 +52,10 @@ object Diagram extends SkinnyCRUDMapperWithId[Long, Diagram] {
   }.map(_.long(1)).list().apply()
 
   def save(d: Diagram)(implicit session: DBSession): Long =
-    createWithAttributes(params(d):_*)
+    createWithAttributes(params(d): _*)
 
   def update(d: Diagram)(implicit session: DBSession): Int =
-    updateById(d.id).withAttributes(params(d):_*)
+    updateById(d.id).withAttributes(params(d): _*)
 
   def params(d: Diagram) = Seq(
     'name -> d.name,

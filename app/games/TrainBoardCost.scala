@@ -47,9 +47,10 @@ object TrainCost {
       }.scanLeft(0.0)(_ + _)
       stops.zip(distances.toSeq)
     }.getOrElse(Nil)
-    distances.map { case (stop, distance) =>
-      val fee = FeeCalculator.calc(diagram.trainType, diagram.stops.head.line.companyId, distance)(AutoSession)
-      TrainCost(stop.station, distance, fee)
+    distances.map {
+      case (stop, distance) =>
+        val fee = FeeCalculator.calc(diagram.trainType, diagram.stops.head.line.companyId, distance)(AutoSession)
+        TrainCost(stop.station, distance, fee)
     }
   }
 }

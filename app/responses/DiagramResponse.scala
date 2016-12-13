@@ -4,12 +4,12 @@ import models._
 import scalikejdbc.DBSession
 
 case class DiagramResponse(
-    id: Long,
-    name: String,
-    trainType: TrainType,
-    subType: String,
-    stops: Seq[DiagramStationResponse],
-    trains: Seq[Train]
+  id: Long,
+  name: String,
+  trainType: TrainType,
+  subType: String,
+  stops: Seq[DiagramStationResponse],
+  trains: Seq[Train]
 )
 
 object DiagramResponse {
@@ -32,12 +32,12 @@ object DiagramResponse {
 }
 
 case class DiagramStationResponse(
-    id: Long,
-    arrival: Option[Int],
-    departure: Option[Int],
-    lineStation: LineStation,
-    line: Line,
-    station: Station
+  id: Long,
+  arrival: Option[Int],
+  departure: Option[Int],
+  lineStation: LineStation,
+  line: Line,
+  station: Station
 )
 
 object DiagramStationResponse {

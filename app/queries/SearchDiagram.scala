@@ -21,7 +21,7 @@ object SearchDiagram {
       import DefaultAliases.d
       import Diagram.{stopStationRef, trainRef}
       Diagram.joins(trainRef, stopStationRef).findAll(Seq(d.id.desc))
-          .map(DiagramResponse.fromDiagram)
+        .map(DiagramResponse.fromDiagram)
     }
 
     override def tuple = (None, None, None, None, None)
@@ -34,8 +34,8 @@ object SearchDiagram {
       val pagination = Pagination.page(pageNo).per(size)
       val where = lineName.map(whereLineName).getOrElse(sqls"true")
       val data = Diagram.joins(trainRef, stopStationRef)
-          .findAllByWithPagination(where, pagination, Seq(d.id.desc))
-          .map(DiagramResponse.fromDiagram)
+        .findAllByWithPagination(where, pagination, Seq(d.id.desc))
+        .map(DiagramResponse.fromDiagram)
       val count = Diagram.countBy(where)
       val page = Page(count, size, pageNo)
       WithPage(page, data)
@@ -58,7 +58,7 @@ object SearchDiagram {
       val diagramIds = findDiagramIds(stationId)
       val where = sqls.in(d.id, diagramIds).and.isNull(d.staging)
       Diagram.joins(Diagram.stopStationRef).findAllBy(where)
-          .map(DiagramResponse.fromDiagram)
+        .map(DiagramResponse.fromDiagram)
     }
 
     override def tuple = (Some(stationId), None, None, None, None)
@@ -80,22 +80,23 @@ object SearchDiagram {
       }
     }
 
-    override def tuple  = (Some(stationId), Some(time.toString), None, None, None)
+    override def tuple = (Some(stationId), Some(time.toString), None, None, None)
   }
 
   def apply(
-      stationIdOpt: Option[Long],
-      timeOpt: Option[String],
-      pageNoOpt: Option[Int],
-      sizeOpt: Option[Int],
-      lineName: Option[String]): SearchDiagram = {
+    stationIdOpt: Option[Long],
+    timeOpt: Option[String],
+    pageNoOpt: Option[Int],
+    sizeOpt: Option[Int],
+    lineName: Option[String]
+  ): SearchDiagram = {
     stationIdOpt.fold {
       pageNoOpt.fold(All: SearchDiagram) { pageNo =>
         Paging(pageNo, sizeOpt.getOrElse(10), lineName): SearchDiagram
       }
     } { stationId =>
       timeOpt.flatMap(TrainTime.fromString)
-          .fold(StationSearch(stationId): SearchDiagram) { time => TimeSearch(stationId, time): SearchDiagram }
+        .fold(StationSearch(stationId): SearchDiagram) { time => TimeSearch(stationId, time): SearchDiagram }
     }
   }
 

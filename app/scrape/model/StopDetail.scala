@@ -4,12 +4,13 @@ import scala.xml.NodeSeq
 import scala.collection.breakOut
 
 case class StopDetail(
-    name: String,
-    url: String,
-    code: Option[Int],
-    no: Option[String],
-    departure: TrainRun,
-    arrive: TrainRun)
+  name: String,
+  url: String,
+  code: Option[Int],
+  no: Option[String],
+  departure: TrainRun,
+  arrive: TrainRun
+)
 
 object StopDetail {
   import utils.ParseHelper._

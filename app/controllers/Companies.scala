@@ -11,7 +11,7 @@ import play.api.mvc.Controller
 import queries.{CreateCompany, CreateFares}
 import scalikejdbc._
 
-class Companies @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Companies @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
   implicit val formats = DefaultFormats + TrainTypeSerializer
@@ -35,7 +35,7 @@ class Companies @Inject()(json4s: Json4s) extends Controller with AuthElement wi
   }
 
   def fares(companyId: Long, trainType: Int) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-      import models.DefaultAliases.f
+    import models.DefaultAliases.f
     TrainType.find(trainType).fold(notFound(s"train type: ${trainType}")) { tType =>
       val fares = Fare.findAllBy(sqls.eq(f.companyId, companyId).and.eq(f.trainType, tType.value))
       Ok(Extraction.decompose(fares))

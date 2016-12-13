@@ -22,10 +22,9 @@ object TrainType {
 }
 
 object TrainTypeSerializer extends CustomSerializer[TrainType](format => (
-    {PartialFunction.empty},
-    {
-      case x: TrainType =>
-        ("value" -> x.value) ~ ("name" -> x.name)
-    }
-    )
-)
+  { PartialFunction.empty },
+  {
+    case x: TrainType =>
+      ("value" -> x.value) ~ ("name" -> x.name)
+  }
+))

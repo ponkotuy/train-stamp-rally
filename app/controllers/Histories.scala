@@ -11,7 +11,7 @@ import play.api.mvc.{Action, Controller}
 import queries.CreateHistory
 import scalikejdbc._
 
-class Histories @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Histories @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import controllers.Responses._
   import json4s._
 

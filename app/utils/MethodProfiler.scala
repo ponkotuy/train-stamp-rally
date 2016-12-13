@@ -12,10 +12,11 @@ trait MethodProfiler {
 
 object MethodProfiler {
   def apply(): MethodProfiler = new ProfilerImpl()
-  /** 確率で実際にProfile取るInstanceを返す。
-    *
-    * @param rate: rate分の1の確率でImplを返す。残りはdummyで何もしないclassを返す。
-    */
+  /**
+   * 確率で実際にProfile取るInstanceを返す。
+   *
+   * @param rate: rate分の1の確率でImplを返す。残りはdummyで何もしないclassを返す。
+   */
   def genRandom(rate: Int): MethodProfiler = {
     if (Random.nextInt(rate) == 0) new ProfilerImpl()
     else NopProfiler
@@ -41,7 +42,7 @@ class ProfilerImpl() extends MethodProfiler {
     }
     try { f } finally {
       end()
-      if(starts.isEmpty) log()
+      if (starts.isEmpty) log()
     }
   }
 
@@ -66,7 +67,6 @@ class ProfilerImpl() extends MethodProfiler {
 
   override def toString: String = s"ProfilerImpl\nstarts:${starts.mkString(",")}\nresults:${results.mkString(",")}"
 }
-
 
 object NopProfiler extends MethodProfiler {
   override def apply[T](name: String)(f: => T): T = f

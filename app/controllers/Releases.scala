@@ -11,7 +11,7 @@ import scalikejdbc._
 import play.api.mvc.Controller
 import responses.{DiagramResponse, ReleaseResponse}
 
-class Releases @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Releases @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import json4s._
 
   implicit val format = DefaultFormats + TrainTypeSerializer
@@ -19,8 +19,9 @@ class Releases @Inject()(json4s: Json4s) extends Controller with AuthElement wit
   def list() = StackAction(AuthorityKey -> Administrator) { implicit req =>
     import models.DefaultAliases.d
     val diagrams = Diagram.joins(Diagram.stopStationRef).findAllBy(sqls.isNotNull(d.staging))
-    val result = diagrams.groupBy(_.staging.get).map { case (staging, ds) =>
-      ReleaseResponse(staging, ds.map(DiagramResponse.fromDiagram))
+    val result = diagrams.groupBy(_.staging.get).map {
+      case (staging, ds) =>
+        ReleaseResponse(staging, ds.map(DiagramResponse.fromDiagram))
     }
     Ok(Extraction.decompose(result))
   }

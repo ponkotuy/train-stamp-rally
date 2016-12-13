@@ -29,10 +29,10 @@ case class SearchMissions(
 case class MissionFilter(rank: Option[RankRate], stations: Option[Set[Long]]) {
   def apply(x: Mission): Boolean = {
     rank.forall(RankRate.findSize(x.stations.size) == _) &&
-        stations.forall { sts =>
-          sts.contains(x.startStationId) ||
-              x.stations.exists { st => sts.contains(st.id) }
-        }
+      stations.forall { sts =>
+        sts.contains(x.startStationId) ||
+          x.stations.exists { st => sts.contains(st.id) }
+      }
   }
 }
 

@@ -18,34 +18,34 @@ object Stop {
   }
 
   case class Time(hour: Int, minutes: Int) extends Ordered[Time] {
-    def minuteOfDay = hour*60 + minutes
+    def minuteOfDay = hour * 60 + minutes
     def compare(that: Time) = this.minuteOfDay - that.minuteOfDay
   }
 
   object Time {
     def fromString(str: String): Option[Time] = str.split(':') match {
-      case Array(h, m) => Some( Time(h.toInt, m.toInt) )
+      case Array(h, m) => Some(Time(h.toInt, m.toInt))
       case _ => None
     }
   }
 }
 
 case class CreateStops(
-  stations: GenIterable[String],
-  stoptypes: GenIterable[String],
-  line: String)
-{
+    stations: GenIterable[String],
+    stoptypes: GenIterable[String],
+    line: String
+) {
   import Stop._
   type Data = (String, String, String)
   def create(times: GenIterable[String]): List[Stop] = {
     def f(xs: GenIterable[Data], before: String): List[Stop] = xs match {
-      case y@(nameRaw: String, typ: String, timeRaw: String) :: ys => {
+      case y @ (nameRaw: String, typ: String, timeRaw: String) :: ys => {
         val name = nameRaw match {
           case "〃" => before
           case n: String => n
         }
         val time = Time.fromString(timeRaw)
-        if(time.isEmpty) return f(ys, name)
+        if (time.isEmpty) return f(ys, name)
         Stop(name, line, StopType.fromString(typ), time.get) :: f(ys, name)
       }
       case _ => Nil

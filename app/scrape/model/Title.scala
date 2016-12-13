@@ -17,14 +17,14 @@ object Title {
   private def norm(str: String) = Normalizer.normalize(str, Normalizer.Form.NFKC)
 
   def fromXML(xml: NodeSeq) = {
-    val title = norm( (xml \\ "span" \ "span").text )
+    val title = norm((xml \\ "span" \ "span").text)
     val splitted = title.split(' ')
     val Array(_, company, line) = splitted(0).split("\\[|\\]")
     val Array(rawDest, rawDirect) = splitted(1).split("\\(|\\)")
     val dest = rawDest.stripSuffix("方面")
     val direct = Direction.fromString(rawDirect)
-    val week = Week.fromString( splitted(2) )
-    val page = Page.fromString( splitted(3) )
+    val week = Week.fromString(splitted(2))
+    val page = Page.fromString(splitted(3))
     Title(company, line, dest, direct, week, page)
   }
 

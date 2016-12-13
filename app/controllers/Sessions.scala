@@ -11,7 +11,7 @@ import scalikejdbc.AutoSession
 
 import scala.concurrent.ExecutionContext
 
-class Sessions @Inject()(json4s: Json4s, implicit val ec: ExecutionContext)
+class Sessions @Inject() (json4s: Json4s, implicit val ec: ExecutionContext)
     extends Controller
     with AuthConfigImpl
     with LoginLogout {

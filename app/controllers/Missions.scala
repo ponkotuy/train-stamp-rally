@@ -12,7 +12,7 @@ import queries.{CreateMission, Paging, RandomMission, SearchMissions}
 import responses.{MinScore, MissionScore, Page, WithPage}
 import scalikejdbc._
 
-class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Missions._
   import Responses._
   import json4s._
@@ -24,7 +24,7 @@ class Missions @Inject()(json4s: Json4s) extends Controller with AuthElement wit
       val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef).findAllBy(search.where)
       val filter = search.filter()(AutoSession)
       val filtered = missions.filter(filter.apply).sortBy(-_.rate)
-      val result = if(search.score) withScores(loggedIn.id, filtered)(AutoSession) else filtered
+      val result = if (search.score) withScores(loggedIn.id, filtered)(AutoSession) else filtered
       val withPage = Paging.form.bindFromRequest().value.fold[Any](result) { p =>
         val total = result.size
         val data = result.slice(p.from, p.to)
@@ -56,7 +56,7 @@ object Missions {
     val scores = Score.findAllBy(sqls.eq(sc.accountId, accountId).and.in(sc.missionId, missions.map(_.id)))
     missions.map { mission =>
       val xs = scores.filter(_.missionId == mission.id)
-      if(xs.isEmpty) MissionScore(mission, None)
+      if (xs.isEmpty) MissionScore(mission, None)
       else {
         val time = xs.map(_.time).min
         val distance = xs.map(_.distance).min

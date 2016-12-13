@@ -10,7 +10,7 @@ class StationStopValidator(allStops: Seq[StopStation]) {
   def validate(stations: Seq[LineStation]): Seq[Error] = {
     val stationIds: Set[Long] = allStops.map(_.lineStationId)(breakOut)
     stations.flatMap { st =>
-      if(stationIds.contains(st.id)) None
+      if (stationIds.contains(st.id)) None
       else {
         Some(new UndefinedTrainError(st))
       }

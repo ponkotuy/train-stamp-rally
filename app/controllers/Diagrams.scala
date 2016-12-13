@@ -13,7 +13,7 @@ import queries.{CreateDiagram, SearchDiagram}
 import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc._
 
-class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Diagrams @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Diagrams._
   import Responses._
   import json4s._
@@ -45,13 +45,13 @@ class Diagrams @Inject()(json4s: Json4s) extends Controller with AuthElement wit
 
   def update(diagramId: Long) = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
     req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
-      if(updateDiagram(diagramId, diagram) == 0) notFound(s"Diagram id=${diagramId}")
+      if (updateDiagram(diagramId, diagram) == 0) notFound(s"Diagram id=${diagramId}")
       else Success
     }
   }
 
   def delete(diagramId: Long) = StackAction(AuthorityKey -> Administrator) { implicit req =>
-    if(deleteDiagram(diagramId) <= 0) notFound("diagram") else Success
+    if (deleteDiagram(diagramId) <= 0) notFound("diagram") else Success
   }
 
   def train(trainId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>

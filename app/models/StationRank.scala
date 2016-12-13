@@ -21,10 +21,9 @@ object StationRank {
 }
 
 object StationRankSerializer extends CustomSerializer[StationRank](format => (
-    {PartialFunction.empty},
-    {
-      case x: StationRank =>
-        ("value" -> x.value) ~ ("name" -> x.name)
-    }
-    )
-)
+  { PartialFunction.empty },
+  {
+    case x: StationRank =>
+      ("value" -> x.value) ~ ("name" -> x.name)
+  }
+))

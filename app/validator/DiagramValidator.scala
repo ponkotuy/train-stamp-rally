@@ -2,19 +2,20 @@ package validator
 
 import models.{LineStation, StopStation}
 
-class DiagramValidator (allStops: Seq[StopStation], allLineStations: Seq[LineStation]) {
+class DiagramValidator(allStops: Seq[StopStation], allLineStations: Seq[LineStation]) {
   import DiagramValidator._
   def validate(diagramId: Long): Seq[Error] = {
     val stops = allStops.filter(_.diagramId == diagramId)
-    if(stops.size < 2) { return List(new LackStopsError(diagramId)) }
-    if(!checkStart(stops.head)) return List(new StartStopError(diagramId, stops.head))
-    if(!checkEnd(stops.last)) return List(new EndStopError(diagramId, stops.last))
-    stops.sliding(2).flatMap { case Seq(x, y) =>
-      val lineStationX = allLineStations.find(_.id == x.lineStationId).get
-      val lineStationY = allLineStations.find(_.id == y.lineStationId).get
-      if(lineStationX.lineId != lineStationY.lineId &&
+    if (stops.size < 2) { return List(new LackStopsError(diagramId)) }
+    if (!checkStart(stops.head)) return List(new StartStopError(diagramId, stops.head))
+    if (!checkEnd(stops.last)) return List(new EndStopError(diagramId, stops.last))
+    stops.sliding(2).flatMap {
+      case Seq(x, y) =>
+        val lineStationX = allLineStations.find(_.id == x.lineStationId).get
+        val lineStationY = allLineStations.find(_.id == y.lineStationId).get
+        if (lineStationX.lineId != lineStationY.lineId &&
           lineStationX.stationId != lineStationY.stationId) Some(new LineConnectionError(diagramId, x, y))
-      else None
+        else None
     }.toSeq
   }
 
@@ -29,7 +30,8 @@ class DiagramValidator (allStops: Seq[StopStation], allLineStations: Seq[LineSta
   class LineConnectionError(
       diagramId: Long,
       stop1: StopStation,
-      stop2: StopStation) extends DiagramError(diagramId) {
+      stop2: StopStation
+  ) extends DiagramError(diagramId) {
     override def content: String =
       s"Not connect from ${stop1.lineStationId} to ${stop2.lineStationId}"
   }
@@ -54,7 +56,7 @@ object DiagramValidator {
 
 class LackTrainValidator(diagrams: Set[Long]) {
   def validate(diagramId: Long): Option[Error] =
-    if(diagrams.contains(diagramId)) None else Some(new LackTrainsError(diagramId))
+    if (diagrams.contains(diagramId)) None else Some(new LackTrainsError(diagramId))
 }
 
 class LackTrainsError(diagramId: Long) extends Error {

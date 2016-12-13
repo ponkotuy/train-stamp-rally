@@ -7,13 +7,13 @@ import utils.TrainTime
 import scala.collection.breakOut
 
 case class TrainResponse(
-    id: Long,
-    start: TrainTime,
-    diagramId: Long,
-    name: String,
-    trainType: TrainType,
-    subType: String,
-    stops: Seq[TrainStopResponse]
+  id: Long,
+  start: TrainTime,
+  diagramId: Long,
+  name: String,
+  trainType: TrainType,
+  subType: String,
+  stops: Seq[TrainStopResponse]
 )
 
 object TrainResponse {
@@ -28,8 +28,8 @@ object TrainResponse {
   def fromTrainDiagram(train: Train, diagram: Diagram): TrainResponse = {
     val lineStationIds = diagram.stops.map(_.lineStationId)
     val lineStations: Map[Long, LineStation] = LineStation.joins(LineStation.stationRef, LineStation.lineRef)
-        .findAllByIds(lineStationIds.distinct:_*)
-        .map { ls => ls.id -> ls }(breakOut)
+      .findAllByIds(lineStationIds.distinct: _*)
+      .map { ls => ls.id -> ls }(breakOut)
     val trainStops = diagram.stops.flatMap { stop =>
       lineStations.get(stop.lineStationId).map { ls =>
         TrainStopResponse.fromObj(train, stop, ls)
@@ -44,12 +44,12 @@ object TrainResponse {
 }
 
 case class TrainStopResponse(
-    id: Long,
-    arrival: Option[TrainTime],
-    departure: Option[TrainTime],
-    lineStation: LineStation,
-    line: Line,
-    station: Station
+  id: Long,
+  arrival: Option[TrainTime],
+  departure: Option[TrainTime],
+  lineStation: LineStation,
+  line: Line,
+  station: Station
 )
 
 object TrainStopResponse {

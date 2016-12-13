@@ -9,9 +9,9 @@ abstract class Error {
 }
 
 object ErrorSerializer extends CustomSerializer[Error](format => (
-    {PartialFunction.empty},
-    {
-      case x: Error =>
-        ("message" -> x.message) ~ ("url" -> x.url)
-    }
+  { PartialFunction.empty },
+  {
+    case x: Error =>
+      ("message" -> x.message) ~ ("url" -> x.url)
+  }
 ))

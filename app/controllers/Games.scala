@@ -11,7 +11,7 @@ import play.api.mvc.Controller
 import scalikejdbc._
 import utils.MissionTime
 
-class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Games @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Games._
   import Responses._
   import json4s._
@@ -25,7 +25,7 @@ class Games @Inject()(json4s: Json4s) extends Controller with AuthElement with A
 
   def show(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     val game = Game.joins(Game.stationRef)
-        .findBy(sqls.eq(Game.column.accountId, loggedIn.id).and.eq(Game.column.missionId, missionId))
+      .findBy(sqls.eq(Game.column.accountId, loggedIn.id).and.eq(Game.column.missionId, missionId))
     Ok(Extraction.decompose(game))
   }
 

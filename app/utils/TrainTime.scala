@@ -19,7 +19,7 @@ case class TrainTime(hour: Int, minutes: Int) extends Ordered[TrainTime] {
 
   def mod(x: Int, y: Int): Int = {
     val z = x % y
-    if(z < 0) z + y else z
+    if (z < 0) z + y else z
   }
 }
 
@@ -32,7 +32,6 @@ object TrainTime {
       val raw = str.toInt
       TrainTime(raw / 100, raw % 100)
     }.toOption
-
 
   implicit def typeBinder: TypeBinder[String] = TypeBinder.string
   implicit val impl: TypeBinder[TrainTime] =

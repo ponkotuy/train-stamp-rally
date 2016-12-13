@@ -34,7 +34,6 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
     merge = (m, sts) => m.copy(stations = sts.sortBy(_.id))
   )
 
-
   lazy val startStationRef = belongsToWithFk[Station](
     right = Station,
     merge = (m, st) => m.copy(startStation = st),

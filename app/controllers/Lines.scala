@@ -15,7 +15,7 @@ import scalikejdbc._
 
 import scala.concurrent.ExecutionContext
 
-class Lines @Inject()(json4s: Json4s, _ec: ExecutionContext) extends Controller with AuthElement with AuthConfigImpl {
+class Lines @Inject() (json4s: Json4s, _ec: ExecutionContext) extends Controller with AuthElement with AuthConfigImpl {
   import Lines._
   import Responses._
   import json4s._
@@ -23,7 +23,7 @@ class Lines @Inject()(json4s: Json4s, _ec: ExecutionContext) extends Controller 
   implicit val ec = _ec
 
   val optionalPaging = parse.using { req =>
-    if(req.getQueryString("page").isDefined) parse.form(Paging.form).map(Some(_))
+    if (req.getQueryString("page").isDefined) parse.form(Paging.form).map(Some(_))
     else parse.ignore(None)
   }
 
@@ -59,10 +59,11 @@ object Lines {
     DB localTx { implicit session =>
       val lineId = line.line.save()
       val stations = line.stations
-          .flatMap { st => st.station.map(st -> _) }
-          .map { case (key, st) => key -> upsertStation(st) }
-      stations.foreach { case (create, stId) =>
-        LineStation(0L, lineId, stId, create.km).save()
+        .flatMap { st => st.station.map(st -> _) }
+        .map { case (key, st) => key -> upsertStation(st) }
+      stations.foreach {
+        case (create, stId) =>
+          LineStation(0L, lineId, stId, create.km).save()
       }
       lineId
     }

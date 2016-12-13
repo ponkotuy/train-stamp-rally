@@ -25,7 +25,7 @@ object StationPage {
   private def parseHour(tr: Node): Seq[StationTrain] = {
     val result = for {
       hourTd <- tr \ "td" find (_ \ "@class" contains Text("lowBg06"))
-      trainsTd <- tr \ "td" find  { elem => !(elem \ "@class" contains Text("lowBg06")) }
+      trainsTd <- tr \ "td" find { elem => !(elem \ "@class" contains Text("lowBg06")) }
     } yield {
       val hour = (hourTd \ "span" \ "span").text.toInt
       val minutesTrains = (trainsTd \\ "td" filter (_ \ "@id" nonEmpty)).flatMap(parseTrain)
