@@ -10,6 +10,7 @@
     stations: []
     isAll: false
     costs: []
+    gameHistory: null
   methods:
     board: (to) ->
       API.putJSON
@@ -55,13 +56,18 @@
   data:
     gameId: 0
     progresses: []
+    account: {}
   methods:
     getProgresses: ->
       API.getJSON "/api/game/#{@gameId}/progresses", (json) =>
         @progresses = json
         if _.every(@progresses, (p) -> p.arrivalTime)
-          location.href = "/game/clear.html?mission=#{@missionId}"
+          location.href = "/game/clear.html?mission=#{@missionId}&account=#{@account.id}"
+    getAccount: ->
+      API.getJSON '/api/account', (json) =>
+        @account = json
   ready: ->
     @setMission ->
       location.href = '/game/index.html'
+    @getAccount()
     @getProgresses()

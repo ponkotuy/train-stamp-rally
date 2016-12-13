@@ -3,12 +3,13 @@ $(document).ready ->
 
 mainVue = ->
   el: '#game'
-  mixins: [formatter, missionParam, trainTypeColorClass]
+  mixins: [formatter, missionParam, trainTypeColorClass, attr]
   data:
     game: {}
     lines: []
     fromLines: []
     trainModal: null
+    history: undefined
   methods:
     getGame: ->
       API.getJSON "/api/game/#{@missionId}", (json) =>
@@ -16,10 +17,17 @@ mainVue = ->
         new Vue(missionVue(@game.id))
         @getDiagrams()
         @trainModal = new Vue(trainModalVue(@game.id))
+        @getAttribution(@game.station.id)
     getDiagrams: ->
       API.getJSON "/api/diagrams?station=#{@game.station.id}&time=#{@timeFormatAPI(@game.time)}", (json) =>
         @saveLines(json)
         @saveFromLines(json)
+    getHistory: ->
+      API.getJSON "/api/game/#{@missionId}/history", (json) =>
+        @history = json
+    back: ->
+      API.delete "/api/game/#{@missionId}/train", ->
+        location.reload(false)
     saveLines: (trains) ->
       for train in trains
         for stop in train.stops
@@ -46,9 +54,9 @@ mainVue = ->
       @trainModal.setData(train, @game)
       $(trainModalId).modal('show')
     here: (train) ->
-      _.findLast train.stops, (stop) => stop.station.id == @game.station.id
+      _.findLast _.initial(train.stops), (stop) => stop.station.id == @game.station.id
     hereId: (train) ->
-      _.findLastIndex train.stops, (stop) => stop.station.id == @game.station.id
+      _.findLastIndex _.initial(train.stops), (stop) => stop.station.id == @game.station.id
     trainDay: (trains) ->
       trains.map (t) =>
         t.stops = t.stops.map (stop) =>
@@ -65,9 +73,18 @@ mainVue = ->
     @setMission ->
       location.href = '/game/index.html'
     @getGame()
+    @getHistory()
 
 missionVue = (gameId) ->
   el: '#mission'
   mixins: [progress]
   compiled: ->
     @gameId = gameId
+
+attr =
+  data:
+    attribution: "<p></p>"
+  methods:
+    getAttribution: (stationId) ->
+      API.get "/api/station/#{stationId}/attribution", (html) =>
+        @attribution = html

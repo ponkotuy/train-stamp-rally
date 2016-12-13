@@ -3,12 +3,14 @@ html(lang=ja)
   head
     include ../template/_header
     script(src='/js/game/clear.js')
+    script(src='/js/data/ranking.js')
     title Mission Clear
   body
     include ../template/_navbar
     .container(role=main)
       #game
         h1 Mission Complete!
+        a(href='https://twitter.com/share?text={{mission.name}}+Ranking&url=https%3A%2F%2Ftrain.ponkotuy.com%2Fdata%2Franking.html%3fmission%3d{{missionId}}%26account%3d{{accountId}}&hashtags=TrainStampRally', target='_blank') Tweet
         h4 終了日時: {{ dateFormat(game.time) }}
         h4 使用金額: {{ game.money }}円
         h4 移動距離: {{ game.distance.toFixed(1) }}km
@@ -23,15 +25,15 @@ html(lang=ja)
           .col-sm-4
             h3 所要時間
             ol
-              li(v-for='rank in times') {{ rank.account.name }}: {{ dateFormat(rank.time) }}
+              li(v-for='rank in times', v-text='rank.account.name + ": " + dateFormat(rank.time)', :class='{"text-info": rank.account.id == accountId}')
           .col-sm-4
             h3 使用金額
             ol
-              li(v-for='rank in moneys') {{ rank.account.name }}: {{ rank.money }}円
+              li(v-for='rank in moneys', v-text='rank.account.name + ": " + rank.money + "円"', :class='{"text-info": rank.account.id == accountId}')
           .col-sm-4
             h3 移動距離
             ol
-              li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km
+              li(v-for='rank in distances', v-text='rank.account.name + ": " + rank.distance.toFixed(1) + "km"', :class='{"text-info": rank.account.id == accountId}')
       #complete.modal.fade(role='dialog')
         .modal-dialog(rol='document')
           .modal-content

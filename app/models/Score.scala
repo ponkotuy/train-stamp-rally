@@ -36,9 +36,9 @@ object Score extends SkinnyCRUDMapperWithId[Long, Score] {
   def ranking(column: SQLSyntax, where: SQLSyntax, limit: Int)(implicit session: DBSession): Seq[Score] = {
     val result = withSQL {
       select.from(Score as defaultAlias).append(
-        sqls"""inner join (select account_id, MIN(${column}) as max_value from score where ${where} group by account_id) as sc2
-          on sc.account_id = sc2.account_id and sc.${column} = sc2.max_value
-          group by sc.account_id order by ${column} limit ${limit}"""
+        sqls"""inner join (select account_id, MIN(${column}) as min_value from score where ${where} group by account_id) as sc2
+          on sc.account_id = sc2.account_id and sc.${column} = sc2.min_value
+          group by sc.account_id order by ${column}, created limit ${limit}"""
       )
     }.map { rs => extract(rs, defaultAlias.resultName) }.toList().apply()
     val accounts: Map[Long, Account] =

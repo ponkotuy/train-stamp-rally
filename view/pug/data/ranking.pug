@@ -1,0 +1,29 @@
+doctype html
+html(lang=ja)
+  head
+    include ../template/_header
+    title Ranking
+    script(src='/js/data/ranking.js')
+    style .text-info {font-weight: bold;}
+  body
+    include ../template/_navbar
+    #main.container(role='main')
+      h1.page-header(v-text='mission.name')
+      a(href='https://twitter.com/share?text={{mission.name}}+Ranking&hashtags=TrainStampRally', target='_blank') Tweet
+      .row
+        .col-sm-4
+          h3 所要時間 Ranking
+          ol
+            li(v-for='rank in times', v-text='rank.account.name + ": " + dateFormat(rank.time)', :class='{"text-info": rank.account.id == accountId}')
+        .col-sm-4
+          h3 使用金額 Ranking
+          ol
+            li(v-for='rank in moneys', v-text='rank.account.name + ": " + rank.money + "円"', :class='{"text-info": rank.account.id == accountId}')
+        .col-sm-4
+          h3 移動距離 Ranking
+          ol
+            li(v-for='rank in distances', v-text='rank.account.name + ": " + rank.distance.toFixed(1) + "km"', :class='{"text-info": rank.account.id == accountId}')
+      h2 駅リスト
+      ul
+        li(v-for='station in mission.stations')
+          a(:href='"/data/station.html?id=" + station.id', target='_blank', v-text='station.name + "駅"')

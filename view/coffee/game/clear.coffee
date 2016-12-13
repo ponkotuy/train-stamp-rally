@@ -4,41 +4,28 @@ $(document).ready ->
     mixins: [formatter, missionParam]
     data:
       game: {}
+      mission: {}
+      accountId: 0
     methods:
       getGame: ->
         API.getJSON "/api/game/#{@missionId}", (json) =>
           @game = json
           new Vue missionVue(@game.id)
+      setAccount: ->
+        @accountId = parseInt(@params.account)
+      getMission: ->
+        API.getJSON "/api/mission/#{@missionId}", (json) =>
+          @mission = json
     ready: ->
       @setMission ->
         location.href = '/game/index.html'
+      @setAccount()
       @getGame()
+      @getMission()
 
   ranking = new Vue
     el: '#ranking'
-    mixins: [formatter, missionParam]
-    data:
-      times: []
-      moneys: []
-      distances: []
-    methods:
-      getTimes: ->
-        API.getJSON "/api/game/#{@missionId}/ranking/time", (json) =>
-          @times = json
-      getMoneys: ->
-        API.getJSON "/api/game/#{@missionId}/ranking/money", (json) =>
-          @moneys = json
-      getDistances: ->
-        API.getJSON "/api/game/#{@missionId}/ranking/distance", (json) =>
-          @distances = json
-      reload: ->
-        @getTimes()
-        @getMoneys()
-        @getDistances()
-    ready: ->
-      @setMission ->
-        location.href = '/game/index.html'
-      @reload()
+    mixins: [formatter, rankingView]
 
   modalId = '#complete'
   new Vue

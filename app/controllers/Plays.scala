@@ -8,7 +8,7 @@ import games.TrainBoardCost
 import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s._
-import play.api.mvc.{Controller, Result}
+import play.api.mvc.{Action, Controller, Result}
 import queries.{Board, Clear}
 import responses.TrainResponse
 import scalikejdbc._
@@ -21,11 +21,11 @@ class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with 
   implicit val format = DefaultFormats
 
   def board() = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
-    import DefaultAliases.gp
+    import DefaultAliases.{g, gp, gh}
     DB localTx { implicit session =>
       val result: Either[Result, Result] = for {
         b <- req.body.extractOpt[Board].toRight(JSONParseError)
-        game <- Game.findBy(sqls.eq(Game.column.accountId, loggedIn.id).and.eq(Game.column.missionId, b.missionId))
+        game <- Game.findBy(sqls.eq(g.accountId, loggedIn.id).and.eq(g.missionId, b.missionId))
           .toRight(notFound("Mission"))
         _ <- Either.cond(game.stationId == b.fromStation, Unit, BadRequest("Wrong fromStation."))
         train <- TrainResponse.fromTrainId(b.trainId).toRight(notFound("Train"))
@@ -35,10 +35,13 @@ class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with 
         _ <- Either.cond(stopIds.contains(b.toStation) && stopIds.contains(b.fromStation), Unit, BadRequest("Wrong trainId."))
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.lastIndexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
       } yield {
+        game.history().save()
         val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation, companyId).apply(game)
-        val fixedGame: Game = GameProgress.findBy(sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)).fold(afterGame) { progress =>
+        val where = sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)
+        val fixedGame: Game = GameProgress.findBy(where).fold(afterGame) { progress =>
           if (progress.arrivalTime.isEmpty) {
             progress.copy(arrivalTime = Some(afterGame.time.addMinutes(-1))).update()
+            GameHistory.deleteBy(sqls.eq(GameHistory.column.gameId, game.id))
             afterGame.copy(time = afterGame.time.addMinutes(5)) // スタンプを押すのに5分
           } else afterGame
         }
@@ -46,6 +49,22 @@ class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with 
         Success
       }
       result.merge
+    }
+  }
+
+  def undo(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    import DefaultAliases.{g, gh}
+    Game.findBy(sqls.eq(g.accountId, loggedIn.id).and.eq(g.missionId, missionId)).fold(notFound("mission")) { game =>
+      val histories = GameHistory.findAllBy(sqls.eq(gh.gameId, game.id))
+      if (histories.isEmpty) notFound("history")
+      else {
+        val history = histories.maxBy(_.created)
+        DB localTx { implicit session =>
+          GameHistory.deleteById(history.id)
+          Game.update(history.revertGame(game))
+          Success
+        }
+      }
     }
   }
 
@@ -68,15 +87,15 @@ class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with 
     }
   }
 
-  def rankingTime(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def rankingTime(missionId: Long) = Action {
     Ok(Plays.ranking(RankingType.Time, missionId))
   }
 
-  def rankingMoney(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def rankingMoney(missionId: Long) = Action {
     Ok(Plays.ranking(RankingType.Money, missionId))
   }
 
-  def rankingDistance(missionId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def rankingDistance(missionId: Long) = Action {
     Ok(Plays.ranking(RankingType.Distance, missionId))
   }
 }

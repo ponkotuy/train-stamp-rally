@@ -21,6 +21,9 @@ case class Game(
   def update()(implicit session: DBSession): Unit = Game.update(this)
 
   def score(rate: Int, created: Long) = Score(0L, missionId, accountId, time, distance, money, rate, created)
+
+  def history(): GameHistory =
+    new GameHistory(0L, id, time, distance, money, stationId, System.currentTimeMillis())
 }
 
 object Game extends SkinnyCRUDMapperWithId[Long, Game] {

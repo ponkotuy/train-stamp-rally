@@ -28,7 +28,7 @@ object StationPage {
       trainsTd <- tr \ "td" find { elem => !(elem \ "@class" contains Text("lowBg06")) }
     } yield {
       val hour = (hourTd \ "span" \ "span").text.toInt
-      val minutesTrains = (trainsTd \\ "td" filter (_ \ "@id" nonEmpty)).flatMap(parseTrain)
+      val minutesTrains = (trainsTd \\ "td" filter { it => (it \ "@id").nonEmpty }).flatMap(parseTrain)
       minutesTrains.map(_.withHour(hour))
     }
     result.getOrElse(Nil)

@@ -22,6 +22,6 @@ script(src='/js/game/station_modal.js')
           ol
             li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km
       .modal-footer
-        button.btn.btn-primary(type='button', @click='start(mission)', v-if='!mission.game') Start
-        button.btn.btn-primary(type='button', @click='gameContinue(mission)', v-if='mission.game') Continue
-        button.btn.btn-warning(type='button', @click='start(mission)', v-if='mission.game') Restart
+        button.btn.btn-primary(type='button', @click='start(mission.mission.id)', v-if='!mission.game') Start
+        button.btn.btn-primary(type='button', @click='gameContinue(mission.mission.id)', v-if='mission.game') Continue
+        button.btn.btn-warning(type='button', @click='start(mission.mission.id)', v-if='mission.game') Restart

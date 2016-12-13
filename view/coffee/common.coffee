@@ -1,5 +1,8 @@
 
 @API =
+  get: (url, a, b) ->
+    $.get(url, a, b)
+      .fail(failure)
   getJSON: (url, a, b) ->
     $.getJSON(url, a, b)
       .fail(failure)
@@ -25,7 +28,9 @@
       data: data
       success: success
       error: failure
-  delete: (url, data, success) ->
+  delete: (url, a, b) ->
+    data = if b? then a else null
+    success = if b? then b else a
     $.ajax
       type: 'DELETE'
       url: url
@@ -57,13 +62,23 @@ failure = (jqXHR) ->
     twoDigit: (int) ->
       int.toLocaleString('en-IN', {minimumIntegerDigits: 2})
 
+@urlParams =
+  data:
+    params: {}
+  methods:
+    setParams: ->
+      @params = fromURLParameter(location.search.slice(1))
+  ready: ->
+    @setParams()
+
 # Game commons
 @missionParam =
   data:
     missionId: 0
+  mixins: [urlParams]
   methods:
     setMission: (failed)->
-      @missionId = parseInt(fromURLParameter(location.search.slice(1)).mission)
+      @missionId = parseInt(@params.mission)
       if !@missionId
         failed()
 
