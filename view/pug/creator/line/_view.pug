@@ -6,7 +6,7 @@ h2 Lines
       a(aria-label='Previous', @click='next(pagination.current - 1)')
         span(aria-hidden='true') &laquo;
     li.clickable(v-for='i in pagination.last', :class='{active: pagination.current == i - 1}')
-      a(v-text='i', @click='next(i)')
+      a(v-text='i', @click='next(i - 1)')
     li.clickable(:class='{disabled: (pagination.last - 1) <= pagination.current}')
       a(aria-label='Next', @click='next()')
         span(aria-hidden='true') &raquo;
