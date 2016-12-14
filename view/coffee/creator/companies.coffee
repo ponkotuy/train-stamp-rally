@@ -16,7 +16,7 @@ $(document).ready ->
       openModal: (company, trainType)->
         @modal.setFareType(company, trainType)
         $(modalId).modal('show')
-    ready: ->
+    mounted: ->
       @getCompanies()
       @modal = fareModal()
 

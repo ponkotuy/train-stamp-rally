@@ -82,7 +82,7 @@ $(document).ready ->
         $('#stationName').typeahead('destroy')
         config = {name: 'stations', display: 'name', source: stationMatcher(@lineStations)}
         $('#stationName').typeahead(defaultTypeaheadDesign, config)
-    ready: ->
+    mounted: ->
       @getLines()
 
 lineMatcher = regexMatcherBy (x) -> x.name

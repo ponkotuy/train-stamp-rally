@@ -4,7 +4,7 @@ $(document).ready ->
     data:
       categories: ['game', 'creator', 'readme']
       category: ''
-      account: null
+      account: {}
     methods:
       parseCategory: ->
         @category = location.pathname.split('/')[1]
@@ -15,6 +15,7 @@ $(document).ready ->
       logout: ->
         API.delete '/api/session', {}, ->
           location.href = '/'
-    ready: ->
-      @parseCategory()
-      @getAccount()
+    mounted: ->
+      @.$nextTick =>
+        @parseCategory()
+        @getAccount()

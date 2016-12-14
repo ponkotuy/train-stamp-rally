@@ -47,7 +47,7 @@ $(document).ready ->
             starts = json.trains.map (train) ->
               (new TrainTime(train.start.hour, train.start.minutes)).fourDigit()
             @pushStarts(starts)
-    ready: ->
+    mounted: ->
       @getStations =>
         @setUpdate()
     watch:

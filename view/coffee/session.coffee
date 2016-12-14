@@ -16,5 +16,5 @@ $(document).ready ->
             @message.danger(e.responseText)
       setMessage: ->
         @message = vueMessage('#message')
-    ready: ->
+    mounted: ->
       @setMessage()

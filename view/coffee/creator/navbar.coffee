@@ -21,6 +21,6 @@ $(document).ready ->
         @category = location.pathname.split('/')[2]
       camelCase: (str) ->
         str.charAt(0).toUpperCase() + str.substring(1)
-    ready: ->
+    mounted: ->
       @parseCategory()
       @filterRole()

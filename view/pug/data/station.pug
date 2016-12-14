@@ -21,6 +21,6 @@ html(lang=ja)
             tr(v-for='train in line.trains', :class='trainColor(train.trainType.value)')
               th(v-text='train.subType + " " + train.name')
               td
-                span(v-for='stop in train.stops')
+                span(v-for='stop, idx in train.stops')
                   span.clickable(@click='jumpStation(stop.station.id)', v-text='stop.station.name', :class='stationSize(stop.station)')
-                  span.text-muted(v-if='!isLast($index, train.stops)') ->
+                  span.text-muted(v-if='!isLast(idx, train.stops)') ->

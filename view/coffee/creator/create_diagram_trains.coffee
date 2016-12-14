@@ -30,7 +30,7 @@
     scrapeStation: ->
       @modal.setUrl(@stationUrl)
       $(modalId).modal('show')
-  ready: ->
+  mounted: ->
     @modal = createModal(@pushStarts)
     @modal.setUrl('')
 

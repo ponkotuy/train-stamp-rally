@@ -1,11 +1,9 @@
 
-@stationModalId = '#stationModal'
-
-@stationModal =
-  el: stationModalId
+@stationModal = (el) -> new Vue
+  el: el
   mixins: [formatter, startMission]
   data:
-    mission: {}
+    mission: {id: null, mission: {id: null}}
     game: {}
     times: []
     moneys: []

@@ -47,5 +47,5 @@ $(document).ready ->
         'large': station.id == @station.id
         'text-info': station.rank.value <= 3 && station.id != @station.id
         'text-bold': station.rank.value <= 4
-    ready: ->
+    mounted: ->
       @getStation()

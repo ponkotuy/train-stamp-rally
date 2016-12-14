@@ -8,5 +8,5 @@ $(document).ready ->
       getData: ->
         API.getJSON '/api/histories', (json) =>
           @histories = json
-    ready: ->
+    mounted: ->
       @getData()

@@ -48,7 +48,9 @@
             Vue.set(station, 'fee', cost.fee)
     switchAll: ->
       @isAll = !@isAll
-  ready: ->
+    toFixed: (v, n) ->
+      if v then v.toFixed(n) else 0
+  mounted: ->
     @gameId = gameId
 
 @progress =
@@ -66,8 +68,9 @@
     getAccount: ->
       API.getJSON '/api/account', (json) =>
         @account = json
-  ready: ->
-    @setMission ->
-      location.href = '/game/index.html'
-    @getAccount()
-    @getProgresses()
+  mounted: ->
+    @.$nextTick =>
+      @setMission ->
+        location.href = '/game/index.html'
+      @getAccount()
+      @getProgresses()

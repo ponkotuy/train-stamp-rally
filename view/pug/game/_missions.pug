@@ -5,8 +5,8 @@ h1.page-header Select mission
     li.clickable(:class='{disabled: pagination.current == 0}')
       a(aria-label='Previous', @click='next(pagination.current - 1)')
         span(aria-hidden='true') &laquo;
-    li.clickable(v-for='i in pagination.last', :class='{active: pagination.current == i}')
-      a(v-text='i + 1', @click='next(i)')
+    li.clickable(v-for='i in pagination.last', :class='{active: pagination.current == i - 1}')
+      a(v-text='i', @click='next(i - 1)')
     li.clickable(:class='{disabled: (pagination.last - 1) <= pagination.current}')
       a(aria-label='Next', @click='next()')
         span(aria-hidden='true') &raquo;

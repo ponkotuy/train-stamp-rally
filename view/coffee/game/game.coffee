@@ -1,11 +1,11 @@
 $(document).ready ->
-  new Vue(mainVue())
+  mainVue()
 
-mainVue = ->
+mainVue = (game) -> new Vue
   el: '#game'
   mixins: [formatter, missionParam, trainTypeColorClass, attr]
   data:
-    game: {}
+    game: {station: {id: null}, distance: 0}
     lines: []
     fromLines: []
     trainModal: null
@@ -69,16 +69,17 @@ mainVue = ->
     isAfter: (time) ->
       now = @game.time
       (now.hour * 60 + now.minutes) <= (time.hour * 60 + now.minutes)
-  ready: ->
-    @setMission ->
-      location.href = '/game/index.html'
-    @getGame()
-    @getHistory()
+  mounted: ->
+    @.$nextTick =>
+      @setMission ->
+        location.href = '/game/index.html'
+      @getGame()
+      @getHistory()
 
 missionVue = (gameId) ->
   el: '#mission'
   mixins: [progress]
-  compiled: ->
+  mounted: ->
     @gameId = gameId
 
 attr =

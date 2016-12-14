@@ -3,7 +3,7 @@ $(document).ready ->
     el: '#game'
     mixins: [formatter, missionParam]
     data:
-      game: {}
+      game: {station: {id: null}, distance: 0}
       mission: {}
       accountId: 0
     methods:
@@ -16,7 +16,7 @@ $(document).ready ->
       getMission: ->
         API.getJSON "/api/mission/#{@missionId}", (json) =>
           @mission = json
-    ready: ->
+    mounted: ->
       @setMission ->
         location.href = '/game/index.html'
       @setAccount()
@@ -40,12 +40,13 @@ $(document).ready ->
           success: ->
             $(modalId).modal('hide')
             ranking.reload()
-    ready: ->
-      @setMission ->
-        location.href = '/game/index.html'
-      $(modalId).modal('show')
-      $(modalId).modal 'closed.bs.alert', ->
-        @clear(1)
+    mounted: ->
+      @.$nextTick =>
+        @setMission ->
+          location.href = '/game/index.html'
+        $(modalId).modal('show')
+        $(modalId).modal 'closed.bs.alert', =>
+          @clear(1)
 
 missionVue = (gameId) ->
   el: '#mission'
@@ -56,5 +57,5 @@ missionVue = (gameId) ->
     getProgresses: ->
       API.getJSON "/api/game/#{gameId}/progresses", (json) =>
         @progresses = json
-  ready: ->
+  mounted: ->
     @getProgresses()

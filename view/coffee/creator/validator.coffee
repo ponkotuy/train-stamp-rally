@@ -7,5 +7,6 @@ $(document).ready ->
       getMessages: ->
         API.getJSON '/api/validator', (json) =>
           @messages = json
-    ready: ->
-      @getMessages()
+    mounted: ->
+      @.$nextTick =>
+        @getMessages()

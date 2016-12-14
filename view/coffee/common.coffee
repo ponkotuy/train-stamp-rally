@@ -54,9 +54,11 @@ failure = (jqXHR) ->
 @formatter =
   methods:
     dateFormat: (date) ->
-      "#{date.day}日目 #{@twoDigit(date.hour)}:#{@twoDigit(date.minutes)}"
+      if date?
+        "#{date.day}日目 #{@twoDigit(date.hour)}:#{@twoDigit(date.minutes)}"
     timeFormat: (time) ->
-      "#{if time?.day == 1 then '翌' else ''}#{@twoDigit(time.hour)}:#{@twoDigit(time.minutes)}"
+      if time?
+        "#{if time?.day == 1 then '翌' else ''}#{@twoDigit(time.hour)}:#{@twoDigit(time.minutes)}"
     timeFormatAPI: (time) ->
       @twoDigit(time.hour) + @twoDigit(time.minutes)
     twoDigit: (int) ->
@@ -68,7 +70,7 @@ failure = (jqXHR) ->
   methods:
     setParams: ->
       @params = fromURLParameter(location.search.slice(1))
-  ready: ->
+  mounted: ->
     @setParams()
 
 # Game commons
@@ -104,8 +106,9 @@ failure = (jqXHR) ->
     getCompanies: ->
       API.getJSON '/api/companies', (json) =>
         @companies = json
-  ready: ->
-    @getCompanies()
+  mounted: ->
+    @.$nextTick =>
+      @getCompanies()
 
 @trainTypeSelector =
   data:
@@ -117,8 +120,9 @@ failure = (jqXHR) ->
         @trainTypes = json
     findTypeFromValue: (n) ->
       _.find @trainTypes, (t) -> t.value == n
-  ready: ->
-    @getTypes()
+  mounted: ->
+    @.$nextTick =>
+      @getTypes()
 
 @copyObject = (src) ->
   $.extend(true, {}, src)
@@ -143,10 +147,19 @@ failure = (jqXHR) ->
       page = fromURLParameter(location.hash.slice(1))?.page ? 1
       @pagination.current = page - 1
     next: (page) ->
-      @pagination.current = page ? @pagination.current + 1
-  ready: ->
-    @parsePageHash()
-    @getData()
+      next = page ? @pagination.current + 1
+      to =
+        if next < 0
+          0
+        else if @pagination.last <= next
+          @pagination.last - 1
+        else
+          next
+      @pagination.current = to
+  mounted: ->
+    @.$nextTick =>
+      @parsePageHash()
+      @getData()
   watch:
     'pagination.current': (current)->
       @getData()
