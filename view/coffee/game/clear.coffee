@@ -41,11 +41,12 @@ $(document).ready ->
             $(modalId).modal('hide')
             ranking.reload()
     mounted: ->
-      @setMission ->
-        location.href = '/game/index.html'
-      $(modalId).modal('show')
-      $(modalId).modal 'closed.bs.alert', ->
-        @clear(1)
+      @.$nextTick =>
+        @setMission ->
+          location.href = '/game/index.html'
+        $(modalId).modal('show')
+        $(modalId).modal 'closed.bs.alert', =>
+          @clear(1)
 
 missionVue = (gameId) ->
   el: '#mission'
