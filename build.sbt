@@ -38,3 +38,9 @@ SbtScalariform.scalariformSettings
 ScalariformKeys.preferences := ScalariformKeys.preferences.value
   .setPreference(DoubleIndentClassDeclaration, true)
   .setPreference(SpacesAroundMultiImports, false)
+
+excludeFilter in scalariformFormat := (excludeFilter in scalariformFormat).value ||
+    "Routes.scala" ||
+    "ReverseRoutes.scala" ||
+    "JavaScriptReverseRoutes.scala" ||
+    "RoutesPrefix.scala"
