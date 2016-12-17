@@ -5,3 +5,5 @@ db.default {
   username =
   password =
 }
+
+google.maps.key =
