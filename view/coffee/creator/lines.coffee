@@ -14,21 +14,20 @@ $(document).ready ->
             last: json.pagination.last
       openModal: (line) ->
         if lineModal?
-          @lineModal = modalVue()
-        @lineModal.setLine(line)
+          @lineModal = modalVue(line)
         $(modalId).modal('show')
 
 modalId = '#lineModal'
 
-modalVue = -> new Vue
+modalVue = (line) -> new Vue
   el: modalId
   data:
-    line: {company: null}
+    line: line
     stations: []
   methods:
     getStations: ->
       API.getJSON "/api/line/#{@line.id}/stations", (json) =>
         @stations = json
-    setLine: (line) ->
-      @line = line
+  mounted: ->
+    @.$nextTick =>
       @getStations()
