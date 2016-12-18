@@ -41,6 +41,7 @@ class LocationSetter @Inject() (config: Configuration, _p: PlayInitializer, ec: 
             }
           }
         }
+        Thread.sleep(100L)
         xs.nonEmpty
       }.takeWhile(identity).foreach(_ => ())
     }
