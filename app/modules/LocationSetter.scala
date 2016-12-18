@@ -29,13 +29,15 @@ class LocationSetter @Inject() (config: Configuration, _p: PlayInitializer, ec: 
             val result = for {
               station <- x.station
               line <- x.line
-              geo <- maps.geocoding.request(s"${line.name} ${normStationName(station.name)}").headOption
+              geo = maps.geocoding.request(s"${line.name} ${normStationName(station.name)}駅")
               _ = Thread.sleep(1000L)
             } yield geo
             result.foreach { geo =>
-              val loc = geo.geometry.location
-              val sg = StationGeo(x.stationId, loc.lat, loc.lng)
-              sg.save()(AutoSession)
+              if(geo.length == 1) {
+                val loc = geo.head.geometry.location
+                val sg = StationGeo(x.stationId, loc.lat, loc.lng)
+                sg.save()(AutoSession)
+              }
             }
           }
         }
