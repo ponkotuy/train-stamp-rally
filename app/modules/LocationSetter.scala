@@ -29,7 +29,7 @@ class LocationSetter @Inject() (config: Configuration, _p: PlayInitializer, ec: 
             val result = for {
               station <- x.station
               line <- x.line
-              geo <- maps.geocoding.request(s"${line.name} ${normStationName(station.name)}駅").headOption
+              geo <- maps.geocoding.request(s"${line.name} ${normStationName(station.name)}").headOption
               _ = Thread.sleep(1000L)
             } yield geo
             result.foreach { geo =>
