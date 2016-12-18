@@ -50,7 +50,7 @@ script(src='/js/creator/create_diagram.js')
       label.col-sm-2.control-label Departure(minutes)
     .form-group(v-for='stop, idx in stops')
       .col-sm-6
-        input.form-control.autoCompleteStation(autocomplete='off', v-model='stop.name')
+        input.form-control.autoCompleteStation(autocomplete='off', v-model='stop.name', :data-idx='idx')
       .col-sm-2
         input.form-control(type='text', v-model='stop.arrival', v-bind="{'disabled': idx == 0}")
       .col-sm-2

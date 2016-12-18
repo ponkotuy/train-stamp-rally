@@ -39,6 +39,9 @@
       design = {hint: true, highlight: true}
       config = {name: 'stations', display: 'name', source: @matcher, limit: 100}
       elem.typeahead(design, config)
+        .on 'typeahead:selected typeahead:autocomplete', (e, datum) =>
+          idx = parseInt(e.currentTarget.getAttribute('data-idx'))
+          @stops[idx].name = datum.name
     setAutoCompleteAll: ->
       @setAutoComplete($('.autoCompleteStation'))
       @setStationIfOne()
@@ -57,6 +60,9 @@
               stop.arrival = parseInt(stop.arrival) - diff
             if stop.departure
               stop.departure = parseInt(stop.departure) - diff
+    getLineStationId: (name) ->
+      station = _.find @stations, (s) -> s.name == name
+      station?.id
     stopsData: ->
       isAlert = false
       stops = _.flatMap @stops, (s) =>

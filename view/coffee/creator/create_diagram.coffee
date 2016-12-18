@@ -32,9 +32,6 @@ $(document).ready ->
           null
       clear: ->
         location.href = location.pathname
-      getLineStationId: (name) ->
-        station = _.find @stations, (s) -> s.name == name
-        station?.id
       setUpdate: ->
         @update = fromURLParameter(location.search.slice(1))?.edit
         if @update

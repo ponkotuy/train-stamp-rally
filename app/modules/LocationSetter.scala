@@ -41,7 +41,6 @@ class LocationSetterThread(config: Configuration) extends Runnable {
   override def run(): Unit = {
     import models.DefaultAliases.sg
     Stream.from(0).map { idx =>
-      println(idx)
       val xs = LineStation.joins(LineStation.stationRef, LineStation.lineRef)
         .findAllWithLimitOffset(limit = FindCount, offset = idx * FindCount)
       xs.foreach { x =>
