@@ -5,7 +5,7 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Mission, Score, StationRankSerializer}
+import models.{Mission, Score, StationGeo, StationRankSerializer}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
 import queries.{CreateMission, Paging, RandomMission, SearchMissions}
@@ -20,7 +20,13 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
   implicit val formats = DefaultFormats + StationRankSerializer
 
   def show(missionId: Long) = Action {
-    val mission = Mission.joins(Mission.stationsRef, Mission.startStationRef).findById(missionId)
+    import models.DefaultAliases.sg
+    val mission = Mission.joins(Mission.stationsRef, Mission.startStationRef).findById(missionId).map { m =>
+      val ids = m.stations.map(_.id)
+      val geos = StationGeo.findAllBy(sqls.in(sg.stationId, ids))
+      val withGeos = m.stations.map { s => s.copy(geo = geos.find(_.stationId == s.id)) }
+      m.copy(stations = withGeos)
+    }
     Ok(Extraction.decompose(mission))
   }
 

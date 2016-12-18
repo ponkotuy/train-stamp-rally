@@ -1,0 +1,12 @@
+doctype html
+html(lang=ja)
+  head
+    include ../template/_header
+    link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.2/leaflet.css')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.2/leaflet.js')
+    script(src='/js/data/mission_map.js')
+    title Mission
+  body
+    include ../template/_navbar
+    #main.container(role='main')
+      #map

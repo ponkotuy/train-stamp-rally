@@ -13,6 +13,7 @@ $(document).ready ->
         if id
           API.getJSON "/api/station/#{id}", (json) =>
             @station = json
+            document.title = json.name
           API.getJSON "/api/station/#{id}/lines", (json) =>
             @lines = json
           API.getJSON "/api/diagrams", {station: id}, (json) =>

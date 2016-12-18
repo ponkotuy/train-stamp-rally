@@ -78,7 +78,7 @@ mainVue = (game) -> new Vue
 
 missionVue = (gameId) ->
   el: '#mission'
-  mixins: [progress]
+  mixins: [progress, missionParam]
   mounted: ->
     @gameId = gameId
 

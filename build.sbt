@@ -26,7 +26,8 @@ libraryDependencies ++= Seq(
   "ch.qos.logback" % "logback-classic" % "1.1.7" % "runtime",
   "org.slf4j" % "slf4j-api" % "1.7.21",
   "net.liftweb" %% "lift-util" % "2.6.2",
-  "org.scala-lang.modules" %% "scala-xml" % "1.0.6"
+  "org.scala-lang.modules" %% "scala-xml" % "1.0.6",
+  "com.google.maps" % "google-maps-services" % "0.1.17"
 )
 
 lazy val root = (project in file(".")).enablePlugins(PlayScala)

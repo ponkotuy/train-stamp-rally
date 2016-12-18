@@ -20,7 +20,7 @@ case class GameHistory(
 }
 
 object GameHistory extends SkinnyCRUDMapperWithId[Long, GameHistory] {
-  override lazy val defaultAlias: Alias[GameHistory] = createAlias("gh")
+  override val defaultAlias: Alias[GameHistory] = createAlias("gh")
 
   override def extract(rs: WrappedResultSet, n: ResultName[GameHistory]): GameHistory = autoConstruct(rs, n)
 
