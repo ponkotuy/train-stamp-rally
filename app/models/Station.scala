@@ -18,7 +18,7 @@ object Station extends SkinnyCRUDMapperWithId[Long, Station] {
 
   val geoRef = belongsToWithFkAndJoinCondition[StationGeo](
     right = StationGeo,
-    fk = "stationId",
+    fk = "id",
     on = sqls.eq(Station.defaultAlias.id, StationGeo.defaultAlias.stationId),
     merge = (st, geo) => st.copy(geo = geo)
   )
