@@ -4,7 +4,7 @@ $(document).ready ->
     mixins: [pagination]
     data:
       diagrams: []
-      lineName: ""
+      lineName: ''
     methods:
       getPageData: (page, done) ->
         params =
@@ -18,6 +18,6 @@ $(document).ready ->
             last: Math.min(json.pagination.last, 10)
       edit: (id) ->
         location.href = "?edit=#{id}"
-      delete: (id) ->
+      deleteDiagram: (id) ->
         API.delete "/api/diagram/#{id}", {}, ->
           location.reload(false)
