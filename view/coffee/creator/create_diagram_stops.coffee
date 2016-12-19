@@ -22,6 +22,7 @@
         done()
     getScrape: ->
       ids = parseScrapeUrl(@scrape)
+      if !ids? then return
       API.getJSON "/api/scrape/train/#{ids[0]}/#{ids[1]}", (json) =>
         start = json.stops[0].departure
         startTime = new TrainTime(start.hour, start.minutes)
@@ -35,6 +36,7 @@
           else new TrainTime(stop.departure.hour, stop.departure.minutes)
           {name: stop.name, arrival: arrival?.diff(startTime), departure: departure?.diff(startTime)}
     setAutoComplete: (elem) ->
+      console.log(elem.length, @stopsCount)
       elem.typeahead('destroy')
       design = {hint: true, highlight: true}
       config = {name: 'stations', display: 'name', source: @matcher, limit: 100}
@@ -79,9 +81,10 @@
 
   watch:
     stops: (newValues) ->
-      if @stopsCount < newValues.length
-        @setAutoCompleteAll()
-      @stopsCount = newValues.length
+      @.$nextTick =>
+        if @stopsCount < newValues.length
+          @setAutoCompleteAll()
+        @stopsCount = newValues.length
 
 stationMatcher = (xs) ->
   (q, cb) ->
@@ -93,4 +96,4 @@ stationMatcher = (xs) ->
       cb(equals)
 
 parseScrapeUrl = (url) ->
-  url.match(/\/detail\/(\d+)\/(\d+).htm/).slice(1, 3)
+  url.match(/\/detail\/(\d+)\/(\d+).htm/)?.slice(1, 3)

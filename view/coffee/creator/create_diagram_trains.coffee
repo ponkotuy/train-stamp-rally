@@ -49,6 +49,7 @@ createModal = (submitF) ->
         $(modalId).modal('hide')
       getScrape: ->
         elems = parseScrapeUrl(@url)
+        if !elems? then return
         API.getJSON "/api/scrape/station/#{elems[0]}/#{elems[1]}", (json) =>
           groups = _.groupBy json, (train) -> "[#{train.typ ? '普通'}] #{train.dest}"
           @trainAttrs = for label, trains of groups
@@ -73,7 +74,7 @@ createModal = (submitF) ->
           @getScrape()
 
 parseScrapeUrl = (url) ->
-  url.match(/\/ekijikoku\/(\d+)\/(.+).htm/).slice(1, 3)
+  url.match(/\/ekijikoku\/(\d+)\/(.+).htm/)?.slice(1, 3)
 
 parseTime = (str) ->
   num = parseInt(str)
