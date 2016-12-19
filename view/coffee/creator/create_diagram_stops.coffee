@@ -36,7 +36,6 @@
           else new TrainTime(stop.departure.hour, stop.departure.minutes)
           {name: stop.name, arrival: arrival?.diff(startTime), departure: departure?.diff(startTime)}
     setAutoComplete: (elem) ->
-      console.log(elem.length, @stopsCount)
       elem.typeahead('destroy')
       design = {hint: true, highlight: true}
       config = {name: 'stations', display: 'name', source: @matcher, limit: 100}
@@ -50,9 +49,9 @@
     addStop: (idx) ->
       add = $.extend(true, {}, @stops[idx])
       @stops.splice(idx + 1, 0, add)
-    deleteStop: (idx) ->
-      @stops.splice(idx, 1)
-      if idx == 0 and @stops.length > 0 # 出発駅変更に伴う処理
+    deleteStop: (from, to) ->
+      @stops.splice(from, to - from + 1)
+      if from == 0 and @stops.length > 0 # 出発駅変更に伴う処理
         @stops[0].arrival = ""
         diff = parseInt(@stops[0].departure)
         @stops[0].departure = 0
@@ -80,11 +79,9 @@
       stops
 
   watch:
-    stops: (newValues) ->
+    stops: ->
       @.$nextTick =>
-        if @stopsCount < newValues.length
-          @setAutoCompleteAll()
-        @stopsCount = newValues.length
+        @setAutoCompleteAll()
 
 stationMatcher = (xs) ->
   (q, cb) ->
