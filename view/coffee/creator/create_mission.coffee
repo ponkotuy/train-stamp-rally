@@ -15,10 +15,15 @@ $(document).ready ->
         elem.typeahead('destroy')
         config = {name: 'stations', display: 'name', source: stationMatcher(@stationMaster), limit: 100}
         elem.typeahead(defaultTypeaheadDesign, config)
+          .on 'typeahead:selected typeahead:autocomplete', (e, datum) =>
+            if e.currentTarget.id == "start"
+              @startStation = datum.name
+            else
+              idx = parseInt(e.currentTarget.getAttribute('data-idx'))
+              @stations[idx].name = datum.name
       submit: ->
         stations = _.flatMap @stations, (s) =>
           x = @findStationId(s.name)
-          console.log(x, s.name)
           if x then [x] else []
         start = @findStationId(@startStation)
         API.postJSON

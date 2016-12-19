@@ -13,9 +13,9 @@ script(src='/js/creator/create_mission.js')
         input#start.autoCompleteStation.form-control(type='text', v-model='startStation')
   h3 Stations
   form.form-holizontal
-    .form-group(v-for='st in stations')
+    .form-group(v-for='st, idx in stations')
       .col-sm-9.col-sm-offset-3
-        input.autoCompleteStation.form-control(type='text', v-model='st.name')
+        input.autoCompleteStation.form-control(type='text', v-model='st.name', :data-idx='idx')
     .form-group
       .col-sm-2.col-sm-offset-10
         button.btn.btn-default.form-control(type='button', @click='addStation()') Add Station
