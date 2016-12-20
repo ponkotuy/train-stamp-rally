@@ -36,30 +36,32 @@ object LocationSetter {
 class LocationSetterThread(config: Configuration) extends Runnable {
   import LocationSetter._
   val conf = new Config(config)
-  val maps = new GoogleMaps(conf.googleMapsKey)
+  val mapsOpt = conf.googleMapsKey.map(new GoogleMaps(_))
 
   override def run(): Unit = {
     import models.DefaultAliases.sg
-    Stream.from(0).map { idx =>
-      val xs = LineStation.joins(LineStation.stationRef, LineStation.lineRef)
-        .findAllWithLimitOffset(limit = FindCount, offset = idx * FindCount)
-      xs.foreach { x =>
-        val geo = StationGeo.findBy(sqls.eq(sg.stationId, x.stationId))
-        if (geo.isEmpty) {
-          for {
-            station <- x.station
-            line <- x.line
-          } {
-            val geo = geoQuery(maps)(s"${line.name} ${normStationName(station.name)}駅")
-              .orElse(geoQuery(maps)(s"${normStationName(station.name)}駅"))
-            Thread.sleep(1000L)
-            geo.foreach(saveGeo(x.stationId, _)(AutoSession))
+    mapsOpt.foreach { maps =>
+      Stream.from(0).map { idx =>
+        val xs = LineStation.joins(LineStation.stationRef, LineStation.lineRef)
+          .findAllWithLimitOffset(limit = FindCount, offset = idx * FindCount)
+        xs.foreach { x =>
+          val geo = StationGeo.findBy(sqls.eq(sg.stationId, x.stationId))
+          if (geo.isEmpty) {
+            for {
+              station <- x.station
+              line <- x.line
+            } {
+              val geo = geoQuery(maps)(s"${line.name} ${normStationName(station.name)}駅")
+                .orElse(geoQuery(maps)(s"${normStationName(station.name)}駅"))
+              Thread.sleep(1000L)
+              geo.foreach(saveGeo(x.stationId, _)(AutoSession))
+            }
           }
         }
-      }
-      Thread.sleep(100)
-      xs.nonEmpty
-    }.takeWhile(identity).foreach(_ => ())
+        Thread.sleep(100)
+        xs.nonEmpty
+      }.takeWhile(identity).foreach(_ => ())
+    }
   }
 }
 
