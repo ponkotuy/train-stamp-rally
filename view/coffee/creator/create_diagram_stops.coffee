@@ -2,10 +2,10 @@
 @diagramStops =
   data:
     stopsCount: 1
-    stops: [{departure: "0"}, {}]
+    stops: [{departure: '0'}, {}]
     stations: []
     matcher: undefined
-    scrape: ""
+    scrape: ''
   methods:
     setStationIfOne: ->
       @stops.forEach (stop) =>
@@ -51,6 +51,7 @@
       @stops.splice(idx + 1, 0, add)
     deleteStop: (from, to) ->
       @stops.splice(from, to - from + 1)
+      @stops[@stops.length - 1].departure = ''
       if from == 0 and @stops.length > 0 # 出発駅変更に伴う処理
         @stops[0].arrival = ""
         diff = parseInt(@stops[0].departure)
@@ -76,6 +77,7 @@
           isAlert = true
           []
       if isAlert then return null
+      stops[stops.length - 1].departure = ''
       stops
 
   watch:
