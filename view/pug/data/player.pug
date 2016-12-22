@@ -1,0 +1,16 @@
+doctype html
+html(lang=ja)
+  head
+    include ../template/_header
+    title Player Detail
+    script(src='/js/data/player.js')
+  body
+    include ../template/_navbar
+    #main.container(role='main')
+      h1.page-header(v-text='player.name')
+      p(v-text='"クリアしたMission数: " + cleared.length')
+      .row
+        .col-sm-6
+          h3 最近クリアしたMission
+        .col-sm-6
+          h3 ランキング入りMission

@@ -5,7 +5,7 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.AccountSerializer
+import models.{Account, AccountSerializer}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
 import queries.CreateAccount
@@ -19,6 +19,12 @@ class Accounts @Inject() (json4s: Json4s) extends Controller with AuthElement wi
 
   def show() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     Ok(Extraction.decompose(loggedIn))
+  }
+
+  def show(id: Long) = Action {
+    Account.findById(id).fold(notFound("player")){ account =>
+      Ok(Extraction.decompose(account.minimal))
+    }
   }
 
   def createAccount() = Action(json) { req =>
