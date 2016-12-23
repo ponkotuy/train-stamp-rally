@@ -4,8 +4,8 @@ GET / controllers.Assets.at(path="/public", file="index.html")
 POST /api/session controllers.Sessions.login()
 DELETE /api/session controllers.Sessions.logout()
 
+GET /api/account/:id controllers.Accounts.showMin(id: Long)
 GET /api/account controllers.Accounts.show()
-GET /api/account/:id controllers.Accounts.show(id: Long)
 POST /api/account controllers.Accounts.createAccount()
 
 GET /api/lines controllers.Lines.list()
@@ -26,6 +26,7 @@ GET /api/train_types controllers.Diagrams.trainTypes()
 GET /api/mission/random controllers.Missions.random(size: Int ?= 6)
 GET /api/mission/:missionId controllers.Missions.show(missionId: Long)
 GET /api/missions controllers.Missions.list()
+GET /api/account/:accountId/clear_count controllers.Missions.clearCount(accountId: Long)
 POST /api/mission controllers.Missions.create()
 
 GET /api/stations controllers.Stations.list(q: Option[String] ?= None)

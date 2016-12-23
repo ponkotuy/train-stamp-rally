@@ -21,8 +21,8 @@ class Accounts @Inject() (json4s: Json4s) extends Controller with AuthElement wi
     Ok(Extraction.decompose(loggedIn))
   }
 
-  def show(id: Long) = Action {
-    Account.findById(id).fold(notFound("player")){ account =>
+  def showMin(id: Long) = Action {
+    Account.findById(id).fold(notFound("player")) { account =>
       Ok(Extraction.decompose(account.minimal))
     }
   }

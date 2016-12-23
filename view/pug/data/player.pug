@@ -8,10 +8,11 @@ html(lang=ja)
     include ../template/_navbar
     #main.container(role='main')
       h1.page-header(v-text='player.name')
-      p(v-text='"クリアしたMission数: " + cleared.length')
+      p(v-text='"クリアしたMission数: " + clearCount')
       h3 作ったMission
       .row
         .col-sm-6
           h3 最近クリアしたMission
+          dl.dl-horizontal
         .col-sm-6
           h3 ランキング入りMission

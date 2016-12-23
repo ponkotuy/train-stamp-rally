@@ -59,6 +59,10 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
       }
     }
   }
+
+  def clearCount(accountId: Long) = Action {
+    Ok(Score.missionCount(accountId)(AutoSession).toString)
+  }
 }
 
 object Missions {
