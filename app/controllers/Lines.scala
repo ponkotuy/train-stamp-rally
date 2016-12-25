@@ -32,8 +32,9 @@ class Lines @Inject() (json4s: Json4s, _ec: ExecutionContext) extends Controller
     val result = req.body.fold[Any] {
       Line.findAll(Seq(l.id.asc))
     } { paging =>
-      val data = Line.findAllWithPagination(paging.pagination, Seq(l.id.desc))
-      val count = Line.count()
+      val where = paging.q.fold(sqls"true") { q => sqls.like(l.name, s"%${q}%") }
+      val data = Line.findAllByWithPagination(where, paging.pagination, Seq(l.id.desc))
+      val count = Line.countBy(where)
       WithPage(Page(count, paging.size, paging.page), data)
     }
     Ok(Extraction.decompose(result))

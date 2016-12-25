@@ -1,6 +1,10 @@
 script(src='/js/creator/lines.js')
 h2 Lines
 #lines
+  form.form-inline(@submit.prevent, @submit='getData()')
+    label.control-label(for='lineName') From line name
+    input#lineName.form-control(type='text', v-model='lineName')
+    button.btn.btn-default(type='submit') Search
   ul.pagination
     li.clickable(:class='{disabled: pagination.current == 0}')
       a(aria-label='Previous', @click='next(pagination.current - 1)')
