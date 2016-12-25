@@ -40,11 +40,11 @@ class LocationSetterThread(config: Configuration) extends Runnable {
 
   override def run(): Unit = {
     println("Start LocationSetterThread")
-    import models.DefaultAliases.sg
+    import models.DefaultAliases.{sg, ls}
     mapsOpt.foreach { maps =>
       Stream.from(0).map { idx =>
         val xs = LineStation.joins(LineStation.stationRef, LineStation.lineRef)
-          .findAllWithLimitOffset(limit = FindCount, offset = idx * FindCount)
+          .findAllWithLimitOffset(limit = FindCount, offset = idx * FindCount, orderings = Seq(ls.id.desc))
         xs.foreach { x =>
           val geo = StationGeo.findBy(sqls.eq(sg.stationId, x.stationId))
           if (geo.isEmpty) {
