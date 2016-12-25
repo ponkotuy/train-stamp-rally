@@ -39,6 +39,7 @@ class LocationSetterThread(config: Configuration) extends Runnable {
   val mapsOpt = conf.googleMapsKey.map(new GoogleMaps(_))
 
   override def run(): Unit = {
+    println("Start LocationSetterThread")
     import models.DefaultAliases.sg
     mapsOpt.foreach { maps =>
       Stream.from(0).map { idx =>
