@@ -8,7 +8,7 @@ script(src='/js/game/station_modal.js')
         h3(v-text='mission.name')
       .modal-body
         p
-          a(:href="'/data/mission.html?id=' + mission.mission.id") Map
+          a(:href="'/data/mission.html?id=' + mission.mission.id", target='_blank') Map
         h4 駅リスト
         ul
           li(v-for='station in mission.mission.stations')
