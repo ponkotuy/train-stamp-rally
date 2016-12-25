@@ -13,3 +13,5 @@ html(lang=ja)
         .form-group
           button.btn.btn-warning.btn-raised(type='button', @click='clearCache()') Clear Cache
           p cacheをclearするとcacheによる不都合を解消することができますが、一時的にアプリケーションの動作が重くなります。
+          button.btn.btn-warning.btn-raised(type='button', @click='restartGeo()') Restart Geo Search
+          p 駅の位置情報を更新します。やり過ぎるとGoogleAPI課金が発生します。

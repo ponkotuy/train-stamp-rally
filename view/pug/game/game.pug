@@ -28,7 +28,7 @@ html(lang=ja)
         .col-sm-3
           #mission
             h2 目的地
-            a(:href="'/data/mission.html?id=' + missionId") Map
+            a(:href="'/data/mission.html?id=' + missionId", target='_blank') Map
             div(v-for='progress in progresses', :class='{"text-success": progress.arrivalTime, "text-danger": !progress.arrivalTime}')
               h4
                 span.glyphicon(:class='{"glyphicon-ok": progress.arrivalTime, "glyphicon-remove": !progress.arrivalTime}')

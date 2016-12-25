@@ -11,7 +11,9 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import models._
+import modules.LocationSetterThread
 import org.json4s._
+import play.api.Configuration
 import play.api.libs.ws.WSClient
 import play.api.mvc.{Action, Controller}
 import queries.CreateStationImpl
@@ -21,7 +23,7 @@ import utils.{FutureUtil, Wikipedia}
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future}
 
-class Stations @Inject() (json4s: Json4s, ws: WSClient, ec: ExecutionContext, system: ActorSystem)
+class Stations @Inject() (json4s: Json4s, ws: WSClient, ec: ExecutionContext, system: ActorSystem, config: Configuration)
     extends Controller with AuthElement with AuthConfigImpl {
   import FutureUtil._
   import Responses._
@@ -102,5 +104,10 @@ class Stations @Inject() (json4s: Json4s, ws: WSClient, ec: ExecutionContext, sy
         result.merge
       }
     }
+  }
+
+  def restartGeo() = StackAction(AuthorityKey -> Administrator) { implicit req =>
+    new LocationSetterThread(config).run()
+    Success
   }
 }
