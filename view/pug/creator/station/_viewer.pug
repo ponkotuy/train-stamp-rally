@@ -13,8 +13,9 @@
         th Name
         th Lines
     tbody
-      tr.clickable(v-for='station in stations', @click='update(station.id)')
+      tr(v-for='station in stations')
         td(v-text='station.id')
-        td(v-text='station.name')
         td
-          span.label.label-default(v-for='line in station.lines', v-text='line.line.name')
+          a(href='#', v-text='station.name', @click='update(station.id)')
+        td
+          span.label.label-default.clickable(v-for='line in station.lines', v-text='line.line.name', @click='createStation(station, line)')
