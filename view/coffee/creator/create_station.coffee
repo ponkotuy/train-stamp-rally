@@ -48,7 +48,6 @@
         config = {name: 'stations', display: 'name', source: stationMatcher(@lineStations)}
         $('#stationName').typeahead(defaultTypeaheadDesign, config)
       lineStationLoad: (station, line) ->
-        console.log(station, line)
         @rank = station.rank.value
         @lineName = line.line.name
         @stationName = station.name
