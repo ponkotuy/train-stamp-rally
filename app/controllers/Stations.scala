@@ -37,8 +37,8 @@ class Stations @Inject() (json4s: Json4s, ws: WSClient, ec: ExecutionContext, sy
 
   def list(q: Option[String]) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     import models.DefaultAliases.s
-    val where = q.map { name => sqls.like(s.name, s"%${name}").or.like(s.name, s"${name}%") }.getOrElse(sqls"true")
-    Ok(Extraction.decompose(Station.findAllBy(where, Seq(s.id))))
+    val where = q.filter(_.nonEmpty).map { name => sqls.like(s.name, s"%${name}").or.like(s.name, s"${name}%") }.getOrElse(sqls"true")
+    Ok(Extraction.decompose(Station.findAllByWithLimitOffset(where, limit = 100, orderings = Seq(s.id))))
   }
 
   def update(stationId: Long) = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
