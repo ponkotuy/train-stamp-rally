@@ -28,7 +28,7 @@ $(document).ready ->
       name: ''
     methods:
       search: ->
-        API.getJSON '/api/stations', {q: @name}, (json) =>
+        API.getJSON '/api/stations', {q: @name, limit: 100}, (json) =>
           @stations = json
           @stations.forEach (station) ->
             API.getJSON "/api/station/#{station.id}/lines", (json) ->

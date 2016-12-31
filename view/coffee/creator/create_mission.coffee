@@ -2,10 +2,11 @@ $(document).ready ->
   new Vue
     el: '#createMission'
     data:
-      name: ""
+      name: ''
       stationMaster: []
-      stations: [{name: ""}, {name: ""}, {name: ""}]
-      startStation: ""
+      stations: [{name: ''}, {name: ''}, {name: ''}]
+      startStation: ''
+      csvStations: ''
     methods:
       getStations: ->
         API.getJSON '/api/stations', (json) =>
@@ -16,7 +17,7 @@ $(document).ready ->
         config = {name: 'stations', display: 'name', source: stationMatcher(@stationMaster), limit: 100}
         elem.typeahead(defaultTypeaheadDesign, config)
           .on 'typeahead:selected typeahead:autocomplete', (e, datum) =>
-            if e.currentTarget.id == "start"
+            if e.currentTarget.id == 'start'
               @startStation = datum.name
             else
               idx = parseInt(e.currentTarget.getAttribute('data-idx'))
@@ -32,15 +33,21 @@ $(document).ready ->
           success: ->
             location.reload(false)
       addStation: ->
-        @stations.push({name: ""})
+        @stations.push({name: ''})
         @setAutoComplete($('.autoCompleteStation'))
       findStationId: (name) ->
-        st = _.find @stationMaster, (s) -> s.name == name
+        st = _.find @stationMaster, (s) ->
+          s.name == name
+        console.log(st)
         st?.id
       getRandom: (size) ->
         API.getJSON '/api/mission/random', {size: size}, (json) =>
           @startStation = json.start.name
           @stations = json.stations.map (s) -> {name: s.name}
+      loadCSV: ->
+        @stations = _.flatMap @csvStations.split(','), (raw) ->
+          x = raw.trim()
+          if x then [{name: x}] else []
     mounted: ->
       @getStations()
     watch:

@@ -1,11 +1,11 @@
 @diagramTrains =
   data:
-    startsText: ""
+    startsText: ''
     pattern:
-      start: "0700"
-      end: "2300"
+      start: '0700'
+      end: '2300'
       period: 60
-    stationUrl: ""
+    stationUrl: ''
     modal: null
   methods:
     pushPattern: ->
@@ -41,7 +41,7 @@ createModal = (submitF) ->
     data:
       url: ''
       trainAttrs: []
-      candidateText: ""
+      candidateText: ''
       candidates: []
     methods:
       submit: ->

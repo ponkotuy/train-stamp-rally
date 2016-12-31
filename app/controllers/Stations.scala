@@ -35,10 +35,11 @@ class Stations @Inject() (json4s: Json4s, ws: WSClient, ec: ExecutionContext, sy
 
   lazy val wiki = system.actorOf(Props(new WikipediaActor(new Wikipedia(ws))))
 
-  def list(q: Option[String]) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def list(q: Option[String], limit: Option[Int]) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     import models.DefaultAliases.s
     val where = q.filter(_.nonEmpty).map { name => sqls.like(s.name, s"%${name}").or.like(s.name, s"${name}%") }.getOrElse(sqls"true")
-    Ok(Extraction.decompose(Station.findAllByWithLimitOffset(where, limit = 100, orderings = Seq(s.id))))
+    val result = Station.findAllByWithLimitOffset(where, limit = limit.getOrElse(Int.MaxValue), orderings = Seq(s.id))
+    Ok(Extraction.decompose(result))
   }
 
   def update(stationId: Long) = StackAction(json, AuthorityKey -> Administrator) { implicit req =>

@@ -19,6 +19,13 @@ script(src='/js/creator/create_mission.js')
     .form-group
       .col-sm-2.col-sm-offset-10
         button.btn.btn-default.form-control(type='button', @click='addStation()') Add Station
+    .form-group
+      label.col-sm-3.control-label(for='csv_stations') CSV
+      .col-sm-9
+        textarea#csv_stations.form-control(type='text', v-model='csvStations')
+    .form-group
+      .col-sm-2.col-sm-offset-10
+        button.btn.btn-default.form-control(type='button', @click='loadCSV') Load CSV
   h3 Random Create
   form.form-inline
     .form-group
