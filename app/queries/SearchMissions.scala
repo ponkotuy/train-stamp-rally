@@ -10,7 +10,8 @@ case class SearchMissions(
     rank: Option[RankRate],
     score: Boolean,
     stationName: Option[String],
-    name: Option[String]
+    name: Option[String],
+    creator: Option[Long]
 ) {
   def filter()(implicit session: DBSession) = {
     import models.DefaultAliases.s
@@ -22,7 +23,10 @@ case class SearchMissions(
 
   def where: SQLSyntax = {
     import models.DefaultAliases.m
-    name.map { str => sqls.like(m.name, s"%${str}%") }.getOrElse(sqls"true")
+    sqls.toAndConditionOpt(
+      creator.map { creator => sqls.eq(m.creator, creator) },
+      name.map { str => sqls.like(m.name, s"%${str}%") }
+    ).getOrElse(sqls"true")
   }
 }
 
@@ -42,7 +46,8 @@ object SearchMissions {
       "rank" -> optional(text(minLength = 1).verifying(RankRate.constraint).transform[RankRate](RankRate.find(_).get, _.toString)),
       "score" -> optional(boolean).transform[Boolean](_.getOrElse(false), Some(_)),
       "station_name" -> optional(text(minLength = 1)),
-      "name" -> optional(text(minLength = 1))
+      "name" -> optional(text(minLength = 1)),
+      "creator" -> optional(longNumber(min = 1))
     )(SearchMissions.apply)(SearchMissions.unapply)
   )
 }

@@ -10,9 +10,10 @@ html(lang=ja)
       h1.page-header(v-text='player.name')
       p(v-text='"クリアしたMission数: " + clearCount')
       h3 作ったMission
+      ul
+        li(v-for='m in created', v-text='m.name')
       .row
         .col-sm-6
           h3 最近クリアしたMission
-          dl.dl-horizontal
         .col-sm-6
           h3 ランキング入りMission

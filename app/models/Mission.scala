@@ -7,6 +7,7 @@ case class Mission(
     id: Long,
     name: String,
     startStationId: Long,
+    creator: Long,
     created: Long,
     stations: Seq[Station] = Nil,
     startStation: Option[Station] = None,
@@ -43,5 +44,10 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
   hasOne[MissionRate](MissionRate, (m, mr) => m.copy(rate = mr.map(_.rate).getOrElse(0))).byDefault
 
   def save(mission: Mission)(implicit session: DBSession): Long =
-    createWithAttributes('name -> mission.name, 'created -> mission.created, 'startStationId -> mission.startStationId)
+    createWithAttributes(
+      'name -> mission.name,
+      'created -> mission.created,
+      'startStationId -> mission.startStationId,
+      'creator -> mission.creator
+    )
 }

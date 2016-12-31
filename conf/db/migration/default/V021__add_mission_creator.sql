@@ -1,0 +1,3 @@
+
+ALTER TABLE mission ADD creator BIGINT NOT NULL DEFAULT 2;
+ALTER TABLE mission ADD FOREIGN KEY(creator) REFERENCES account(id);
