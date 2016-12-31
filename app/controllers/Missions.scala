@@ -53,7 +53,7 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
   def create() = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
     req.body.extractOpt[CreateMission].fold(JSONParseError) { mission =>
       DB localTx { implicit session =>
-        val missionId = mission.mission.save()
+        val missionId = mission.mission(loggedIn.id).save()
         mission.missionStations(missionId).foreach(_.save())
         Ok(missionId.toString)
       }
