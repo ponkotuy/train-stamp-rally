@@ -37,6 +37,13 @@ $(document).ready ->
       openModal: (mission) ->
         modal.setMission(mission)
         $(stationModalId).modal('show')
+    mounted: ->
+      @.$nextTick =>
+        params = fromURLParameter(location.search.slice(1))
+        console.log(params)
+        if params?.mission?
+          API.getJSON "/api/mission/#{params.mission}", (mission) =>
+            @openModal({mission: mission})
 
 emptyUndef = (str) ->
   if str then str else undefined
