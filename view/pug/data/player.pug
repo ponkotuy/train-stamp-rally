@@ -13,8 +13,3 @@ html(lang=ja)
       ul
         li(v-for='m in created')
           a(:href='"/game/index.html?mission=" + m.id', v-text='m.name')
-      .row
-        .col-sm-6
-          h3 最近クリアしたMission
-        .col-sm-6
-          h3 ランキング入りMission
