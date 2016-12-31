@@ -58,4 +58,9 @@ object Score extends SkinnyCRUDMapperWithId[Long, Score] {
       'created -> score.created
     )
   }
+
+  def missionCount(accountId: Long)(implicit session: DBSession): Long = withSQL {
+    select(sqls.count(sqls.distinct(defaultAlias.missionId)))
+      .from(Score as defaultAlias).where(sqls.eq(defaultAlias.accountId, accountId))
+  }.map(_.long(1)).single().apply().getOrElse(0L)
 }

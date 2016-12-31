@@ -7,6 +7,7 @@ $(document).ready ->
   missionId = params.id
   map.setView({latitude: 37.786941, longitude: 138.4089693}, 7)
   API.getJSON "/api/mission/#{missionId}", (json) ->
+    new Vue(mainVue(json))
     document.title = json.name
     markers = json.stations
       .filter (x) -> x.geo?
@@ -38,3 +39,8 @@ class MyMap
     for m in @markers
       @map.removeLayer(m)
     @markers = []
+
+mainVue = (mission) ->
+  el: '#title'
+  data:
+    mission: mission

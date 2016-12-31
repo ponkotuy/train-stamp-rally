@@ -9,4 +9,7 @@ html(lang=ja)
   body
     include ../template/_navbar
     #main.container(role='main')
+      #title
+        h2
+          a(:href='"/game/index.html?mission=" + mission.id', v-text='mission.name')
       #map

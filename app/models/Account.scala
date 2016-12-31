@@ -3,6 +3,7 @@ package models
 import authes.Role
 import org.json4s.CustomSerializer
 import org.json4s.JsonDSL._
+import responses.AccountMinimal
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
@@ -14,6 +15,7 @@ case class Account(
     password: String
 ) {
   def save()(implicit session: DBSession): Long = Account.save(this)
+  def minimal = AccountMinimal(id, name)
 }
 
 object Account extends SkinnyCRUDMapperWithId[Long, Account] {
