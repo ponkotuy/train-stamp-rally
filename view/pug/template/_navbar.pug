@@ -8,6 +8,16 @@ script(src='/js/navbar.js')
         li(v-for='cat in categories', :class="{'active': cat === category}")
           a(:href='"/" + cat + "/index.html"', v-text='camelCase(cat)')
       ul#login.nav.navbar-nav.navbar-right
-        li
-          a(href='/auth/session.html', v-if='!logined') Login
-          a(href='#', @click='logout()', v-if='logined', v-text='account.name + "(Logout)"')
+        li(v-if='!logined')
+          a(href='/auth/session.html') Login
+        li.dropdown(v-if='logined')
+          a.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup="true" aria-expanded="false")
+            span(v-text='account.name')
+            spna.caret
+          ul.dropdown-menu
+            li.diviver(role='separator')
+            li
+              a(:href='"/data/player.html?id=" + account.id') Player情報
+            li.divider(role='separator')
+            li
+              a(href='#', @click='logout()') Logout

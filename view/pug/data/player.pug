@@ -9,7 +9,7 @@ html(lang=ja)
     #main.container(role='main')
       h1.page-header(v-text='player.name')
       p(v-text='"クリアしたMission数: " + clearCount')
-      h3 作ったMission
+      h3(v-if='created') 作ったMission
       ul
         li(v-for='m in created')
           a(:href='"/game/index.html?mission=" + m.id', v-text='m.name')
