@@ -68,7 +68,7 @@ mainVue = (game) -> new Vue
         t
     isAfter: (time) ->
       now = @game.time
-      (now.hour * 60 + now.minutes) <= (time.hour * 60 + now.minutes)
+      (now.hour * 60 + now.minutes) <= (time.hour * 60 + time.minutes)
   mounted: ->
     @.$nextTick =>
       @setMission ->
