@@ -10,7 +10,8 @@ html(lang=ja)
     .container(role=main)
       #game
         h1 Mission Complete!
-        a(:href="'https://twitter.com/share?text=' + mission.name + '+Ranking&url=https%3A%2F%2Ftrain.ponkotuy.com%2Fdata%2Franking.html%3fmission%3d' + missionId + '%26account%3d' + accountId + '&hashtags=TrainStampRally'", target='_blank') Tweet
+        a.btn.btn-primary(:href="'https://twitter.com/share?text=' + mission.name + '+Ranking&url=https%3A%2F%2Ftrain.ponkotuy.com%2Fdata%2Franking.html%3fmission%3d' + missionId + '%26account%3d' + accountId + '&hashtags=TrainStampRally'", target='_blank') Tweet
+        a.btn.btn-default(:href='"/game/index.html?mission=" + mission.id') Replay
         h4 終了日時: {{ dateFormat(game.time) }}
         h4 使用金額: {{ game.money }}円
         h4 移動距離: {{ game.distance.toFixed(1) }}km
