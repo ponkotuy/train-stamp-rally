@@ -59,11 +59,12 @@ mainVue = (game) -> new Vue
       _.findLastIndex _.initial(train.stops), (stop) => stop.station.id == @game.station.id
     trainDay: (trains) ->
       trains.map (t) =>
+        nextFlag = false
         t.stops = t.stops.map (stop) =>
           if stop.arrival
-            stop.arrival.day = if @isAfter(stop.arrival) then 0 else 1
+            stop.arrival.day = if !nextFlag and @isAfter(stop.arrival) then 0 else nextFlag = true; 1
           if stop.departure
-            stop.departure.day = if @isAfter(stop.departure) then 0 else 1
+            stop.departure.day = if !nextFlag and @isAfter(stop.departure) then 0 else nextFlag = true; 1
           stop
         t
     isAfter: (time) ->

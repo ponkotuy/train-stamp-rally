@@ -21,7 +21,7 @@ class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with 
   implicit val format = DefaultFormats
 
   def board() = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
-    import DefaultAliases.{g, gp, gh}
+    import DefaultAliases.{g, gp}
     DB localTx { implicit session =>
       val result: Either[Result, Result] = for {
         b <- req.body.extractOpt[Board].toRight(JSONParseError)

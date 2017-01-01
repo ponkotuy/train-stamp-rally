@@ -8,9 +8,9 @@ case class MissionTime(day: Int, hour: Int, minutes: Int) extends Ordered[Missio
   assert(0 <= hour && hour < 24)
   assert(0 <= minutes && minutes < 60)
 
-  def setTime(time: TrainTime): MissionTime = {
-    if (trainTime < time) copy(hour = time.hour, minutes = time.minutes)
-    else copy(day = day + 1, hour = time.hour, minutes = time.minutes)
+  def setTime(time: TrainTime, nextDay: Boolean): MissionTime = {
+    if (nextDay) copy(day = day + 1, hour = time.hour, minutes = time.minutes)
+    else copy(hour = time.hour, minutes = time.minutes)
   }
 
   def addMinutes(add: Int): MissionTime = {

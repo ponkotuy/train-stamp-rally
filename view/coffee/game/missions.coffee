@@ -40,7 +40,6 @@ $(document).ready ->
     mounted: ->
       @.$nextTick =>
         params = fromURLParameter(location.search.slice(1))
-        console.log(params)
         if params?.mission?
           API.getJSON "/api/mission/#{params.mission}", (mission) =>
             @openModal({mission: mission})

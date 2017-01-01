@@ -5,12 +5,12 @@ import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc.AutoSession
 import utils.{FeeCalculator, TrainTime}
 
-case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: Station) {
+case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: Station, start: TrainTime) {
   def apply(game: Game): Game =
     game.copy(
       distance = game.distance + distance,
       money = game.money + fee,
-      time = game.time.setTime(time),
+      time = game.time.setTime(time, start < game.time.trainTime),
       stationId = station.id,
       station = Some(station),
       updated = System.currentTimeMillis()
@@ -23,7 +23,8 @@ object TrainBoardCost {
     val fee = FeeCalculator.calc(train.trainType, companyId, distance)(AutoSession)
     val station = train.stops.reverseIterator.find(_.station.id == toStation).get
     val time = station.arrival.orElse(station.departure).get
-    TrainBoardCost(distance, fee, time, station.station)
+    val start = train.stops.find(_.station.id == fromStation).flatMap(_.departure).get
+    TrainBoardCost(distance, fee, time, station.station, start)
   }
 
   private def calcDistance(train: TrainResponse, fromStation: Long, toStation: Long): Double = {
