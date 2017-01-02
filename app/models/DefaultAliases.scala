@@ -1,6 +1,7 @@
 package models
 
 object DefaultAliases {
+  def a = Account.defaultAlias
   def ls = LineStation.defaultAlias
   def l = Line.defaultAlias
   def s = Station.defaultAlias

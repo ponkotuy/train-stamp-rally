@@ -7,6 +7,8 @@ DELETE /api/session controllers.Sessions.logout()
 GET /api/account/:id controllers.Accounts.showMin(id: Long)
 GET /api/account controllers.Accounts.show()
 POST /api/account controllers.Accounts.createAccount()
+PUT /api/password_reset controllers.Passwords.request()
+GET /api/password/:secret controllers.Passwords.reset(secret: String)
 
 GET /api/lines controllers.Lines.list()
 POST /api/line controllers.Lines.create()

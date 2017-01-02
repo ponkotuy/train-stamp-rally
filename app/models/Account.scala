@@ -19,7 +19,7 @@ case class Account(
 }
 
 object Account extends SkinnyCRUDMapperWithId[Long, Account] {
-  override def defaultAlias: Alias[Account] = createAlias("a")
+  override val defaultAlias: Alias[Account] = createAlias("a")
   override def extract(rs: WrappedResultSet, n: ResultName[Account]): Account = autoConstruct(rs, n)
 
   override def idToRawValue(id: Long): Any = id

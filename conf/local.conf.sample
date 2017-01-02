@@ -7,3 +7,8 @@ db.default {
 }
 
 google.maps.key =
+
+amazon {
+  access_key =
+  secret_key =
+}
