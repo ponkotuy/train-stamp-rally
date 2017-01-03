@@ -18,8 +18,7 @@ object TrainPage {
   import utils.ParseHelper._
 
   def fromXML(xml: NodeSeq, url: String): Either[String, TrainPage] = {
-    import scala.language.implicitConversions
-    implicit def rightBias[A, B](e: Either[A, B]) = e.right
+    import utils.EitherUtil.eitherToRightProjection
     for {
       container <- (xml \\ "div" find (_ \ "@id" contains Text("container02"))).toRight("container")
       table <- (container \\ "table" find (_ \ "@cellpadding" contains Text("5"))).toRight("table")

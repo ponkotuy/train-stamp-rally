@@ -15,6 +15,7 @@ case class Account(
     password: String
 ) {
   def save()(implicit session: DBSession): Long = Account.save(this)
+  def update()(implicit session: DBSession): Long = Account.update(this)
   def minimal = AccountMinimal(id, name)
 }
 
@@ -25,14 +26,18 @@ object Account extends SkinnyCRUDMapperWithId[Long, Account] {
   override def idToRawValue(id: Long): Any = id
   override def rawValueToId(value: Any): Long = value.toString.toLong
 
-  def save(account: Account)(implicit session: DBSession): Long = {
-    createWithAttributes(
-      'name -> account.name,
-      'email -> account.email,
-      'role -> account.role.value,
-      'password -> account.password
-    )
-  }
+  def save(account: Account)(implicit session: DBSession): Long =
+    createWithAttributes(params(account): _*)
+
+  def update(a: Account)(implicit session: DBSession): Int =
+    updateById(a.id).withAttributes(params(a): _*)
+
+  def params(a: Account) = Seq(
+    'name -> a.name,
+    'email -> a.email,
+    'role -> a.role.value,
+    'password -> a.password
+  )
 }
 
 object AccountSerializer extends CustomSerializer[Account](format => (

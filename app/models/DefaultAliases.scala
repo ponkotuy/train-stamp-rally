@@ -18,4 +18,5 @@ object DefaultAliases {
   def ia = ImageAttribute.defaultAlias
   def gh = GameHistory.defaultAlias
   def sg = StationGeo.defaultAlias
+  def pr = PasswordReset.defaultAlias
 }

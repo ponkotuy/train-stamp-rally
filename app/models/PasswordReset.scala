@@ -23,4 +23,7 @@ object PasswordReset extends SkinnyCRUDMapperWithId[Long, PasswordReset] {
 
   def fromAccountId(accountId: Long): PasswordReset =
     new PasswordReset(0L, accountId, UUID.randomUUID().toString, System.currentTimeMillis())
+
+  def deleteByAccountId(accountId: Long)(implicit session: DBSession) =
+    PasswordReset.deleteBy(sqls.eq(column.accountId, accountId))
 }

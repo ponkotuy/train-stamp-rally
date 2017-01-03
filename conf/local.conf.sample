@@ -12,3 +12,5 @@ amazon {
   access_key =
   secret_key =
 }
+
+management.mail =
