@@ -11,6 +11,7 @@ class Config(orig: Configuration) {
     access <- a.access
     secret <- a.secret
   } yield new BasicAWSCredentials(access, secret)
+  lazy val 
 }
 
 class AmazonConfig(config: Configuration) {
