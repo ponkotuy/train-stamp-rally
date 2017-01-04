@@ -37,6 +37,8 @@
       data: data
       success: success
       error: failure
+  deleteJSON: (obj) ->
+    @json('DELETE', obj)
 
 failure = (jqXHR) ->
   redirect = location.pathname

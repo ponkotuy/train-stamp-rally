@@ -6,11 +6,12 @@ import com.google.inject.Inject
 import models.{Account, PasswordReset}
 import org.json4s.DefaultFormats
 import play.api.Configuration
-import play.api.data.Form
 import play.api.mvc.{Action, Controller, Result}
-import queries.{BCryptEncoder, ResetPassword}
+import queries.{BCryptEncoder, RequestReset, ResetPassword}
 import scalikejdbc.{AutoSession, DB, sqls}
 import utils.{Config, Mail, MyAmazonSES}
+
+import scala.concurrent.duration._
 
 class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Controller {
   import Passwords._
@@ -21,24 +22,25 @@ class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Contr
   val conf = new Config(_config)
   lazy val ses: Option[MyAmazonSES] = conf.amazon.flatMap(_.ses)
 
-  def request() = Action { implicit req =>
+  def request() = Action(json) { implicit req =>
     import models.DefaultAliases.a
-    EmailForm.bindFromRequest().fold(badRequest(_), { email =>
-      Account.findBy(sqls.eq(a.email, email)).fold(notFound(s"email(${email})")) { account =>
-        DB localTx { implicit session =>
-          PasswordReset.deleteByAccountId(account.id)
-          val reset = PasswordReset.fromAccountId(account.id)
-          reset.save()(AutoSession)
-          val mes = message(reset.secret)
-          val result = for {
-            from <- conf.mail
-            mail = Mail(new Destination().withToAddresses(account.email), Title, mes, from)
-            client <- ses
-          } yield client.send(mail)
-          result.fold(InternalServerError("Sending mail error"))(_ => Success)
-        }
-      }
-    })
+    import utils.EitherUtil.eitherToRightProjection
+    val result = for {
+      rr <- req.body.extractOpt[RequestReset].toRight(JSONParseError)
+      account <- Account.findBy(sqls.eq(a.email, rr.email)).toRight(notFound(s"email(${rr.email})"))
+    } yield {
+      PasswordReset.deleteByAccountId(account.id)(AutoSession)
+      val reset = PasswordReset.fromAccountId(account.id)
+      reset.save()(AutoSession)
+      val mes = message(reset.secret)
+      val result = for {
+        from <- conf.mail
+        mail = Mail(new Destination().withToAddresses(account.email), Title, mes, from)
+        client <- ses
+      } yield client.send(mail)
+      result.fold(InternalServerError("Sending mail error"))(_ => Success)
+    }
+    result.merge
   }
 
   def reset() = Action(json) { implicit request =>
@@ -47,6 +49,7 @@ class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Contr
     val result: Either[Result, Result] = for {
       req <- request.body.extractOpt[ResetPassword].toRight(JSONParseError)
       db <- PasswordReset.findBy(sqls.eq(pr.secret, req.secret)).toRight(notFound(s"PasswordReset secret: ${req.secret}")).right
+      _ <- Either.cond(System.currentTimeMillis() - 1.days.toMillis < db.created, Left(()), RequestTimeout("Timeout"))
       account <- Account.findById(db.accountId).toRight(notFound(s"Account: ${db.accountId}"))
     } yield {
       DB localTx { implicit session =>
@@ -60,9 +63,7 @@ class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Contr
 }
 
 object Passwords {
-  import play.api.data.Forms.text
 
-  val EmailForm = Form(text)
   val Title = content("TrainStampRallyのパスワードリセット")
 
   def message(secret: String) = new Body().withText(
@@ -76,6 +77,8 @@ object Passwords {
          |以下のURLにてパスワードを再設定することができます。
          |
          |https://train.ponkotuy.com/auth/password_reset.html?secret=${secret}
+         |
+         |有効期間は1日間のみです。それ以降は再送してください
       """.stripMargin
     )
   )

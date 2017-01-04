@@ -2,13 +2,12 @@ package utils
 
 import com.amazonaws.auth.AWSCredentials
 import com.amazonaws.regions.Regions
-import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClientBuilder
+import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient
 import com.amazonaws.services.simpleemail.model._
 
 class MyAmazonSES(credentials: AWSCredentials, region: Regions) {
-  lazy val client = AmazonSimpleEmailServiceClientBuilder.standard()
-    .withRegion(region)
-    .build()
+  lazy val client = new AmazonSimpleEmailServiceClient(credentials)
+  client.withRegion(region)
 
   def send(mail: Mail): Unit = {
     val req = new SendEmailRequest()
