@@ -15,21 +15,21 @@ $(document).ready ->
             total: json.pagination.total
             last: Math.min(json.pagination.last, 10)
       openModal: (line) ->
-        if lineModal?
-          @lineModal = modalVue(line)
+        @lineModal ?= modalVue()
         $(modalId).modal('show')
+        @lineModal.setLine(line)
 
 modalId = '#lineModal'
 
-modalVue = (line) -> new Vue
+modalVue = -> new Vue
   el: modalId
   data:
-    line: line
+    line: {company: {name: ''}}
     stations: []
   methods:
     getStations: ->
       API.getJSON "/api/line/#{@line.id}/stations", (json) =>
         @stations = json
-  mounted: ->
-    @.$nextTick =>
+    setLine: (line) ->
+      @line = line
       @getStations()
