@@ -10,7 +10,7 @@ case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: 
     game.copy(
       distance = game.distance + distance,
       money = game.money + fee,
-      time = game.time.setTime(time, start < game.time.trainTime),
+      time = game.time.setTime(time, start < game.time.trainTime || time < game.time.trainTime),
       stationId = station.id,
       station = Some(station),
       updated = System.currentTimeMillis()
