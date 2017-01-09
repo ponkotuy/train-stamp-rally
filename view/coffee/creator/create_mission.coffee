@@ -45,7 +45,8 @@ $(document).ready ->
           @startStation = json.start.name
           @stations = json.stations.map (s) -> {name: s.name}
       loadCSV: ->
-        @stations = _.flatMap @csvStations.split(','), (raw) ->
+        elems = _.flatMap @csvStations.split(/\r\n|\r|\n/), (xs) -> xs.split(',')
+        @stations = _.flatMap elems, (raw) ->
           x = raw.trim()
           if x then [{name: x}] else []
     mounted: ->
