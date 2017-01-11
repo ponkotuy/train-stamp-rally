@@ -3,7 +3,7 @@ package responses
 import models._
 import scalikejdbc.DBSession
 
-case class DiagramResponse(
+final case class DiagramResponse(
   id: Long,
   name: String,
   trainType: TrainType,
@@ -31,7 +31,7 @@ object DiagramResponse {
   }
 }
 
-case class DiagramStationResponse(
+final case class DiagramStationResponse(
   id: Long,
   arrival: Option[Int],
   departure: Option[Int],

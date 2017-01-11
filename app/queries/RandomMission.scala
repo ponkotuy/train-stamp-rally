@@ -7,21 +7,22 @@ import scalikejdbc._
 import scala.collection.breakOut
 import scala.util.Random
 
-case class RandomMission(name: String, start: Station, stations: Seq[Station])
+final case class RandomMission(name: String, start: Station, stations: Seq[Station])
 
 object RandomMission {
   val random = new Random
 
   // sizeは6の倍数が好ましい
-  def create(size: Int)(implicit session: DBSession): RandomMission = {
-    val start = findStations(StationRank.Top, 1).head
-    val rate = RankRate.findSize(size)
-    val stations: Seq[Station] = rate().flatMap {
-      case (rank, rate) =>
-        findStations(rank, size / 6 * rate)
-    }(breakOut)
-    val name = s"${rate.name.capitalize} Mission"
-    RandomMission(name, start, stations)
+  def create(size: Int)(implicit session: DBSession): Option[RandomMission] = {
+    findStations(StationRank.Top, 1).headOption.map { start =>
+      val rate = RankRate.findSize(size)
+      val stations: Seq[Station] = rate().flatMap {
+        case (rank, r) =>
+          findStations(rank, size / 6 * r)
+      }(breakOut)
+      val name = s"${rate.name.capitalize} Mission"
+      RandomMission(name, start, stations)
+    }
   }
 
   def findStations(rank: StationRank, size: Int)(implicit session: DBSession): Seq[Station] = {
@@ -31,7 +32,7 @@ object RandomMission {
   }
 }
 
-sealed abstract class RankRate(val name: String, val rates: Map[StationRank, Int]) {
+sealed abstract class RankRate(val name: String, val rates: Map[StationRank, Int]) extends Product with Serializable {
   def apply() = rates
   def size: Int
 }

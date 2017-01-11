@@ -4,7 +4,7 @@ import play.api.data.Form
 import play.api.data.Forms._
 import skinny.Pagination
 
-case class Paging(page: Int, size: Int, q: Option[String]) {
+final case class Paging(page: Int, size: Int, q: Option[String]) {
   def pagination = Pagination.page(page).per(size)
   def from = (page - 1) * size
   def to = page * size

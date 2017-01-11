@@ -4,7 +4,7 @@ import java.text.Normalizer
 
 import scala.xml._
 
-case class Title(
+final case class Title(
   company: String,
   line: String,
   dest: String,
@@ -16,37 +16,36 @@ case class Title(
 object Title {
   private def norm(str: String) = Normalizer.normalize(str, Normalizer.Form.NFKC)
 
-  def fromXML(xml: NodeSeq) = {
+  def fromXML(xml: NodeSeq): Option[Title] = {
     val title = norm((xml \\ "span" \ "span").text)
     val splitted = title.split(' ')
     val Array(_, company, line) = splitted(0).split("\\[|\\]")
     val Array(rawDest, rawDirect) = splitted(1).split("\\(|\\)")
     val dest = rawDest.stripSuffix("方面")
-    val direct = Direction.fromString(rawDirect)
-    val week = Week.fromString(splitted(2))
-    val page = Page.fromString(splitted(3))
-    Title(company, line, dest, direct, week, page)
+    for {
+      direct <- Direction.fromString(rawDirect)
+      week <- Week.fromString(splitted(2))
+      page = Page.fromString(splitted(3))
+    } yield Title(company, line, dest, direct, week, page)
   }
 
-  type Direction = Direction.Value
-  object Direction extends Enumeration {
-    val UP, DOWN = Value
+  sealed abstract class Direction(val name: String) extends Product with Serializable
+  object Direction {
+    case object Up extends Direction("上り")
+    case object Down extends Direction("下り")
 
-    def fromString(str: String) = str match {
-      case "上り" => UP
-      case "下り" => DOWN
-    }
+    val values = Vector(Up, Down)
+    def fromString(str: String): Option[Direction] = values.find(_.name == str)
   }
 
-  type Week = Week.Value
-  object Week extends Enumeration {
-    val Weekday, Saturday, Sunday = Value
+  sealed abstract class Week(val name: String) extends Product with Serializable
+  object Week {
+    case object Weekday extends Week("平日")
+    case object Saturday extends Week("土曜日")
+    case object Sunday extends Week("日曜日")
 
-    def fromString(str: String) = str match {
-      case "平日" => Weekday
-      case "土曜日" => Saturday
-      case "日曜日" => Sunday
-    }
+    val values = Vector(Weekday, Saturday, Sunday)
+    def fromString(str: String): Option[Week] = values.find(_.name == str)
   }
 
   case class Page(now: Int, max: Int)

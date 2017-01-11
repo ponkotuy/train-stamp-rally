@@ -18,13 +18,14 @@ case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: 
 }
 
 object TrainBoardCost {
-  def calc(train: TrainResponse, fromStation: Long, toStation: Long, companyId: Long): TrainBoardCost = {
+  def calc(train: TrainResponse, fromStation: Long, toStation: Long, companyId: Long): Option[TrainBoardCost] = {
     val distance = calcDistance(train, fromStation, toStation)
-    val fee = FeeCalculator.calc(train.trainType, companyId, distance)(AutoSession)
-    val station = train.stops.reverseIterator.find(_.station.id == toStation).get
-    val time = station.arrival.orElse(station.departure).get
-    val start = train.stops.find(_.station.id == fromStation).flatMap(_.departure).get
-    TrainBoardCost(distance, fee, time, station.station, start)
+    for {
+      fee <- FeeCalculator.calc(train.trainType, companyId, distance)(AutoSession)
+      station <- train.stops.reverseIterator.find(_.station.id == toStation)
+      time <- station.arrival.orElse(station.departure)
+      start <- train.stops.find(_.station.id == fromStation).flatMap(_.departure)
+    } yield TrainBoardCost(distance, fee, time, station.station, start)
   }
 
   private def calcDistance(train: TrainResponse, fromStation: Long, toStation: Long): Double = {
@@ -48,10 +49,10 @@ object TrainCost {
       }.scanLeft(0.0)(_ + _)
       stops.zip(distances.toSeq)
     }.getOrElse(Nil)
-    distances.map {
+    distances.flatMap {
       case (stop, distance) =>
-        val fee = FeeCalculator.calc(diagram.trainType, diagram.stops.head.line.companyId, distance)(AutoSession)
-        TrainCost(stop.station, distance, fee)
+        FeeCalculator.calc(diagram.trainType, diagram.stops.head.line.companyId, distance)(AutoSession)
+          .map { fee => TrainCost(stop.station, distance, fee) }
     }
   }
 }

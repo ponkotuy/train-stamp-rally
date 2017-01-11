@@ -4,7 +4,7 @@ import models.Account
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import scalikejdbc._
 
-case class LoginEmail(email: String, password: String) {
+final case class LoginEmail(email: String, password: String) {
   import LoginEmail._
 
   def authenticate()(implicit session: DBSession): Option[Account] = {

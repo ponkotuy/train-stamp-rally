@@ -1,3 +1,3 @@
 package responses
 
-case class AccountMinimal(id: Long, name: String)
+final case class AccountMinimal(id: Long, name: String)

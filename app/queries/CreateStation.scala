@@ -11,4 +11,4 @@ trait CreateStation {
   }
 }
 
-case class CreateStationImpl(name: String, rankValue: Int) extends CreateStation
+final case class CreateStationImpl(name: String, rankValue: Int) extends CreateStation

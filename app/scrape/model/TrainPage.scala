@@ -29,7 +29,7 @@ object TrainPage {
       car <- extractValueFromTr(trs, 3)(normList(',')).toRight("car")
       remark <- extractValueFromTr(trs, 4)(normList(',')).toRight("remark")
       day <- extractValueFromTr(trs, 5)(norm).toRight("day")
-      stops = trs.view(8, trs.length).flatMap(StopDetail.fromXML).toList
+      stops = trs.view(8, trs.length).flatMap[StopDetail, Seq[StopDetail]](StopDetail.fromXML).toList
     } yield { TrainPage(name.replace(norm("ヶ"), "ケ"), number, code, stops, url, car, remark, day) }
   }
 

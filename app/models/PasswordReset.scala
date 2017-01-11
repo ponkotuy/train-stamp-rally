@@ -5,7 +5,7 @@ import java.util.UUID
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class PasswordReset(id: Long, accountId: Long, secret: String, created: Long) {
+final case class PasswordReset(id: Long, accountId: Long, secret: String, created: Long) {
   def save()(implicit session: DBSession) = PasswordReset.create(this)
 }
 

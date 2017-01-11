@@ -6,7 +6,7 @@ import utils.MissionTime
 
 import scala.collection.breakOut
 
-case class Score(
+final case class Score(
     id: Long,
     missionId: Long,
     accountId: Long,

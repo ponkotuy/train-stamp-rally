@@ -3,7 +3,7 @@ package scrape.model
 import scala.xml.NodeSeq
 import scala.collection.breakOut
 
-case class StopDetail(
+final case class StopDetail(
   name: String,
   url: String,
   code: Option[Int],
@@ -26,7 +26,7 @@ object StopDetail {
       xs = normList('\n')(sta)
       ys = normList('\n')(stop)
       if 2 <= ys.length && 1 <= xs.length
-      name = xs.head
+      name <- xs.headOption
       code = xs.lift(1).flatMap(ReCode.findFirstMatchIn(_)).map(_.group(1).toInt)
       Seq(arr, dep) = ys.map(TrainRun.fromString)
       no = tds.lift(2).map(norm).filter(_.nonEmpty)
@@ -36,11 +36,11 @@ object StopDetail {
   def normURL(url: String) = url.replace("../../", "/newdata/station/")
 }
 
-sealed abstract class TrainRun
+sealed abstract class TrainRun extends Product with Serializable
 
 object TrainRun {
   val ReTime = """(\d\d)\:(\d\d).*""".r
-  case class Time(hour: Int, minutes: Int) extends TrainRun
+  final case class Time(hour: Int, minutes: Int) extends TrainRun
   case object Pass extends TrainRun
   case object NotService extends TrainRun
 

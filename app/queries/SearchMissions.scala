@@ -6,7 +6,7 @@ import scalikejdbc._
 
 import scala.collection.breakOut
 
-case class SearchMissions(
+final case class SearchMissions(
     rank: Option[RankRate],
     score: Boolean,
     stationName: Option[String],
@@ -30,7 +30,7 @@ case class SearchMissions(
   }
 }
 
-case class MissionFilter(rank: Option[RankRate], stations: Option[Set[Long]]) {
+final case class MissionFilter(rank: Option[RankRate], stations: Option[Set[Long]]) {
   def apply(x: Mission): Boolean = {
     rank.forall(RankRate.findSize(x.stations.size) == _) &&
       stations.forall { sts =>
@@ -43,7 +43,9 @@ case class MissionFilter(rank: Option[RankRate], stations: Option[Set[Long]]) {
 object SearchMissions {
   val form = Form(
     mapping(
-      "rank" -> optional(text(minLength = 1).verifying(RankRate.constraint).transform[RankRate](RankRate.find(_).get, _.toString)),
+      "rank" -> optional(text(minLength = 1)
+        .verifying(RankRate.constraint)
+        .transform[RankRate](RankRate.find(_).getOrElse(RankRate.Easy), _.toString)),
       "score" -> optional(boolean).transform[Boolean](_.getOrElse(false), Some(_)),
       "station_name" -> optional(text(minLength = 1)),
       "name" -> optional(text(minLength = 1)),

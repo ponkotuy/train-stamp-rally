@@ -1,7 +1,7 @@
 package responses
 
-case class WithPage[T](pagination: Page, data: T)
-case class Page(total: Long, size: Int, current: Int, last: Int)
+final case class WithPage[T](pagination: Page, data: T)
+final case class Page(total: Long, size: Int, current: Int, last: Int)
 
 object Page {
   def apply(total: Long, size: Int, current: Int) = new Page(

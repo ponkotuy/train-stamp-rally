@@ -6,17 +6,20 @@ class DiagramValidator(allStops: Seq[StopStation], allLineStations: Seq[LineStat
   import DiagramValidator._
   def validate(diagramId: Long): Seq[Error] = {
     val stops = allStops.filter(_.diagramId == diagramId)
-    if (stops.size < 2) { return List(new LackStopsError(diagramId)) }
-    if (!checkStart(stops.head)) return List(new StartStopError(diagramId, stops.head))
-    if (!checkEnd(stops.last)) return List(new EndStopError(diagramId, stops.last))
-    stops.sliding(2).flatMap {
-      case Seq(x, y) =>
-        val lineStationX = allLineStations.find(_.id == x.lineStationId).get
-        val lineStationY = allLineStations.find(_.id == y.lineStationId).get
-        if (lineStationX.lineId != lineStationY.lineId &&
-          lineStationX.stationId != lineStationY.stationId) Some(new LineConnectionError(diagramId, x, y))
-        else None
-    }.toSeq
+    if (stops.size < 2) List(new LackStopsError(diagramId))
+    else if (!checkStart(stops.head)) List(new StartStopError(diagramId, stops.head))
+    else if (!checkEnd(stops.last)) List(new EndStopError(diagramId, stops.last))
+    else {
+      stops.sliding(2).flatMap {
+        case Seq(x, y) =>
+          for {
+            lineStationX <- allLineStations.find(_.id == x.lineStationId)
+            lineStationY <- allLineStations.find(_.id == y.lineStationId)
+            if lineStationX.lineId != lineStationY.lineId &&
+              lineStationX.stationId != lineStationY.stationId
+          } yield new LineConnectionError(diagramId, x, y)
+      }.toSeq
+    }
   }
 
   abstract class DiagramError(diagramId: Long) extends Error {

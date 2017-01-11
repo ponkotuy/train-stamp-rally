@@ -2,7 +2,7 @@ package responses
 
 import models.{StopStation, Train, TrainType}
 
-case class DiagramWithTrain(
+final case class DiagramWithTrain(
     id: Long,
     name: String,
     trainType: TrainType,

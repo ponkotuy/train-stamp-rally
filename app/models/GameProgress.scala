@@ -4,7 +4,7 @@ import scalikejdbc._
 import skinny.orm.{Alias, SkinnyNoIdCRUDMapper}
 import utils.MissionTime
 
-case class GameProgress(
+final case class GameProgress(
     gameId: Long,
     stationId: Long,
     arrivalTime: Option[MissionTime],

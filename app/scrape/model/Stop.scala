@@ -5,19 +5,19 @@ import utils.Zip
 import scala.collection.GenIterable
 import scala.math.Ordered
 
-case class Stop(name: String, line: String, typ: Stop.StopType, time: Stop.Time)
+final case class Stop(name: String, line: String, typ: Stop.StopType, time: Stop.Time)
 object Stop {
-  type StopType = StopType.Value
-  object StopType extends Enumeration {
-    val Arrival, Departure = Value
+  sealed abstract class StopType(val str: String) extends Product with Serializable
 
-    def fromString(str: String) = str match {
-      case "着" => Arrival
-      case "発" => Departure
-    }
+  object StopType {
+    case object Arrival extends StopType("着")
+    case object Departure extends StopType("発")
+
+    val values = Vector(Arrival, Departure)
+    def fromString(str: String): Option[StopType] = values.find(_.str == str)
   }
 
-  case class Time(hour: Int, minutes: Int) extends Ordered[Time] {
+  final case class Time(hour: Int, minutes: Int) extends Ordered[Time] {
     def minuteOfDay = hour * 60 + minutes
     def compare(that: Time) = this.minuteOfDay - that.minuteOfDay
   }
@@ -30,7 +30,7 @@ object Stop {
   }
 }
 
-case class CreateStops(
+final case class CreateStops(
     stations: GenIterable[String],
     stoptypes: GenIterable[String],
     line: String
@@ -44,9 +44,11 @@ case class CreateStops(
           case "〃" => before
           case n: String => n
         }
-        val time = Time.fromString(timeRaw)
-        if (time.isEmpty) return f(ys, name)
-        Stop(name, line, StopType.fromString(typ), time.get) :: f(ys, name)
+        val result = for {
+          time <- Time.fromString(timeRaw)
+          stopType <- StopType.fromString(typ)
+        } yield Stop(name, line, stopType, time) :: f(ys, name)
+        result.getOrElse(Nil)
       }
       case _ => Nil
     }

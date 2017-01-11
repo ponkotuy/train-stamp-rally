@@ -34,9 +34,10 @@ class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with 
         stopIds = train.stops.map(_.station.id)
         _ <- Either.cond(stopIds.contains(b.toStation) && stopIds.contains(b.fromStation), Unit, BadRequest("Wrong trainId."))
         _ <- Either.cond(stopIds.indexOf(b.fromStation) < stopIds.lastIndexOf(b.toStation), Unit, BadRequest("Wrong stations order."))
+        afterGame <- TrainBoardCost.calc(train, b.fromStation, b.toStation, companyId).map(_.apply(game))
+          .toRight(InternalServerError("TrainBoardCost.calc Error"))
       } yield {
         game.history().save()
-        val afterGame = TrainBoardCost.calc(train, b.fromStation, b.toStation, companyId).apply(game)
         val where = sqls.eq(gp.gameId, game.id).and.eq(gp.stationId, b.toStation)
         val fixedGame: Game = GameProgress.findBy(where).fold(afterGame) { progress =>
           if (progress.arrivalTime.isEmpty) {

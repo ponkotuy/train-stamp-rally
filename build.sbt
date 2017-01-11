@@ -47,4 +47,12 @@ excludeFilter in scalariformFormat := (excludeFilter in scalariformFormat).value
     "JavaScriptReverseRoutes.scala" ||
     "RoutesPrefix.scala"
 
-wartremoverErrors ++= Warts.unsafe
+wartremoverErrors ++= Warts.allBut(
+  Wart.Any,
+  Wart.NoNeedForMonad,
+  Wart.DefaultArguments,
+  Wart.Overloading,
+  Wart.ToString,
+  Wart.Nothing,
+  Wart.Option2Iterable
+)

@@ -7,8 +7,9 @@ import utils.Zip
 import scala.collection.GenIterable
 import scala.xml._
 
-case class TimeTablePage(title: Title, trains: GenIterable[Train])
+final case class TimeTablePage(title: Title, trains: GenIterable[Train])
 
+@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 object TimeTablePage {
   def fromXML(xml: NodeSeq) = {
     val columns = for {
@@ -21,7 +22,7 @@ object TimeTablePage {
     } yield column
     require(columns.size >= 6, "Parse error")
 
-    val title = Title.fromXML(columns(0))
+    val title = Title.fromXML(columns(0)).get
 
     val numbers = ((columns(1) \\ "span").tail \ "span").map(_.text)
     val part1 = columns(2) \ "td"
@@ -33,7 +34,7 @@ object TimeTablePage {
     val urls = (columns(4) \ "td" \ "span" \ "a").map { it => (it \ "@href").text }
 
     val part2 = columns(6) \ "td"
-    val stations = (part2.head \ "span" \ "span").text.lines.map(_.trim).toList.tail.init
+    val stations = (part2.head \ "span" \ "span").text.lines.map(_.trim).toList.drop(1).dropRight(1)
     val stoptypes = part2.tail.head.text.filter { !_.isWhitespace }.map { _.toString }
     val stoptimes = part2.tail.tail.map { it =>
       (it \ "span").map(_.text)

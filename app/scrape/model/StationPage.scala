@@ -3,7 +3,7 @@ package scrape.model
 import scala.collection.breakOut
 import scala.xml.{Node, NodeSeq, Text}
 
-case class StationPage(trains: Seq[StationTrain], abbr: Abbr)
+final case class StationPage(trains: Seq[StationTrain], abbr: Abbr)
 
 object StationPage {
   import utils.ParseHelper._
@@ -16,7 +16,7 @@ object StationPage {
       abbrTable <- (xml \\ "table" find (_ \ "@cellpadding" contains Text("1"))).toRight("abbrTable")
       abbr <- parseAbbr(abbrTable).toRight("abbr")
     } yield {
-      val trs = (table \ "tbody" \ "tr").tail
+      val trs = (table \ "tbody" \ "tr").drop(1)
       val trains = trs.flatMap(parseHour)
       StationPage(trains, abbr)
     }
@@ -67,17 +67,17 @@ object StationPage {
     }(breakOut)
   }
 
-  private case class MinutesTrain(dest: String, typ: Option[String], minutes: Int, add: Option[String]) {
+  private final case class MinutesTrain(dest: String, typ: Option[String], minutes: Int, add: Option[String]) {
     def withHour(hour: Int): StationTrain =
       StationTrain(dest, typ, Stop.Time(hour % 24, minutes), add)
   }
 }
 
-case class StationTrain(dest: String, typ: Option[String], time: Stop.Time, add: Option[String]) {
+final case class StationTrain(dest: String, typ: Option[String], time: Stop.Time, add: Option[String]) {
   def replaceAbbr(abbr: Abbr) = copy(
     dest = abbr.dest.getOrElse(dest, dest),
     typ = typ.map { t => abbr.typ.getOrElse(t, t) }
   )
 }
 
-case class Abbr(typ: Map[String, String], dest: Map[String, String])
+final case class Abbr(typ: Map[String, String], dest: Map[String, String])

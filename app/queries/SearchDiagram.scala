@@ -17,7 +17,7 @@ sealed abstract class SearchDiagram {
 
 object SearchDiagram {
   case object All extends SearchDiagram {
-    override def search()(implicit session: DBSession): Any = {
+    override def search()(implicit session: DBSession): Seq[DiagramResponse] = {
       import DefaultAliases.d
       import Diagram.{stopStationRef, trainRef}
       Diagram.joins(trainRef, stopStationRef).findAll(Seq(d.id.desc))
@@ -27,7 +27,7 @@ object SearchDiagram {
     override def tuple = (None, None, None, None, None)
   }
 
-  case class Paging(pageNo: Int, size: Int, lineName: Option[String]) extends SearchDiagram {
+  final case class Paging(pageNo: Int, size: Int, lineName: Option[String]) extends SearchDiagram {
     override def search()(implicit session: DBSession): WithPage[Seq[DiagramResponse]] = {
       import DefaultAliases.d
       import Diagram.{stopStationRef, trainRef}
@@ -52,8 +52,8 @@ object SearchDiagram {
     override def tuple = (None, None, Some(pageNo), Some(size), lineName)
   }
 
-  case class StationSearch(stationId: Long) extends SearchDiagram {
-    override def search()(implicit session: DBSession) = {
+  final case class StationSearch(stationId: Long) extends SearchDiagram {
+    override def search()(implicit session: DBSession): Seq[DiagramResponse] = {
       import DefaultAliases.d
       val diagramIds = findDiagramIds(stationId)
       val where = sqls.in(d.id, diagramIds).and.isNull(d.staging)
@@ -64,8 +64,8 @@ object SearchDiagram {
     override def tuple = (Some(stationId), None, None, None, None)
   }
 
-  case class TimeSearch(stationId: Long, time: TrainTime) extends SearchDiagram {
-    override def search()(implicit session: DBSession) = {
+  final case class TimeSearch(stationId: Long, time: TrainTime) extends SearchDiagram {
+    override def search()(implicit session: DBSession): Seq[TrainResponse] = {
       import DefaultAliases.{ls, ss, d}
       val lineStations = LineStation.findAllBy(sqls.eq(ls.stationId, stationId))
       val stops = StopStation.findAllBy(sqls.in(ss.lineStationId, lineStations.map(_.id)))

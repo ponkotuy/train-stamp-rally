@@ -7,8 +7,9 @@ import com.amazonaws.services.simpleemail.model._
 
 class MyAmazonSES(credentials: AWSCredentials, region: Regions) {
   lazy val client = new AmazonSimpleEmailServiceClient(credentials)
-  client.withRegion(region)
+  client.withRegion(region): Unit
 
+  @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def send(mail: Mail): Unit = {
     val req = new SendEmailRequest()
       .withSource(mail.from)

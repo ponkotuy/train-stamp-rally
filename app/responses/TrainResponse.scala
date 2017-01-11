@@ -6,7 +6,7 @@ import utils.TrainTime
 
 import scala.collection.breakOut
 
-case class TrainResponse(
+final case class TrainResponse(
   id: Long,
   start: TrainTime,
   diagramId: Long,
@@ -31,7 +31,7 @@ object TrainResponse {
       .findAllByIds(lineStationIds.distinct: _*)
       .map { ls => ls.id -> ls }(breakOut)
     val trainStops = diagram.stops.flatMap { stop =>
-      lineStations.get(stop.lineStationId).map { ls =>
+      lineStations.get(stop.lineStationId).flatMap { ls =>
         TrainStopResponse.fromObj(train, stop, ls)
       }
     }
@@ -43,7 +43,7 @@ object TrainResponse {
 
 }
 
-case class TrainStopResponse(
+final case class TrainStopResponse(
   id: Long,
   arrival: Option[TrainTime],
   departure: Option[TrainTime],
@@ -53,9 +53,12 @@ case class TrainStopResponse(
 )
 
 object TrainStopResponse {
-  def fromObj(train: Train, ss: StopStation, ls: LineStation): TrainStopResponse = {
+  def fromObj(train: Train, ss: StopStation, ls: LineStation): Option[TrainStopResponse] = {
     val arrival = ss.arrival.map(train.start.addMinutes)
     val departure = ss.departure.map(train.start.addMinutes)
-    TrainStopResponse(ss.id, arrival, departure, ls, ls.line.get, ls.station.get)
+    for {
+      line <- ls.line
+      station <- ls.station
+    } yield TrainStopResponse(ss.id, arrival, departure, ls, line, station)
   }
 }
