@@ -15,7 +15,7 @@ import modules.LocationSetterThread
 import org.json4s._
 import play.api.Configuration
 import play.api.libs.ws.WSClient
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.{Action, Controller, Result}
 import queries.CreateStationImpl
 import scalikejdbc._
 import utils.{FutureUtil, Wikipedia}
@@ -96,7 +96,7 @@ class Stations @Inject() (json4s: Json4s, ws: WSClient, ec: ExecutionContext, sy
     import scalikejdbc.TxBoundary.Either._
     req.body.extractOpt[CreateStationImpl].fold(JSONParseError) { station =>
       station.station.fold(notFound(s"rankValue: ${station.rankValue}")) { s =>
-        val result = DB localTx { implicit session =>
+        val result: Either[Result, Result] = DB localTx { implicit session =>
           val id = s.save()
           if (LineStation.updateById(lineStationId).withAttributes('stationId -> id) == 0)
             Left(notFound(s"lineStation id=${lineStationId}"))

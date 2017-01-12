@@ -2,7 +2,7 @@ package scrape.model
 
 import scala.collection.GenIterable
 
-case class Train(
+final case class Train(
   name: String,
   number: String,
   typ: String,

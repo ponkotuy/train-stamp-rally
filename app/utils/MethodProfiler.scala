@@ -22,7 +22,7 @@ object MethodProfiler {
     else NopProfiler
   }
 
-  case class Start(name: String, time: Long) {
+  final case class Start(name: String, time: Long) {
     def diff(): Long = System.nanoTime() - time
   }
 

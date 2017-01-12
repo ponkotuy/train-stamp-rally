@@ -14,11 +14,12 @@ import responses.TrainResponse
 import scalikejdbc._
 import utils.EitherUtil._
 
+@SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
 class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
 
-  implicit val format = DefaultFormats
+  implicit val format: Formats = DefaultFormats
 
   def board() = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
     import DefaultAliases.{g, gp}
@@ -102,7 +103,7 @@ class Plays @Inject() (json4s: Json4s) extends Controller with AuthElement with 
 }
 
 object Plays {
-  implicit val format = DefaultFormats + AccountSerializer
+  implicit val format: Formats = DefaultFormats + AccountSerializer
 
   private def ranking(typ: RankingType, missionId: Long): JValue = {
     val sc = Score.column

@@ -5,7 +5,7 @@ import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc.AutoSession
 import utils.{FeeCalculator, TrainTime}
 
-case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: Station, start: TrainTime) {
+final case class TrainBoardCost(distance: Double, fee: Int, time: TrainTime, station: Station, start: TrainTime) {
   def apply(game: Game): Game =
     game.copy(
       distance = game.distance + distance,
@@ -37,7 +37,7 @@ object TrainBoardCost {
   }
 }
 
-case class TrainCost(station: Station, distance: Double, fee: Int)
+final case class TrainCost(station: Station, distance: Double, fee: Int)
 
 object TrainCost {
   def calcDiagram(diagram: DiagramResponse, fromStation: Long): Seq[TrainCost] = {
@@ -51,8 +51,10 @@ object TrainCost {
     }.getOrElse(Nil)
     distances.flatMap {
       case (stop, distance) =>
-        FeeCalculator.calc(diagram.trainType, diagram.stops.head.line.companyId, distance)(AutoSession)
-          .map { fee => TrainCost(stop.station, distance, fee) }
+        for {
+          first <- diagram.stops.headOption
+          fee <- FeeCalculator.calc(diagram.trainType, first.line.companyId, distance)(AutoSession)
+        } yield TrainCost(stop.station, distance, fee)
     }
   }
 }

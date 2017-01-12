@@ -9,7 +9,6 @@ import scala.xml._
 
 final case class TimeTablePage(title: Title, trains: GenIterable[Train])
 
-@SuppressWarnings(Array("org.wartremover.warts.TraversableOps"))
 object TimeTablePage {
   def fromXML(xml: NodeSeq) = {
     val columns = for {
@@ -24,19 +23,19 @@ object TimeTablePage {
 
     val title = Title.fromXML(columns(0)).get
 
-    val numbers = ((columns(1) \\ "span").tail \ "span").map(_.text)
+    val numbers = ((columns(1) \\ "span").drop(1) \ "span").map(_.text)
     val part1 = columns(2) \ "td"
     val types = spanClsFilter("s")(part1).map(_.text.replaceAll("\\[|\\]", ""))
     val names = spanClsFilter("m")(part1).map(_.text)
-    val specials = ((columns(3) \\ "span").tail \ "span").map { it =>
+    val specials = ((columns(3) \\ "span").drop(1) \ "span").map { it =>
       norm(it.text).trim.nonEmpty
     }
     val urls = (columns(4) \ "td" \ "span" \ "a").map { it => (it \ "@href").text }
 
     val part2 = columns(6) \ "td"
     val stations = (part2.head \ "span" \ "span").text.lines.map(_.trim).toList.drop(1).dropRight(1)
-    val stoptypes = part2.tail.head.text.filter { !_.isWhitespace }.map { _.toString }
-    val stoptimes = part2.tail.tail.map { it =>
+    val stoptypes = part2.drop(1).head.text.filter { !_.isWhitespace }.map { _.toString }
+    val stoptimes = part2.drop(2).map { it =>
       (it \ "span").map(_.text)
     }
     val createStops = CreateStops(stations, stoptypes, title.line)

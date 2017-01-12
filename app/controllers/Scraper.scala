@@ -6,7 +6,7 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import net.liftweb.util.Html5
-import org.json4s.{DefaultFormats, Extraction}
+import org.json4s.{DefaultFormats, Extraction, Formats}
 import play.api.mvc.{Action, Controller}
 import scrape.model.{StationPage, TrainPage}
 
@@ -18,7 +18,7 @@ class Scraper @Inject() (json4s: Json4s) extends Controller with AuthElement wit
   import Scraper._
   import json4s._
 
-  implicit val formats = DefaultFormats
+  implicit val formats: Formats = DefaultFormats
 
   def station(lineId: String, pageName: String) = Action { implicit req =>
     val url = s"${Host}/newdata/ekijikoku/${lineId}/${pageName}.htm"

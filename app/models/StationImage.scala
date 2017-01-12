@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyNoIdCRUDMapper}
 
-case class StationImage(id: Long, imageId: Option[Long], image: Option[Image] = None) {
+final case class StationImage(id: Long, imageId: Option[Long], image: Option[Image] = None) {
   def save()(implicit session: DBSession): Unit = StationImage.save(this)
 }
 

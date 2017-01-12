@@ -4,7 +4,7 @@ import org.json4s.CustomSerializer
 import org.json4s.JsonDSL._
 import scalikejdbc.TypeBinder
 
-sealed abstract class TrainType(val value: Int, val name: String) {
+sealed abstract class TrainType(val value: Int, val name: String) extends Product with Serializable {
   def toJson = ("value" -> value) ~ ("name" -> name)
 }
 

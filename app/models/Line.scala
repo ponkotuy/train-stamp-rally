@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class Line(id: Long, name: String, companyId: Long, company: Option[Company] = None) {
+final case class Line(id: Long, name: String, companyId: Long, company: Option[Company] = None) {
   def save()(implicit session: DBSession): Long = Line.save(this)
 }
 

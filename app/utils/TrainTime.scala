@@ -4,7 +4,7 @@ import scalikejdbc.TypeBinder
 
 import scala.util.Try
 
-case class TrainTime(hour: Int, minutes: Int) extends Ordered[TrainTime] {
+final case class TrainTime(hour: Int, minutes: Int) extends Ordered[TrainTime] {
   assert(0 <= hour && hour < 24)
   assert(0 <= minutes && minutes < 60)
 

@@ -31,7 +31,7 @@ class WikipediaActor(wiki: Wikipedia)(implicit ec: ExecutionContext) extends Act
     val future = Station.findById(stationId).map { st =>
       for {
         imgSrc <- getImgSrc(st.name)
-        fName <- Future { imgSrc.origin.get }
+        fName <- imgSrc.origin.fold(Future.failed[String](new NotFoundImgSrc))(Future.successful)
         attr <- getAttribution(fName)
         res <- wiki.ws.url(imgSrc.withScheme).get()
       } yield {
@@ -56,9 +56,9 @@ class WikipediaActor(wiki: Wikipedia)(implicit ec: ExecutionContext) extends Act
   }
 }
 
-case class ImageRequest(stationId: Long)
+final case class ImageRequest(stationId: Long)
 
-case class AttrRequest(stationId: Long)
+final case class AttrRequest(stationId: Long)
 
 object WikipediaActor {
   implicit val formats: Formats = DefaultFormats

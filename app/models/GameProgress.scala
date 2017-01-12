@@ -25,6 +25,7 @@ object GameProgress extends SkinnyNoIdCRUDMapper[GameProgress] {
     merge = (gp, s) => gp.copy(station = s)
   )
 
+  @SuppressWarnings(Array("org.wartremover.warts.NonUnitStatements"))
   def save(gp: GameProgress)(implicit session: DBSession): Unit =
     createWithAttributes(
       'gameId -> gp.gameId,
@@ -32,7 +33,7 @@ object GameProgress extends SkinnyNoIdCRUDMapper[GameProgress] {
       'arrivalTime -> gp.arrivalTime.map(_.toString)
     )
 
-  def update(gp: GameProgress)(implicit session: DBSession): Unit =
+  def update(gp: GameProgress)(implicit session: DBSession): Int =
     updateBy(sqls.eq(column.gameId, gp.gameId).and.eq(column.stationId, gp.stationId))
       .withAttributes('arrivalTime -> gp.arrivalTime.map(_.toString))
 }

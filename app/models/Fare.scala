@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class Fare(id: Long, companyId: Long, trainType: TrainType, km: Double, cost: Int) {
+final case class Fare(id: Long, companyId: Long, trainType: TrainType, km: Double, cost: Int) {
   def save()(implicit session: DBSession): Long = Fare.save(this)
 }
 
@@ -27,7 +27,7 @@ object Fare extends SkinnyCRUDMapperWithId[Long, Fare] {
     select(sqls.distinct(f.companyId, f.trainType)).from(Fare as f)
   }.map(FareType.extract).list().apply()
 
-  case class FareType(companyId: Long, trainType: TrainType)
+  final case class FareType(companyId: Long, trainType: TrainType)
   object FareType {
     def extract(rs: WrappedResultSet): FareType = {
       val f = defaultAlias

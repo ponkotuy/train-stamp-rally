@@ -6,7 +6,7 @@ import utils.ImgAttr
 
 import scala.xml.Node
 
-case class ImageAttribute(
+final case class ImageAttribute(
     id: Long,
     fileName: String,
     name: String,

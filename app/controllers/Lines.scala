@@ -19,8 +19,8 @@ class Lines @Inject() (json4s: Json4s, _ec: ExecutionContext) extends Controller
   import Lines._
   import Responses._
   import json4s._
-  implicit val formats = DefaultFormats + StationRankSerializer
-  implicit val ec = _ec
+  implicit val formats: Formats = DefaultFormats + StationRankSerializer
+  implicit val ec: ExecutionContext = _ec
 
   val optionalPaging = parse.using { req =>
     if (req.getQueryString("page").isDefined) parse.form(Paging.form).map(Some(_))

@@ -4,7 +4,7 @@ import authes.AuthConfigImpl
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.LoginLogout
-import org.json4s.DefaultFormats
+import org.json4s.{DefaultFormats, Formats}
 import play.api.mvc.{Action, Controller}
 import queries.LoginEmail
 import scalikejdbc.AutoSession
@@ -17,7 +17,7 @@ class Sessions @Inject() (json4s: Json4s, implicit val ec: ExecutionContext)
     with LoginLogout {
   import json4s._
 
-  implicit val formats = DefaultFormats
+  implicit val formats: Formats = DefaultFormats
 
   def login() = Action.async(json) { implicit req =>
     val result = for {

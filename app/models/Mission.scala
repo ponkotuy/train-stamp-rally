@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class Mission(
+final case class Mission(
     id: Long,
     name: String,
     startStationId: Long,

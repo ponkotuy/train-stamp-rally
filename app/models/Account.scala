@@ -7,7 +7,7 @@ import responses.AccountMinimal
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class Account(
+final case class Account(
     id: Long,
     name: String,
     email: String,

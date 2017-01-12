@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class StopStation(
+final case class StopStation(
     id: Long,
     diagramId: Long,
     lineStationId: Long,

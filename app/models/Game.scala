@@ -4,7 +4,7 @@ import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 import utils.MissionTime
 
-case class Game(
+final case class Game(
     id: Long,
     missionId: Long,
     accountId: Long,
@@ -52,12 +52,12 @@ object Game extends SkinnyCRUDMapperWithId[Long, Game] {
     )
 
   // update time, distance, money, stationId
-  def update(game: Game)(implicit session: DBSession): Unit =
+  def update(game: Game)(implicit session: DBSession): Boolean =
     updateById(game.id).withAttributes(
       'time -> game.time.toString,
       'distance -> game.distance,
       'money -> game.money,
       'stationId -> game.stationId,
       'updated -> game.updated
-    )
+    ) > 0
 }

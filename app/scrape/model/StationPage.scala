@@ -9,8 +9,7 @@ object StationPage {
   import utils.ParseHelper._
 
   def fromXml(xml: NodeSeq): Either[String, StationPage] = {
-    import scala.language.implicitConversions
-    implicit def rightBias[A, B](e: Either[A, B]) = e.right
+    import utils.EitherUtil.eitherToRightProjection
     for {
       table <- (xml \\ "table" find (_ \ "@cellpadding" contains Text("8"))).toRight("table")
       abbrTable <- (xml \\ "table" find (_ \ "@cellpadding" contains Text("1"))).toRight("abbrTable")

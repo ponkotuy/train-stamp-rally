@@ -3,7 +3,7 @@ package utils
 import scalikejdbc.TypeBinder
 
 // day: 1-indexed
-case class MissionTime(day: Int, hour: Int, minutes: Int) extends Ordered[MissionTime] {
+final case class MissionTime(day: Int, hour: Int, minutes: Int) extends Ordered[MissionTime] {
   assert(1 <= day)
   assert(0 <= hour && hour < 24)
   assert(0 <= minutes && minutes < 60)
@@ -37,6 +37,7 @@ object MissionTime {
   }
 
   implicit def typeBinder: TypeBinder[String] = TypeBinder.string
+  @SuppressWarnings(Array("org.wartremover.warts.Null"))
   implicit val impl: TypeBinder[MissionTime] =
     TypeBinder(_ getString _)(_ getString _).map(fromString).map(_.orNull)
 }

@@ -6,7 +6,7 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import models.{Mission, Score, StationGeo, StationRankSerializer}
-import org.json4s.{DefaultFormats, Extraction}
+import org.json4s.{DefaultFormats, Extraction, Formats}
 import play.api.mvc.{Action, Controller}
 import queries.{CreateMission, Paging, RandomMission, SearchMissions}
 import responses.{MinScore, MissionScore, Page, WithPage}
@@ -17,7 +17,7 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
   import Responses._
   import json4s._
 
-  implicit val formats = DefaultFormats + StationRankSerializer
+  implicit val formats: Formats = DefaultFormats + StationRankSerializer
 
   def show(missionId: Long) = Action {
     import models.DefaultAliases.sg
@@ -35,7 +35,7 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
       val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef).findAllBy(search.where)
       val filter = search.filter()(AutoSession)
       val filtered = missions.filter(filter.apply).sortBy(-_.rate)
-      val result = if (search.score) withScores(loggedIn.id, filtered)(AutoSession) else filtered
+      val result: Seq[Any] = if (search.score) withScores(loggedIn.id, filtered)(AutoSession) else filtered
       val withPage = Paging.form.bindFromRequest().value.fold[Any](result) { p =>
         val total = result.size
         val data = result.slice(p.from, p.to)

@@ -19,6 +19,6 @@ class MyAmazonSES(credentials: AWSCredentials, region: Regions) {
   }
 }
 
-case class Mail(dest: Destination, subject: Content, body: Body, from: String) {
+final case class Mail(dest: Destination, subject: Content, body: Body, from: String) {
   def message: Message = new Message().withSubject(subject).withBody(body)
 }

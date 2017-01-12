@@ -48,7 +48,7 @@ object Title {
     def fromString(str: String): Option[Week] = values.find(_.name == str)
   }
 
-  case class Page(now: Int, max: Int)
+  final case class Page(now: Int, max: Int)
   object Page {
     // now/max形式
     def fromString(str: String) = {

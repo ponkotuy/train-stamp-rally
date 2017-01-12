@@ -4,7 +4,7 @@ import com.amazonaws.services.simpleemail.model.{Body, Content, Destination}
 import com.github.tototoshi.play2.json4s.native.Json4s
 import com.google.inject.Inject
 import models.{Account, PasswordReset}
-import org.json4s.DefaultFormats
+import org.json4s.{DefaultFormats, Formats}
 import play.api.Configuration
 import play.api.mvc.{Action, Controller, Result}
 import queries.{BCryptEncoder, RequestReset, ResetPassword}
@@ -18,7 +18,7 @@ class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Contr
   import Responses._
   import json4s._
 
-  implicit val formats = DefaultFormats
+  implicit val formats: Formats = DefaultFormats
   val conf = new Config(_config)
   lazy val ses: Option[MyAmazonSES] = conf.amazon.flatMap(_.ses)
 

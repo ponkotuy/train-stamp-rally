@@ -7,8 +7,10 @@ class DiagramValidator(allStops: Seq[StopStation], allLineStations: Seq[LineStat
   def validate(diagramId: Long): Seq[Error] = {
     val stops = allStops.filter(_.diagramId == diagramId)
     if (stops.size < 2) List(new LackStopsError(diagramId))
-    else if (!checkStart(stops.head)) List(new StartStopError(diagramId, stops.head))
-    else if (!checkEnd(stops.last)) List(new EndStopError(diagramId, stops.last))
+    else if (!stops.headOption.forall(checkStart))
+      List(new StartStopError(diagramId, stops.headOption))
+    else if (!stops.lastOption.forall(checkEnd))
+      List(new EndStopError(diagramId, stops.lastOption))
     else {
       stops.sliding(2).flatMap {
         case Seq(x, y) =>
@@ -43,11 +45,11 @@ class DiagramValidator(allStops: Seq[StopStation], allLineStations: Seq[LineStat
     override val content: String = "Lack of stops"
   }
 
-  class StartStopError(diagramId: Long, start: StopStation) extends DiagramError(diagramId) {
+  class StartStopError(diagramId: Long, start: Option[StopStation]) extends DiagramError(diagramId) {
     override def content: String = s"Start stop validation error: ${start}"
   }
 
-  class EndStopError(diagramId: Long, end: StopStation) extends DiagramError(diagramId) {
+  class EndStopError(diagramId: Long, end: Option[StopStation]) extends DiagramError(diagramId) {
     override def content: String = s"End stop validation error: ${end}"
   }
 }

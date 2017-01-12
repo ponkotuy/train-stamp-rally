@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class Station(id: Long, name: String, rank: StationRank, geo: Option[StationGeo] = None) {
+final case class Station(id: Long, name: String, rank: StationRank, geo: Option[StationGeo] = None) {
   def save()(implicit session: DBSession): Long = Station.save(this)
   def update()(implicit session: DBSession): Long = Station.update(this)
 }

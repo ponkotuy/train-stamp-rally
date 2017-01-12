@@ -5,7 +5,7 @@ import scalikejdbc._
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 import utils.TrainTime
 
-case class Diagram(
+final case class Diagram(
     id: Long,
     name: String,
     trainType: TrainType,

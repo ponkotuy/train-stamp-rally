@@ -3,7 +3,7 @@ package scrape.model
 import scala.util.Try
 import scala.xml.{NodeSeq, Text}
 
-case class TrainPage(
+final case class TrainPage(
   name: String,
   number: String,
   code: Option[Int],

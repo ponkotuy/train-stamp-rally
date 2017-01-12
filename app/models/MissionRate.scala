@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyNoIdCRUDMapper}
 
-case class MissionRate(missionId: Long, rate: Int)
+final case class MissionRate(missionId: Long, rate: Int)
 
 object MissionRate extends SkinnyNoIdCRUDMapper[MissionRate] {
   override def defaultAlias: Alias[MissionRate] = createAlias("mr")

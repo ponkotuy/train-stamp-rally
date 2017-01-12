@@ -4,7 +4,7 @@ import org.json4s.CustomSerializer
 import org.json4s.JsonDSL._
 import scalikejdbc.TypeBinder
 
-sealed abstract class StationRank(val value: Int, val name: String)
+sealed abstract class StationRank(val value: Int, val name: String) extends Product with Serializable
 
 object StationRank {
   case object Top extends StationRank(1, "中心駅") // Tokyo, Nagoya, Osaka

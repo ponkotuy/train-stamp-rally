@@ -6,7 +6,7 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import models.{Game, GameHistory, GameProgress, Mission}
-import org.json4s.{DefaultFormats, Extraction}
+import org.json4s.{DefaultFormats, Extraction, Formats}
 import play.api.mvc.{Controller, Result}
 import scalikejdbc._
 import utils.MissionTime
@@ -16,7 +16,7 @@ class Games @Inject() (json4s: Json4s) extends Controller with AuthElement with 
   import Responses._
   import json4s._
 
-  implicit val formats = DefaultFormats
+  implicit val formats: Formats = DefaultFormats
 
   def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
     val games = Game.findAllBy(sqls.eq(Game.column.accountId, loggedIn.id))

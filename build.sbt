@@ -47,12 +47,23 @@ excludeFilter in scalariformFormat := (excludeFilter in scalariformFormat).value
     "JavaScriptReverseRoutes.scala" ||
     "RoutesPrefix.scala"
 
-wartremoverErrors ++= Warts.allBut(
+wartremoverWarnings ++= Warts.allBut(
   Wart.Any,
   Wart.NoNeedForMonad,
   Wart.DefaultArguments,
   Wart.Overloading,
   Wart.ToString,
   Wart.Nothing,
-  Wart.Option2Iterable
+  Wart.Option2Iterable,
+  Wart.ImplicitConversion,
+  Wart.Equals,
+  Wart.MutableDataStructures,
+  Wart.NonUnitStatements
+)
+
+wartremoverExcluded ++= Seq(
+  crossTarget.value / "routes" / "main" / "router" / "Routes.scala",
+  crossTarget.value / "routes" / "main" / "router" / "RoutesPrefix.scala",
+  crossTarget.value / "routes" / "main" / "controllers" / "ReverseRoutes.scala",
+  crossTarget.value / "routes" / "main" / "controllers" / "javascript" / "JavaScriptReverseRoutes.scala"
 )

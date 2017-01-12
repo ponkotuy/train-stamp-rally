@@ -3,7 +3,7 @@ package models
 import scalikejdbc.{DBSession, WrappedResultSet, autoConstruct}
 import skinny.orm.{Alias, SkinnyCRUDMapperWithId}
 
-case class History(id: Long, message: String, created: Long) {
+final case class History(id: Long, message: String, created: Long) {
   def save()(implicit session: DBSession): Long = History.save(this)
 }
 

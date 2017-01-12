@@ -3,7 +3,7 @@ package models
 import scalikejdbc._
 import skinny.orm.{Alias, SkinnyNoIdCRUDMapper}
 
-case class StationGeo(stationId: Long, latitude: Double, longitude: Double) {
+final case class StationGeo(stationId: Long, latitude: Double, longitude: Double) {
   def save()(implicit session: DBSession) = StationGeo.create(this)
 }
 

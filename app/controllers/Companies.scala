@@ -6,7 +6,7 @@ import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
 import models.{Company, Fare, TrainType, TrainTypeSerializer}
-import org.json4s.{DefaultFormats, Extraction}
+import org.json4s.{DefaultFormats, Extraction, Formats}
 import play.api.mvc.Controller
 import queries.{CreateCompany, CreateFares}
 import scalikejdbc._
@@ -14,7 +14,7 @@ import scalikejdbc._
 class Companies @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import Responses._
   import json4s._
-  implicit val formats = DefaultFormats + TrainTypeSerializer
+  implicit val formats: Formats = DefaultFormats + TrainTypeSerializer
 
   def list() = StackAction(AuthorityKey -> Administrator) { implicit req =>
     Ok(Extraction.decompose(Company.findAll(Seq(Company.defaultAlias.id))))

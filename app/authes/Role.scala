@@ -2,7 +2,7 @@ package authes
 
 import scalikejdbc.TypeBinder
 
-sealed abstract class Role(val value: Int)
+sealed abstract class Role(val value: Int) extends Product with Serializable
 
 object Role {
   case object Disabled extends Role(-1)

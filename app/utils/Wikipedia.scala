@@ -45,7 +45,7 @@ object Wikipedia {
   }
 }
 
-case class ImgSrc(url: String, scale: Double) {
+final case class ImgSrc(url: String, scale: Double) {
   def withScheme = "https:" + url
 
   lazy val origin: Option[String] = {
@@ -55,7 +55,7 @@ case class ImgSrc(url: String, scale: Double) {
   }
 }
 
-case class ImgAttr(
+final case class ImgAttr(
     fileName: String,
     name: String,
     artist: Node,
