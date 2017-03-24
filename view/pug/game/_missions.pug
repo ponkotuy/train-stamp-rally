@@ -29,18 +29,18 @@ h1.page-header Select mission
           span.head-space(v-text='m.score.distance.toFixed(1) + "km"')
         span(v-if='!m.score') --
       td
-        button.btn.btn-primary.btn-xs(@click='start(m.mission.id)', v-if='!m.game') Start
-        button.btn.btn-primary.btn-xs(@click='gameContinue(m.mission.id)', v-if='m.game') Continue
-        button.btn.btn-warning.btn-xs(@click='start(m.mission.id)', v-if='m.game') Restart
+        button.btn.btn-primary.btn-xs.btn-raised(@click='start(m.mission.id)', v-if='!m.game') Start
+        button.btn.btn-primary.btn-xs.btn-raised(@click='gameContinue(m.mission.id)', v-if='m.game') Continue
+        button.btn.btn-warning.btn-xs.btn-raised(@click='start(m.mission.id)', v-if='m.game') Restart
   form.form-horizontal(@submit.prevent, @submit='getData()')
     .form-group
       label.col-sm-3.control-label(for='rankSelector') 難易度で絞り込み
       .col-sm-9
         #rankSelector.btn-group(role='group')
-          button.btn.btn-default(type='button', @click='filter(undefined)', :class="{'btn-primary': !rank}") ALL
-          button.btn.btn-default(type='button', @click='filter("easy")', :class="{'btn-primary': rank == 'easy'}") Easy
-          button.btn.btn-default(type='button', @click='filter("medium")', :class="{'btn-primary': rank == 'medium'}") Medium
-          button.btn.btn-default(type='button', @click='filter("hard")', :class="{'btn-primary': rank == 'hard'}") Hard
+          button.btn.btn-default(type='button', @click='filter(undefined)', :class="{'btn-primary btn-raised': !rank}") ALL
+          button.btn.btn-default(type='button', @click='filter("easy")', :class="{'btn-primary btn-raised': rank == 'easy'}") Easy
+          button.btn.btn-default(type='button', @click='filter("medium")', :class="{'btn-primary btn-raised': rank == 'medium'}") Medium
+          button.btn.btn-default(type='button', @click='filter("hard")', :class="{'btn-primary btn-raised': rank == 'hard'}") Hard
     .form-group
       label.col-sm-3.control-label(for='stationName') 駅名で絞り込み
       .col-sm-9
@@ -51,4 +51,4 @@ h1.page-header Select mission
         input#searchMissionName.form-control(type='text', v-model='missionName')
     .form-group
       .col-sm-9.col-sm-offset-3
-        button.btn.btn-primary(type='submit') Search
+        button.btn.btn-primary.btn-raised(type='submit') Search

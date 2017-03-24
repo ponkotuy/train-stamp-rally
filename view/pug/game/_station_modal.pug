@@ -7,9 +7,11 @@ script(src='/js/game/station_modal.js')
           span(aria-hidden='true') &times;
         h3(v-text='mission.name')
       .modal-body
-        p
-          a(:href="'/data/mission.html?id=' + mission.mission.id", target='_blank') Map
-        h4 駅リスト
+        a.btn.btn-primary(:href="'https://twitter.com/share?text=' + mission.mission.name + '+Ranking&hashtags=TrainStampRally&url=https%3A%2F%2Ftrain.ponkotuy.com%2Fdata%2Franking.html%3fmission%3d' + mission.mission.id", target='_blank') Tweet
+        button.btn.btn-primary.btn-raised(type='button', @click='start(mission.mission.id)', v-if='!mission.game') Start
+        button.btn.btn-primary.btn-raised(type='button', @click='gameContinue(mission.mission.id)', v-if='mission.game') Continue
+        button.btn.btn-warning.btn-raised(type='button', @click='start(mission.mission.id)', v-if='mission.game') Restart
+        a.btn.btn-default(:href="'/data/mission.html?id=' + mission.mission.id", target='_blank') Map
         ul
           li(v-for='station in mission.mission.stations')
             a(v-text='station.name + "駅"', :href='"/data/station.html?id=" + station.id', target='_blank')
@@ -24,6 +26,3 @@ script(src='/js/game/station_modal.js')
           ol
             li(v-for='rank in distances') {{ rank.account.name }}: {{ rank.distance.toFixed(1) }}km
       .modal-footer
-        button.btn.btn-primary(type='button', @click='start(mission.mission.id)', v-if='!mission.game') Start
-        button.btn.btn-primary(type='button', @click='gameContinue(mission.mission.id)', v-if='mission.game') Continue
-        button.btn.btn-warning(type='button', @click='start(mission.mission.id)', v-if='mission.game') Restart
