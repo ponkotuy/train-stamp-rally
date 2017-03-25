@@ -22,10 +22,11 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
   def show(missionId: Long) = Action {
     import models.DefaultAliases.sg
     val mission = Mission.joins(Mission.stationsRef, Mission.startStationRef).findById(missionId).map { m =>
-      val ids = m.stations.map(_.id)
+      val ids = m.startStationId +: m.stations.map(_.id)
       val geos = StationGeo.findAllBy(sqls.in(sg.stationId, ids))
       val withGeos = m.stations.map { s => s.copy(geo = geos.find(_.stationId == s.id)) }
-      m.copy(stations = withGeos)
+      val startWithGeo = m.startStation.map { s => s.copy(geo = geos.find(_.stationId == s.id)) }
+      m.copy(stations = withGeos, startStation = startWithGeo)
     }
     Ok(Extraction.decompose(mission))
   }
