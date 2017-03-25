@@ -151,7 +151,7 @@ failure = (jqXHR) ->
     next: (page) ->
       next = page ? @pagination.current + 1
       to =
-        if next < 0
+        if next < 0 or @pagination.last <= 0
           0
         else if @pagination.last <= next
           @pagination.last - 1

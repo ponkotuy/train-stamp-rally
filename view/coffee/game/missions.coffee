@@ -33,6 +33,9 @@ $(document).ready ->
               Vue.set(mission, 'game', game)
       filter: (name) ->
         @rank = name
+        @search()
+      search: () ->
+        @next(0)
         @getData()
       openModal: (mission) ->
         modal.setMission(mission)

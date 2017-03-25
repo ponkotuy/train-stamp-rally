@@ -32,7 +32,7 @@ h1.page-header Select mission
         button.btn.btn-primary.btn-xs.btn-raised(@click='start(m.mission.id)', v-if='!m.game') Start
         button.btn.btn-primary.btn-xs.btn-raised(@click='gameContinue(m.mission.id)', v-if='m.game') Continue
         button.btn.btn-warning.btn-xs.btn-raised(@click='start(m.mission.id)', v-if='m.game') Restart
-  form.form-horizontal(@submit.prevent, @submit='getData()')
+  form.form-horizontal(@submit.prevent, @submit='search()')
     .form-group
       label.col-sm-3.control-label(for='rankSelector') 難易度で絞り込み
       .col-sm-9
