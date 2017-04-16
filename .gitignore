@@ -17,3 +17,4 @@ server.pid
 # settings
 /conf/production.conf
 /conf/application.conf
+.env

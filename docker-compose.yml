@@ -6,9 +6,9 @@ services:
       - /docker/train-stramp-rally/mysql:/var/lib/mysql
     env_file: .env
     ports:
-      - "3309:3306"
+      - "3310:3306"
   web:
-    image: ponkotuy/train-stamp-rally
+    image: ponkotuy/trainstamprally
     volumes:
       - .:/redloader
       - /docker/train-stamp-rally/output:/mnt
