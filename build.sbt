@@ -46,3 +46,10 @@ excludeFilter in scalariformFormat := (excludeFilter in scalariformFormat).value
     "ReverseRoutes.scala" ||
     "JavaScriptReverseRoutes.scala" ||
     "RoutesPrefix.scala"
+
+// Docker settings
+dockerEntrypoint ++= Seq(
+  "-Dconfig.resource=production.conf"
+)
+dockerRepository := Some("ponkotuy")
+dockerUpdateLatest := true

@@ -1,0 +1,19 @@
+
+play.crypto.secret =
+
+db.default {
+  url =
+  username =
+  password =
+}
+
+google.maps.key =
+
+amazon {
+  access_key =
+  secret_key =
+}
+
+management.mail =
+
+include classpath("common.conf")

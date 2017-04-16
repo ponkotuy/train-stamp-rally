@@ -15,4 +15,5 @@ server.pid
 .cache
 
 # settings
-/conf/local.conf
+/conf/production.conf
+/conf/application.conf
