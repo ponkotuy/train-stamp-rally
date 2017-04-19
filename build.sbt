@@ -5,7 +5,7 @@ import com.typesafe.sbt.SbtScalariform.ScalariformKeys
 
 name := "TrainStampRally"
 
-scalaVersion := "2.11.8"
+scalaVersion := "2.11.11"
 
 val play2AuthVer = "0.14.2"
 val googleLibVer = "1.22.0"
