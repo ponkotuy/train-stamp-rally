@@ -1,0 +1,18 @@
+script(src='/js/creator/update_mission.js')
+#updateMission
+  h1 Update Missions
+  table.table.table-condensed.table-striped
+    thead
+      tr
+        th ID
+        th Name
+        th 評価
+        th
+    tbody
+      tr(v-for='m in missions')
+        td(v-text='m.id')
+        td
+          a(href='#', v-text='m.name')
+        td(v-text='m.rank')
+        td
+          button.btn-danger.btn-xs(v-if='removable(m)') Delete
