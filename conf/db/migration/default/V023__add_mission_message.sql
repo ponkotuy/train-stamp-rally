@@ -1,0 +1,3 @@
+
+ALTER TABLE mission ADD introduction VARCHAR(1023) NOT NULL DEFAULT '';
+ALTER TABLE mission ADD clear_text VARCHAR(1023) NOT NULL DEFAULT '';

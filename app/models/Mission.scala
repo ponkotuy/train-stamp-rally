@@ -9,6 +9,8 @@ case class Mission(
     startStationId: Long,
     creator: Long,
     created: Long,
+    introduction: String,
+    clearText: String,
     stations: Seq[Station] = Nil,
     startStation: Option[Station] = None,
     rate: Int = 0
@@ -48,6 +50,8 @@ object Mission extends SkinnyCRUDMapperWithId[Long, Mission] {
       'name -> mission.name,
       'created -> mission.created,
       'startStationId -> mission.startStationId,
-      'creator -> mission.creator
+      'creator -> mission.creator,
+      'introduction -> mission.introduction,
+      'clearText -> mission.clearText
     )
 }

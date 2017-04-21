@@ -11,6 +11,14 @@ script(src='/js/creator/create_mission.js')
       label.col-sm-3.control-label(for='start') Start Station
       .col-sm-9
         input#start.autoCompleteStation.form-control(type='text', v-model='startStation')
+    .form-group
+      label.col-sm-3.control-label Introduction(Max1000)
+      .col-sm-9
+        textarea#introduction.form-control(type='text', v-model='introduction')
+    .form-group
+      label.col-sm-3.control-label Clear Text(Max1000)
+      .col-sm-9
+        textarea#clearText.form-control(type='text', v-model='clearText')
   h3 Stations
   form.form-holizontal
     .form-group(v-for='st, idx in stations')

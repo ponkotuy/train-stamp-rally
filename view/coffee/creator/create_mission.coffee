@@ -7,6 +7,8 @@ $(document).ready ->
       stations: [{name: ''}, {name: ''}, {name: ''}]
       startStation: ''
       csvStations: ''
+      introduction: ''
+      clearText: ''
     methods:
       getStations: ->
         API.getJSON '/api/stations', (json) =>
@@ -29,7 +31,7 @@ $(document).ready ->
         start = @findStationId(@startStation)
         API.postJSON
           url: '/api/mission'
-          data: {name: @name, stations: stations, startStation: start}
+          data: {name: @name, stations: stations, startStation: start, introduction: @introduction, clearText: @clearText}
           success: ->
             location.reload(false)
       addStation: ->
@@ -38,7 +40,6 @@ $(document).ready ->
       findStationId: (name) ->
         st = _.find @stationMaster, (s) ->
           s.name == name
-        console.log(st)
         st?.id
       getRandom: (size) ->
         API.getJSON '/api/mission/random', {size: size}, (json) =>

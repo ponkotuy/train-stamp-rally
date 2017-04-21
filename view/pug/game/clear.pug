@@ -12,27 +12,29 @@ html(lang=ja)
         h1 Mission Complete!
         a.btn.btn-primary(:href="'https://twitter.com/share?text=' + mission.name + '+Ranking&url=https%3A%2F%2Ftrain.ponkotuy.com%2Fdata%2Franking.html%3fmission%3d' + missionId + '%26account%3d' + accountId + '&hashtags=TrainStampRally'", target='_blank') Tweet
         a.btn.btn-default(:href='"/game/index.html?mission=" + mission.id') Replay
-        h4 終了日時: {{ dateFormat(game.time) }}
-        h4 使用金額: {{ game.money }}円
-        h4 移動距離: {{ game.distance.toFixed(1) }}km
+        h5 終了日時: {{ dateFormat(game.time) }}
+        h5 使用金額: {{ game.money }}円
+        h5 移動距離: {{ game.distance.toFixed(1) }}km
+        p(v-text='mission.clearText')
       #mission
+        h3 駅の到着時間
         dl.dl-horizontal
           template(v-for='progress in progresses')
             dt(v-text='progress.station.name')
             dd(v-text='dateFormat(progress.arrivalTime)')
       #ranking
-        h2 Ranking
+        h3 Ranking
         .row
           .col-sm-4
-            h3 所要時間
+            h4 所要時間
             ol
               li(v-for='rank in times', v-text='rank.account.name + ": " + dateFormat(rank.time)', :class='{"text-info": rank.account.id == accountId}')
           .col-sm-4
-            h3 使用金額
+            h4 使用金額
             ol
               li(v-for='rank in moneys', v-text='rank.account.name + ": " + rank.money + "円"', :class='{"text-info": rank.account.id == accountId}')
           .col-sm-4
-            h3 移動距離
+            h4 移動距離
             ol
               li(v-for='rank in distances', v-text='rank.account.name + ": " + rank.distance.toFixed(1) + "km"', :class='{"text-info": rank.account.id == accountId}')
       #complete.modal.fade(role='dialog')
