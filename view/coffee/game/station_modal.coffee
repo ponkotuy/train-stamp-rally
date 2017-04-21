@@ -18,13 +18,13 @@
       @getDistances()
     getTimes: ->
       API.getJSON "/api/game/#{@mission.mission.id}/ranking/time", (json) =>
-        @times = json
+        @times = json.slice(0, 5)
     getMoneys: ->
       API.getJSON "/api/game/#{@mission.mission.id}/ranking/money", (json) =>
-        @moneys = json
+        @moneys = json.slice(0, 5)
     getDistances: ->
       API.getJSON "/api/game/#{@mission.mission.id}/ranking/distance", (json) =>
-        @distances = json
+        @distances = json.slice(0, 5)
   watch: ->
     'mission.id': ->
       @getTimes()
