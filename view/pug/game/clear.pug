@@ -15,7 +15,7 @@ html(lang=ja)
         h5 終了日時: {{ dateFormat(game.time) }}
         h5 使用金額: {{ game.money }}円
         h5 移動距離: {{ game.distance.toFixed(1) }}km
-        p(v-text='mission.clearText')
+        p.with-line-feed(v-text='mission.clearText')
       #mission
         h3 駅の到着時間
         dl.dl-horizontal

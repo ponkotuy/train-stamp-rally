@@ -12,9 +12,10 @@ script(src='/js/creator/update_mission.js')
       tr(v-for='m in missions')
         td(v-text='m.id')
         td
-          a(href='#', v-text='m.name')
+          a(href='#', v-text='m.name', @click='update(m)')
         td(v-text='m.rate')
         td
           button.btn.btn-danger.btn-xs(type='button', v-if='m.rate == 0', @click='del(m)') Delete
 
   p 削除できるmissionは1度もプレイされていないmissionのみです
+

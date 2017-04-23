@@ -31,6 +31,7 @@ GET /api/mission/:missionId controllers.Missions.show(missionId: Long)
 GET /api/missions controllers.Missions.list()
 GET /api/account/:accountId/clear_count controllers.Missions.clearCount(accountId: Long)
 POST /api/mission controllers.Missions.create()
+PUT /api/mission/:id controllers.Missions.update(id: Long)
 DELETE /api/mission/:id controllers.Missions.delete(id: Long)
 
 GET /api/stations controllers.Stations.list(q: Option[String] ?= None, limit: Option[Int] ?= None)
