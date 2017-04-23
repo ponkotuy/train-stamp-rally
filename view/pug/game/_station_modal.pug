@@ -15,7 +15,7 @@ script(src='/js/game/station_modal.js')
 
         #introduction(v-if='mission.mission.introduction != ""')
           h4 Introduction
-          p(v-text='mission.mission.introduction')
+          p.with-line-feed(v-text='mission.mission.introduction')
 
         h4 Station List
         ul

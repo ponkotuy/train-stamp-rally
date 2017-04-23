@@ -1,0 +1,19 @@
+script(src='/js/creator/update_modal_mission.js')
+.modal.fade#updateMissionModal(role='dialog')
+  .modal-dialog.modal-lg(role='document')
+    .modal-content
+      .modal-header
+        button.close(type='button', data-dismiss='modal', aria-label='Close')
+          span(aria-hidden='true') &times;
+        h3(v-text='mission.name')
+      form(@submit.prevent, @submit='update()')
+        .mobdal-body
+          .form-group.dialog-form
+            label(for='upIntroduction') Introduction(Max1000)
+            textarea#upIntroduction.form-control(type='text', v-model='introduction')
+          .form-group.dialog-form
+            label(for='upClearText') Clear Text(Max1000)
+            textarea#upClearText.form-control(type='text', v-model='clearText')
+        .modal-footer
+          button.btn.btn-default(data-dismiss='modal') Close
+          button.btn.btn-warning(type='submit') Update

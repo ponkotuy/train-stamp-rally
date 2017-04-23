@@ -5,10 +5,10 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Mission, Score, StationGeo, StationRankSerializer}
+import models._
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
-import queries.{CreateMission, Paging, RandomMission, SearchMissions}
+import queries._
 import responses.{MinScore, MissionScore, Page, WithPage}
 import scalikejdbc._
 
@@ -63,6 +63,29 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
 
   def clearCount(accountId: Long) = Action {
     Ok(Score.missionCount(accountId)(AutoSession).toString)
+  }
+
+  def update(id: Long) = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
+    Mission.findById(id).flatMap { mission =>
+      if (mission.creator != loggedIn.id) None
+      else {
+        req.body.extractOpt[UpdateMission].map { update =>
+          Mission.updateById(id).withAttributes(update.attributes: _*)
+          Success
+        }
+      }
+    }.getOrElse(notFound(s"mission(id=$id"))
+  }
+
+  def delete(id: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+    import MissionStation.{column => ms}
+    Mission.findById(id).flatMap { mission =>
+      if (mission.creator != loggedIn.id) None
+      else {
+        MissionStation.deleteBy(sqls.eq(ms.missionId, id))
+        if (Mission.deleteById(id) == 1) Some(Success) else None
+      }
+    }.getOrElse(notFound(s"mission(id=$id)"))
   }
 }
 

@@ -1,7 +1,9 @@
 link(rel='stylesheet' href='/css/typeaheadjs.css')
 script(src='https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js')
 script(src='/js/creator/create_mission.js')
+
 #createMission
+  h1.page-header Create Mission
   form.form-holizontal
     .form-group
       label.col-sm-3.control-label(for='name') Name
@@ -19,6 +21,7 @@ script(src='/js/creator/create_mission.js')
       label.col-sm-3.control-label Clear Text(Max1000)
       .col-sm-9
         textarea#clearText.form-control(type='text', v-model='clearText')
+
   h3 Stations
   form.form-holizontal
     .form-group(v-for='st, idx in stations')
@@ -34,12 +37,14 @@ script(src='/js/creator/create_mission.js')
     .form-group
       .col-sm-2.col-sm-offset-10
         button.btn.btn-default.btn-raised.form-control(type='button', @click='loadCSV') Load CSV
+
+  h3 Send
+  form.form-inline
+    button.btn.btn-primary.btn-lg.btn-raised(type='button', @click='submit()') ALL Send
+
   h3 Random Create
   form.form-inline
     .form-group
       button.btn.btn-default.form-control(type='button', @click='getRandom(6)') Easy
       button.btn.btn-default.form-control(type='button', @click='getRandom(12)') Medium
       button.btn.btn-default.form-control(type='button', @click='getRandom(24)') Hard
-  h3 Send
-  form.form-inline
-    button.btn.btn-primary.btn-lg.btn-raised(type='button', @click='submit()') ALL Send
