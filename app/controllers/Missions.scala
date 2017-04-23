@@ -5,7 +5,7 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Mission, Score, StationGeo, StationRankSerializer}
+import models._
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
 import queries.{CreateMission, Paging, RandomMission, SearchMissions}
@@ -63,6 +63,12 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
 
   def clearCount(accountId: Long) = Action {
     Ok(Score.missionCount(accountId)(AutoSession).toString)
+  }
+
+  def delete(id: Long) = Action {
+    import MissionStation.{column => ms}
+    MissionStation.deleteBy(sqls.eq(ms.missionId, id))
+    if (Mission.deleteById(id) == 1) Success else notFound(s"mission(id=$id)")
   }
 }
 

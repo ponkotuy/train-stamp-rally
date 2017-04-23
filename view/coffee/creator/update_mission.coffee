@@ -9,5 +9,7 @@ renderMission = (missions) ->
     data:
       missions: missions
     methods:
-      removable: (m) ->
-        true
+      del: (m) ->
+        console.log(m)
+        API.delete "/api/mission/#{m.id}", ->
+          location.reload(false)
