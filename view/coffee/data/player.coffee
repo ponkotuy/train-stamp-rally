@@ -3,7 +3,7 @@ $(document).ready ->
   id = params.id
   pPlayer = new Promise (resolve) ->
     API.getJSON "/api/account/#{id}", (player) ->
-      API.getJSON "/api/missions?creator=#{player.id}", (created) ->
+      API.getJSON "/api/account/#{player.id}/missions", (created) ->
         resolve([player, created])
   pClear = new Promise (resolve) ->
     API.get "/api/account/#{id}/clear_count", (count) ->

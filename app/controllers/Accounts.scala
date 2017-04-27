@@ -5,11 +5,11 @@ import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
 import com.google.inject.Inject
 import jp.t2v.lab.play2.auth.AuthElement
-import models.{Account, AccountSerializer}
+import models.{Account, AccountSerializer, Mission}
 import org.json4s.{DefaultFormats, Extraction}
 import play.api.mvc.{Action, Controller}
 import queries.CreateAccount
-import scalikejdbc.AutoSession
+import scalikejdbc._
 
 class Accounts @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
   import json4s._
@@ -33,4 +33,11 @@ class Accounts @Inject() (json4s: Json4s) extends Controller with AuthElement wi
       Success
     }
   }
+
+  def missions(id: Long) = Action {
+    import models.DefaultAliases.m
+    val missions = Mission.findAllBy(sqls.eq(m.creator, id))
+    Ok(Extraction.decompose(missions.sortBy(-_.rate)))
+  }
+
 }
