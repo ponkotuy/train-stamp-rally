@@ -4,8 +4,8 @@ import jp.t2v.lab.play2.auth._
 import models.Account
 import play.api.mvc.{RequestHeader, Result}
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.duration._
+import scala.concurrent.{ExecutionContext, Future}
 import scala.reflect.ClassTag
 
 trait AuthConfigImpl extends AuthConfig {
@@ -14,6 +14,8 @@ trait AuthConfigImpl extends AuthConfig {
   override type Id = Long
   override type User = Account
   override type Authority = Role
+
+  override lazy val idContainer = AsyncIdContainer(new SessionContainer())
 
   override val idTag: ClassTag[Id] = implicitly[ClassTag[Id]]
 

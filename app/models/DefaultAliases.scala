@@ -19,4 +19,5 @@ object DefaultAliases {
   def gh = GameHistory.defaultAlias
   def sg = StationGeo.defaultAlias
   def pr = PasswordReset.defaultAlias
+  def se = Session.defaultAlias
 }
