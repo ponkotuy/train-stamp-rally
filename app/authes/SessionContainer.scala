@@ -7,7 +7,6 @@ import models.Session
 import scalikejdbc._
 
 import scala.annotation.tailrec
-import scala.concurrent.forkjoin.ThreadLocalRandom
 import scala.util.Random
 
 class SessionContainer extends IdContainer[Long] {
