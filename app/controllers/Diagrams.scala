@@ -1,33 +1,38 @@
 package controllers
 
-import authes.AuthConfigImpl
+import javax.inject.Inject
+
+import authes.Authenticator
 import authes.Role.{Administrator, NormalUser}
 import com.github.tototoshi.play2.json4s.Json4s
-import com.google.inject.Inject
 import games.TrainCost
-import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s._
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.InjectedController
 import queries.{CreateDiagram, SearchDiagram}
 import responses.{DiagramResponse, TrainResponse}
 import scalikejdbc._
 
-class Diagrams @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Diagrams @Inject() (json4s: Json4s) extends InjectedController with Authenticator {
   import Diagrams._
   import Responses._
   import json4s._
+  import json4s.implicits._
 
   implicit val formats = DefaultFormats + TrainTypeSerializer + StationRankSerializer
 
-  def show(diagramId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    val diagram = DiagramResponse.fromId(diagramId)(AutoSession)
-    Ok(Extraction.decompose(diagram))
+  def show(diagramId: Long) = Action { implicit req =>
+    withAuth(NormalUser) { _ =>
+      val diagram = DiagramResponse.fromId(diagramId)(AutoSession)
+      Ok(Extraction.decompose(diagram))
+    }
   }
 
-  def cost(diagramId: Long, from: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    DiagramResponse.fromId(diagramId)(AutoSession).fold(notFound(s"diagram id=${diagramId}")) { diagram =>
-      Ok(Extraction.decompose(TrainCost.calcDiagram(diagram, from)))
+  def cost(diagramId: Long, from: Long) = Action { implicit req =>
+    withAuth(NormalUser) { _ =>
+      DiagramResponse.fromId(diagramId)(AutoSession).fold(notFound(s"diagram id=${diagramId}")) { diagram =>
+        Ok(Extraction.decompose(TrainCost.calcDiagram(diagram, from)))
+      }
     }
   }
 
@@ -36,30 +41,40 @@ class Diagrams @Inject() (json4s: Json4s) extends Controller with AuthElement wi
     Ok(Extraction.decompose(diagrams))
   }
 
-  def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
-    req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
-      createDiagram(diagram, loggedIn.id)
-      Success
+  def create() = Action(json) { implicit req =>
+    withAuth(Administrator) { user =>
+      req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
+        createDiagram(diagram, user.id)
+        Success
+      }
     }
   }
 
-  def update(diagramId: Long) = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
-    req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
-      if (updateDiagram(diagramId, diagram) == 0) notFound(s"Diagram id=${diagramId}")
-      else Success
+  def update(diagramId: Long) = Action(json) { implicit req =>
+    withAuth(Administrator) { _ =>
+      req.body.extractOpt[CreateDiagram].fold(JSONParseError) { diagram =>
+        if (updateDiagram(diagramId, diagram) == 0) notFound(s"Diagram id=${diagramId}")
+        else Success
+      }
     }
   }
 
-  def delete(diagramId: Long) = StackAction(AuthorityKey -> Administrator) { implicit req =>
-    if (deleteDiagram(diagramId) <= 0) notFound("diagram") else Success
+  def delete(diagramId: Long) = Action { implicit req =>
+    withAuth(Administrator) { _ =>
+      if (deleteDiagram(diagramId) <= 0) notFound("diagram") else Success
+    }
   }
 
-  def train(trainId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    Ok(Extraction.decompose(TrainResponse.fromTrainId(trainId)(AutoSession)))
+  def train(trainId: Long) = Action { implicit req =>
+    withAuth(NormalUser) { _ =>
+      Ok(Extraction.decompose(TrainResponse.fromTrainId(trainId)(AutoSession)))
+    }
   }
 
-  def trainTypes() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    Ok(Extraction.decompose(TrainType.values))
+  def trainTypes() = Action { implicit req =>
+    withAuth(NormalUser) { _ =>
+      Ok(Extraction.decompose(TrainType.values))
+    }
   }
 }
 

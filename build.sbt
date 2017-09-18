@@ -12,6 +12,7 @@ val googleLibVer = "1.22.0"
 libraryDependencies ++= Seq(
   ws,
   ehcache,
+  guice,
   "org.skinny-framework" %% "skinny-orm" % "2.3.5",
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "2.6.0",
   "org.mariadb.jdbc" % "mariadb-java-client" % "1.4.0",

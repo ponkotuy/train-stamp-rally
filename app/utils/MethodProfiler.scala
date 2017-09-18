@@ -32,13 +32,13 @@ object MethodProfiler {
 class ProfilerImpl() extends MethodProfiler {
   import MethodProfiler._
 
-  val starts: mutable.Stack[Start] = mutable.Stack()
+  var starts: List[Start] = Nil
   val results: mutable.Map[String, Long] = mutable.LinkedHashMap[String, Long]().withDefaultValue(0L)
 
   override def apply[T](name: String)(f: => T): T = {
     synchronized {
-      val names = starts.map(_.name).headOption.fold(name) { it => s"${it}.${name}" }
-      starts.push(Start(names, System.nanoTime()))
+      val names = starts.map(_.name).lastOption.fold(name) { it => s"${it}.${name}" }
+      starts = Start(names, System.nanoTime()) :: starts
     }
     try { f } finally {
       end()
@@ -52,7 +52,8 @@ class ProfilerImpl() extends MethodProfiler {
   }
 
   private def end(): Unit = synchronized {
-    val st = starts.pop()
+    val st :: rest = starts
+    starts = rest
     results(st.name) += st.diff()
   }
 
@@ -61,7 +62,7 @@ class ProfilerImpl() extends MethodProfiler {
   }
 
   def clear(): Unit = {
-    starts.clear()
+    starts = Nil
     results.clear()
   }
 

@@ -5,15 +5,15 @@ import com.amazonaws.regions.Regions
 import play.api.Configuration
 
 class Config(orig: Configuration) {
-  lazy val googleMapsKey: Option[String] = orig.getString("google.maps.key")
-  lazy val amazon = orig.getConfig("amazon").map(new AmazonConfig(_))
-  lazy val mail: Option[String] = orig.getString("management.mail")
+  lazy val googleMapsKey: Option[String] = orig.getOptional[String]("google.maps.key")
+  lazy val amazon = orig.getOptional[Configuration]("amazon").map(new AmazonConfig(_))
+  lazy val mail: Option[String] = orig.getOptional[String]("management.mail")
 }
 
 class AmazonConfig(config: Configuration) {
-  val regionRaw: Option[String] = config.getString("region")
-  val access: Option[String] = config.getString("access_key")
-  val secret: Option[String] = config.getString("secret_key")
+  val regionRaw: Option[String] = config.getOptional[String]("region")
+  val access: Option[String] = config.getOptional[String]("access_key")
+  val secret: Option[String] = config.getOptional[String]("secret_key")
 
   lazy val credentials: Option[AWSCredentials] = for {
     a <- access

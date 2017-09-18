@@ -1,23 +1,25 @@
 package controllers
 
-import authes.AuthConfigImpl
+import javax.inject.Inject
+
+import authes.Authenticator
 import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
-import com.google.inject.Inject
-import jp.t2v.lab.play2.auth.AuthElement
 import models.GameProgress
 import org.json4s.{DefaultFormats, Extraction}
-import play.api.mvc.Controller
+import play.api.mvc.InjectedController
 import scalikejdbc._
 
-class GameProgresses @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
-  import json4s._
+class GameProgresses @Inject() (json4s: Json4s) extends InjectedController with Authenticator {
+  import json4s.implicits._
 
   implicit val format = DefaultFormats
 
-  def list(gameId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    val gp = GameProgress.defaultAlias
-    val progresses = GameProgress.joins(GameProgress.stationRef).findAllBy(sqls.eq(gp.gameId, gameId))
-    Ok(Extraction.decompose(progresses))
+  def list(gameId: Long) = Action { implicit req =>
+    withAuth(NormalUser) { _ =>
+      val gp = GameProgress.defaultAlias
+      val progresses = GameProgress.joins(GameProgress.stationRef).findAllBy(sqls.eq(gp.gameId, gameId))
+      Ok(Extraction.decompose(progresses))
+    }
   }
 }

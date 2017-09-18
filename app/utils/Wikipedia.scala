@@ -13,7 +13,7 @@ class Wikipedia(val ws: WSClient) {
   import Wikipedia._
   def get(params: Seq[(String, String)]) = {
     val request = ws.url(URL)
-    request.withQueryString(params ++ DefaultParams: _*).get()
+    request.addQueryStringParameters(params ++ DefaultParams: _*).get()
   }
 
   def getInfo(title: String) = get(Seq("prop" -> "info", "titles" -> title))
