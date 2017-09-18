@@ -1,9 +1,11 @@
 package modules
 
-import com.google.inject.{AbstractModule, Inject, Singleton}
+import javax.inject.{Inject, Singleton}
+
 import com.google.maps.model.GeocodingResult
 import models.{LineStation, StationGeo}
-import play.api.Configuration
+import play.api.{Configuration, Environment}
+import play.api.inject.Module
 import scalikejdbc._
 import utils.{Config, GoogleMaps}
 
@@ -66,6 +68,7 @@ class LocationSetterThread(config: Configuration) extends Runnable {
   }
 }
 
-class LocationSetterModule extends AbstractModule {
-  override def configure(): Unit = bind(classOf[LocationSetter]).asEagerSingleton()
+class LocationSetterModule extends Module {
+  override def bindings(environment: Environment, configuration: Configuration) =
+    bind(classOf[LocationSetter]).toSelf.eagerly() :: Nil
 }

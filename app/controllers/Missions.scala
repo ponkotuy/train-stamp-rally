@@ -1,21 +1,22 @@
 package controllers
 
-import authes.AuthConfigImpl
+import javax.inject.Inject
+
+import authes.Authenticator
 import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
-import com.google.inject.Inject
-import jp.t2v.lab.play2.auth.AuthElement
 import models._
 import org.json4s.{DefaultFormats, Extraction}
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.InjectedController
 import queries._
 import responses.{MinScore, MissionScore, Page, WithPage}
 import scalikejdbc._
 
-class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Missions @Inject() (json4s: Json4s) extends InjectedController with Authenticator {
   import Missions._
   import Responses._
   import json4s._
+  import json4s.implicits._
 
   implicit val formats = DefaultFormats + StationRankSerializer
 
@@ -31,32 +32,38 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
     Ok(Extraction.decompose(mission))
   }
 
-  def list() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    SearchMissions.form.bindFromRequest().fold(badRequest, search => {
-      val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef).findAllBy(search.where)
-      val filter = search.filter()(AutoSession)
-      val filtered = missions.filter(filter.apply).sortBy(-_.rate)
-      val result = if (search.score) withScores(loggedIn.id, filtered)(AutoSession) else filtered
-      val withPage = Paging.form.bindFromRequest().value.fold[Any](result) { p =>
-        val total = result.size
-        val data = result.slice(p.from, p.to)
-        WithPage(Page(total, p.size, p.page), data)
-      }
-      Ok(Extraction.decompose(withPage))
-    })
+  def list() = Action { implicit req =>
+    withAuth(NormalUser) { user =>
+      SearchMissions.form.bindFromRequest().fold(badRequest, search => {
+        val missions = Mission.joins(Mission.stationsRef, Mission.startStationRef).findAllBy(search.where)
+        val filter = search.filter()(AutoSession)
+        val filtered = missions.filter(filter.apply).sortBy(-_.rate)
+        val result = if (search.score) withScores(user.id, filtered)(AutoSession) else filtered
+        val withPage = Paging.form.bindFromRequest().value.fold[Any](result) { p =>
+          val total = result.size
+          val data = result.slice(p.from, p.to)
+          WithPage(Page(total, p.size, p.page), data)
+        }
+        Ok(Extraction.decompose(withPage))
+      })
+    }
   }
 
-  def random(size: Int) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    val mission = RandomMission.create(size)(AutoSession)
-    Ok(Extraction.decompose(mission))
+  def random(size: Int) = Action { implicit req =>
+    withAuth(NormalUser) { _ =>
+      val mission = RandomMission.create(size)(AutoSession)
+      Ok(Extraction.decompose(mission))
+    }
   }
 
-  def create() = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
-    req.body.extractOpt[CreateMission].fold(JSONParseError) { mission =>
-      DB localTx { implicit session =>
-        val missionId = mission.mission(loggedIn.id).save()
-        mission.missionStations(missionId).foreach(_.save())
-        Ok(missionId.toString)
+  def create() = Action(json) { implicit req =>
+    withAuth(NormalUser) { user =>
+      req.body.extractOpt[CreateMission].fold(JSONParseError) { mission =>
+        DB localTx { implicit session =>
+          val missionId = mission.mission(user.id).save()
+          mission.missionStations(missionId).foreach(_.save())
+          Ok(missionId.toString)
+        }
       }
     }
   }
@@ -65,27 +72,31 @@ class Missions @Inject() (json4s: Json4s) extends Controller with AuthElement wi
     Ok(Score.missionCount(accountId)(AutoSession).toString)
   }
 
-  def update(id: Long) = StackAction(json, AuthorityKey -> NormalUser) { implicit req =>
-    Mission.findById(id).flatMap { mission =>
-      if (mission.creator != loggedIn.id) None
-      else {
-        req.body.extractOpt[UpdateMission].map { update =>
-          Mission.updateById(id).withAttributes(update.attributes: _*)
-          Success
+  def update(id: Long) = Action(json) { implicit req =>
+    withAuth(NormalUser) { user =>
+      Mission.findById(id).flatMap { mission =>
+        if (mission.creator != user.id) None
+        else {
+          req.body.extractOpt[UpdateMission].map { update =>
+            Mission.updateById(id).withAttributes(update.attributes: _*)
+            Success
+          }
         }
-      }
-    }.getOrElse(notFound(s"mission(id=$id"))
+      }.getOrElse(notFound(s"mission(id=$id"))
+    }
   }
 
-  def delete(id: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def delete(id: Long) = Action { implicit req =>
     import MissionStation.{column => ms}
-    Mission.findById(id).flatMap { mission =>
-      if (mission.creator != loggedIn.id) None
-      else {
-        MissionStation.deleteBy(sqls.eq(ms.missionId, id))
-        if (Mission.deleteById(id) == 1) Some(Success) else None
-      }
-    }.getOrElse(notFound(s"mission(id=$id)"))
+    withAuth(NormalUser) { user =>
+      Mission.findById(id).flatMap { mission =>
+        if (mission.creator != user.id) None
+        else {
+          MissionStation.deleteBy(sqls.eq(ms.missionId, id))
+          if (Mission.deleteById(id) == 1) Some(Success) else None
+        }
+      }.getOrElse(notFound(s"mission(id=$id)"))
+    }
   }
 }
 

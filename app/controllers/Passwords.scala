@@ -1,19 +1,20 @@
 package controllers
 
+import javax.inject.Inject
+
 import com.amazonaws.services.simpleemail.model.{Body, Content, Destination}
 import com.github.tototoshi.play2.json4s.native.Json4s
-import com.google.inject.Inject
 import models.{Account, PasswordReset}
 import org.json4s.DefaultFormats
 import play.api.Configuration
-import play.api.mvc.{Action, Controller, Result}
+import play.api.mvc.{InjectedController, Result}
 import queries.{BCryptEncoder, RequestReset, ResetPassword}
-import scalikejdbc.{AutoSession, DB, sqls}
+import scalikejdbc._
 import utils.{Config, Mail, MyAmazonSES}
 
 import scala.concurrent.duration._
 
-class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Controller {
+class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends InjectedController {
   import Passwords._
   import Responses._
   import json4s._
@@ -24,7 +25,6 @@ class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Contr
 
   def request() = Action(json) { implicit req =>
     import models.DefaultAliases.a
-    import utils.EitherUtil.eitherToRightProjection
     val result = for {
       rr <- req.body.extractOpt[RequestReset].toRight(JSONParseError)
       account <- Account.findBy(sqls.eq(a.email, rr.email)).toRight(notFound(s"email(${rr.email})"))
@@ -45,7 +45,6 @@ class Passwords @Inject() (json4s: Json4s, _config: Configuration) extends Contr
 
   def reset() = Action(json) { implicit request =>
     import models.DefaultAliases.pr
-    import utils.EitherUtil.eitherToRightProjection
     val result: Either[Result, Result] = for {
       req <- request.body.extractOpt[ResetPassword].toRight(JSONParseError)
       db <- PasswordReset.findBy(sqls.eq(pr.secret, req.secret)).toRight(notFound(s"PasswordReset secret: ${req.secret}")).right

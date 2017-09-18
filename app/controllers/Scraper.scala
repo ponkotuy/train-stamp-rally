@@ -1,22 +1,22 @@
 package controllers
 
-import authes.AuthConfigImpl
+import javax.inject.Inject
+
+import authes.Authenticator
 import authes.Role.Administrator
 import com.github.tototoshi.play2.json4s.Json4s
-import com.google.inject.Inject
-import jp.t2v.lab.play2.auth.AuthElement
 import net.liftweb.util.Html5
 import org.json4s.{DefaultFormats, Extraction}
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.InjectedController
 import scrape.model.{StationPage, TrainPage}
 
 import scala.io.Codec
 import scala.xml._
 
-class Scraper @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
+class Scraper @Inject() (json4s: Json4s) extends InjectedController with Authenticator {
   import Responses._
   import Scraper._
-  import json4s._
+  import json4s.implicits._
 
   implicit val formats = DefaultFormats
 
@@ -31,15 +31,17 @@ class Scraper @Inject() (json4s: Json4s) extends Controller with AuthElement wit
     }
   }
 
-  def timeTable(lineId: String, pageName: String) = StackAction(AuthorityKey -> Administrator) { implicit req =>
-    ???
+  def timeTable(lineId: String, pageName: String) = Action { implicit req =>
+    withAuth(Administrator) { _ => ??? }
   }
 
-  def train(lineId: String, trainId: String) = StackAction(AuthorityKey -> Administrator) { implicit req =>
-    val address = s"/newdata/detail/${lineId}/${trainId}.htm"
-    TrainPage.fromXML(loadXML(s"${Host}${address}"), address) match {
-      case Left(str) => notFound(str)
-      case Right(train) => Ok(Extraction.decompose(train))
+  def train(lineId: String, trainId: String) = Action { implicit req =>
+    withAuth(Administrator) { _ =>
+      val address = s"/newdata/detail/${lineId}/${trainId}.htm"
+      TrainPage.fromXML(loadXML(s"${Host}${address}"), address) match {
+        case Left(str) => notFound(str)
+        case Right(train) => Ok(Extraction.decompose(train))
+      }
     }
   }
 
