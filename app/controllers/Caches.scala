@@ -1,17 +1,19 @@
 package controllers
 
-import authes.AuthConfigImpl
+import javax.inject.Inject
+
+import authes.Authenticator
 import authes.Role.Administrator
 import caches.LineStationsCache
-import com.google.inject.Inject
-import jp.t2v.lab.play2.auth.AuthElement
-import play.api.mvc.Controller
+import play.api.mvc.InjectedController
 
-class Caches @Inject() () extends Controller with AuthElement with AuthConfigImpl {
+class Caches @Inject() () extends InjectedController with Authenticator {
   import Responses._
 
-  def clear() = StackAction(AuthorityKey -> Administrator) { implicit req =>
-    LineStationsCache.clear()
-    Success
+  def clear() = Action { implicit req =>
+    withAuth(Administrator) { _ =>
+      LineStationsCache.clear()
+      Success
+    }
   }
 }

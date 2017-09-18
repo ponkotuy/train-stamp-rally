@@ -1,24 +1,27 @@
 package controllers
 
-import authes.AuthConfigImpl
+import javax.inject.Inject
+
+import authes.Authenticator
 import authes.Role.NormalUser
 import com.github.tototoshi.play2.json4s.Json4s
-import com.google.inject.Inject
-import jp.t2v.lab.play2.auth.AuthElement
 import models.{Account, AccountSerializer, Mission}
 import org.json4s.{DefaultFormats, Extraction}
-import play.api.mvc.{Action, Controller}
+import play.api.mvc.InjectedController
 import queries.CreateAccount
 import scalikejdbc._
 
-class Accounts @Inject() (json4s: Json4s) extends Controller with AuthElement with AuthConfigImpl {
-  import json4s._
+class Accounts @Inject() (json4s: Json4s) extends InjectedController with Authenticator {
   import Responses._
+  import json4s._
+  import json4s.implicits._
 
   implicit val formats = DefaultFormats + AccountSerializer
 
-  def show() = StackAction(AuthorityKey -> NormalUser) { implicit req =>
-    Ok(Extraction.decompose(loggedIn))
+  def show() = Action { implicit req =>
+    withAuth(NormalUser) { user =>
+      Ok(Extraction.decompose(user))
+    }
   }
 
   def showMin(id: Long) = Action {

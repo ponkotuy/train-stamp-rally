@@ -1,24 +1,25 @@
 package controllers
 
-import authes.AuthConfigImpl
+import javax.inject.Inject
+
+import authes.Authenticator
 import authes.Role.{Administrator, NormalUser}
 import caches.LineStationsCache
 import com.github.tototoshi.play2.json4s.Json4s
-import com.google.inject.Inject
-import jp.t2v.lab.play2.auth.AuthElement
 import models.{Line, LineStation, Station, StationRankSerializer}
 import org.json4s._
-import play.api.mvc.Controller
+import play.api.mvc.{AbstractController, ControllerComponents}
 import queries.{CreateLine, Paging}
 import responses.{Page, WithPage}
 import scalikejdbc._
 
 import scala.concurrent.ExecutionContext
 
-class Lines @Inject() (json4s: Json4s, _ec: ExecutionContext) extends Controller with AuthElement with AuthConfigImpl {
+class Lines @Inject() (json4s: Json4s, _ec: ExecutionContext, cc: ControllerComponents) extends AbstractController(cc) with Authenticator {
   import Lines._
   import Responses._
   import json4s._
+  import json4s.implicits._
   implicit val formats = DefaultFormats + StationRankSerializer
   implicit val ec = _ec
 
@@ -27,31 +28,37 @@ class Lines @Inject() (json4s: Json4s, _ec: ExecutionContext) extends Controller
     else parse.ignore(None)
   }
 
-  def list() = StackAction(optionalPaging, AuthorityKey -> NormalUser) { implicit req =>
+  def list() = Action(optionalPaging) { implicit req =>
     import models.DefaultAliases.l
-    val result = req.body.fold[Any] {
-      Line.findAll(Seq(l.id.asc))
-    } { paging =>
-      val where = paging.q.fold(sqls"true") { q => sqls.like(l.name, s"%${q}%") }
-      val data = Line.findAllByWithPagination(where, paging.pagination, Seq(l.id.desc))
-      val count = Line.countBy(where)
-      WithPage(Page(count, paging.size, paging.page), data)
-    }
-    Ok(Extraction.decompose(result))
-  }
-
-  def create() = StackAction(json, AuthorityKey -> Administrator) { implicit req =>
-    req.body.extractOpt[CreateLine].fold(JSONParseError) { line =>
-      createLine(line)
-      LineStationsCache.clear()
-      Success
+    withAuth(NormalUser) { _ =>
+      val result = req.body.fold[Any] {
+        Line.findAll(Seq(l.id.asc))
+      } { paging =>
+        val where = paging.q.fold(sqls"true") { q => sqls.like(l.name, s"%${q}%") }
+        val data = Line.findAllByWithPagination(where, paging.pagination, Seq(l.id.desc))
+        val count = Line.countBy(where)
+        WithPage(Page(count, paging.size, paging.page), data)
+      }
+      Ok(Extraction.decompose(result))
     }
   }
 
-  def lineStations(lineId: Long) = StackAction(AuthorityKey -> NormalUser) { implicit req =>
+  def create() = Action(json) { implicit req =>
+    withAuth(Administrator) { _ =>
+      req.body.extractOpt[CreateLine].fold(JSONParseError) { line =>
+        createLine(line)
+        LineStationsCache.clear()
+        Success
+      }
+    }
+  }
+
+  def lineStations(lineId: Long) = Action { implicit req =>
     import models.DefaultAliases.ls
-    val stations = LineStation.joins(LineStation.stationRef).findAllBy(sqls.eq(ls.lineId, lineId), Seq(ls.km.asc))
-    Ok(Extraction.decompose(stations))
+    withAuth(NormalUser) { _ =>
+      val stations = LineStation.joins(LineStation.stationRef).findAllBy(sqls.eq(ls.lineId, lineId), Seq(ls.km.asc))
+      Ok(Extraction.decompose(stations))
+    }
   }
 }
 
