@@ -1,23 +1,24 @@
 script(src='/js/creator/create_line.js')
 #createLine
   h2 Create
-  form.form-horizontal
-    .form-group
-      label.col-sm-3.control-label(for='lineName') Name
+  form
+    .form-group.row
+      label.col-sm-3.col-form-label(for='lineName') Name
       .col-sm-9
         input#lineName.form-control(type='text', v-model='lineName')
-    .form-group
-      label.col-sm-3.control-label(for='company') Company
+    .form-group.row
+      label.col-sm-3.col-form-label(for='company') Company
       .col-sm-9
         select#company.form-control(v-model='company')
           option(v-for='c in companies', :value='c.id', v-text='c.name')
+
   h3 Stations
-  form.form-horizontal
-    .form-group
-      label.col-sm-5.control-label Name
-      label.col-sm-3.control-label Distance(km)
-      label.col-sm-3.control-label Size
-    .form-group(v-for='(st, idx) in stations')
+  form
+    .form-group.row
+      label.col-sm-5.col-form-label Name
+      label.col-sm-3.col-form-label Distance(km)
+      label.col-sm-3.col-form-label Size
+    .form-group.row(v-for='(st, idx) in stations')
       .col-sm-5
         input.form-control(type='text', v-model='st.name')
       .col-sm-3
@@ -30,18 +31,18 @@ script(src='/js/creator/create_line.js')
           option(value=4) Middle
           option(value=5) Local
       .col-sm-1
-        button.btn.btn-danger(type='button', v-on:click='deleteStation(idx)')
+        button.btn.btn-danger(type='button', @click='deleteStation(idx)')
           span.glyphicon.glyphicon-trash
-    .form-group
-      .col-sm-2.col-sm-offset-10
-        button.btn.btn-default.form-control(type='button', v-on:click='addStation()') Add Station
-    .form-group
-      label.col-sm-3.control-label(for='csvArea') From TSV
+    .form-group.row.justify-content-end
+      .col-sm-2
+        button.btn.btn-default.form-control(type='button', @click='addStation()') Add Station
+    .form-group.row
+      label.col-sm-3.col-form-label(for='csvArea') From TSV
       .col-sm-9
         textarea#csvArea.form-control(rows='4', v-model='csv')
-    .form-group
-      .col-sm-2.col-sm-offset-10
-        button.btn.btn-default.form-control(type='button', v-on:click='loadCSV()') Load TSV
+    .form-group.row.justify-content-end
+      .col-sm-2
+        button.btn.btn-default.form-control(type='button', @click='loadCSV()') Load TSV
   h3 Send
   form.form-inline
-    button.btn.btn-primary.btn-lg(type='button', v-on:click='postLine()') ALL Send
+    button.btn.btn-primary.btn-lg(type='button', @click='postLine()') ALL Send

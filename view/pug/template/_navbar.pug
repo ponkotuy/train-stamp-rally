@@ -1,23 +1,18 @@
 script(src='/js/navbar.js')
-.navbar.navbar-default
-  .container-fluid
-    .navbar-header
-      a.navbar-brand(href='/') TrainStampRally
-    .navbar-collapse.collapse.navbar-responsive-collapse
-      ul#navs.nav.navbar-nav
-        li(v-for='cat in categories', :class="{'active': cat === category}")
-          a(:href='"/" + cat + "/index.html"', v-text='camelCase(cat)')
-      ul#login.nav.navbar-nav.navbar-right
-        li(v-if='!logined')
-          a(href='/auth/session.html') Login
-        li.dropdown(v-if='logined')
-          a.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup="true" aria-expanded="false")
-            span(v-text='account.name')
-            span.caret
-          ul.dropdown-menu
-            li.diviver(role='separator')
-            li
-              a(:href='"/data/player.html?id=" + account.id') Player情報
-            li.divider(role='separator')
-            li
-              a(href='#', @click='logout()') Logout
+header.navbar.navbar-expand.flex-column.flex-md-row(style='box-shadow: none;')
+  a.navbar-brand(href='/') TrainStampRally
+  ul#navs.navbar-nav
+    li.nav-item(v-for='cat in categories', :class="{'active': cat === category}")
+      a.nav-link(:href='"/" + cat + "/index.html"', v-text='camelCase(cat)')
+  ul#login.nav.navbar-nav.ml-auto
+    li.nav-item(v-if='!logined')
+      a.nav-link(href='/auth/session.html') Login
+    li.nav-item.dropdown(v-if='logined')
+      a.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup="true" aria-expanded="false")
+        span(v-text='account.name')
+        span.caret
+      .nav-item.dropdown-menu
+        .dropdown-diviver(role='separator')
+        a.dropdown-item(:href='"/data/player.html?id=" + account.id') Player情報
+        .dropdown-divider(role='separator')
+        a.dropdown-item(href='#', @click='logout()') Logout

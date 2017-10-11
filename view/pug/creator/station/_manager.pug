@@ -1,12 +1,12 @@
 #manager
   div(v-if='stationId')
     h3 Update station
-    form.form-horizontal(@submit.prevent, @submit='update()')
-      .form-group
+    form(@submit.prevent, @submit='update()')
+      .form-group.row
         label.col-sm-3.control-label(for='updateName') Name
         .col-sm-9
           input#updateName.form-control(type='text', v-model='name')
-      .form-group
+      .form-group.row
         label.col-sm-3.control-label(for='stationRank') Rank
         .col-sm-9
           select#stationRank.form-control(v-model='rank')
@@ -15,4 +15,4 @@
             option(value=3) Large
             option(value=4) Middle
             option(value=5) Local
-      button.btn.btn-primary(type='submit') Update
+      button.btn.btn-primary.btn-lg(type='submit') Update

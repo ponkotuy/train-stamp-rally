@@ -3,9 +3,9 @@ script(src='/js/creator/update_modal_mission.js')
   .modal-dialog.modal-lg(role='document')
     .modal-content
       .modal-header
+        h3(v-text='mission.name')
         button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') &times;
-        h3(v-text='mission.name')
       form(@submit.prevent, @submit='update()')
         .mobdal-body
           .form-group.dialog-form

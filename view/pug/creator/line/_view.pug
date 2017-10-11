@@ -6,15 +6,15 @@ h2 Lines
     input#lineName.form-control(type='text', v-model='lineName')
     button.btn.btn-default(type='submit') Search
   ul.pagination
-    li.clickable(:class='{disabled: pagination.current == 0}')
-      a(aria-label='Previous', @click='next(pagination.current - 1)')
+    li.page-item(:class='{disabled: pagination.current == 0}')
+      a.page-link(aria-label='Previous', @click='next(pagination.current - 1)')
         span(aria-hidden='true') &laquo;
-    li.clickable(v-for='i in pagination.last', :class='{active: pagination.current == i - 1}')
-      a(v-text='i', @click='next(i - 1)')
-    li.clickable(:class='{disabled: (pagination.last - 1) <= pagination.current}')
-      a(aria-label='Next', @click='next()')
+    li.page-item(v-for='i in pagination.last', :class='{active: pagination.current == i - 1}')
+      a.page-link(v-text='i', @click='next(i - 1)')
+    li.page-item(:class='{disabled: (pagination.last - 1) <= pagination.current}')
+      a.page-link(aria-label='Next', @click='next()')
         span(aria-hidden='true') &raquo;
-  table.table.table-striped.table-condensed
+  table.table.table-striped.table-sm
     tr
       th ID
       th Company
@@ -28,9 +28,9 @@ h2 Lines
   .modal-dialog(role='document')
     .modal-content
       .modal-header
+        h3(v-text='line.company.name + " " + line.name')
         button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') &times;
-        h3(v-text='line.company.name + " " + line.name')
       .modal-body
         table.table
           thead

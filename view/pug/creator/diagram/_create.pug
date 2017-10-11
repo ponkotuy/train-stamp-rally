@@ -6,27 +6,27 @@ script(src='/js/creator/create_diagram_trains.js')
 script(src='/js/creator/create_diagram.js')
 #createDiagram
   h2 Create
-  form.form-horizontal
-    .form-group
-      label.col-sm-3.control-label(for='name') Name
+  form
+    .form-group.row
+      label.col-sm-3.col-form-label(for='name') Name
       .col-sm-9
         input#name.form-control(type='text', v-model='name')
-    .form-group
-      label.col-sm-3.control-label(for='trainType') TrainType
+    .form-group.row
+      label.col-sm-3.col-form-label(for='trainType') TrainType
       .col-sm-9
         select#trainType.form-control(v-model='trainType')
           option(v-for='t in trainTypes', :value='t.value', v-text='t.name')
-    .form-group
-      label.col-sm-3.control-label(for='subType') Subtype
+    .form-group.row
+      label.col-sm-3.col-form-label(for='subType') Subtype
       .col-sm-9
         input#subType.form-control(type='text', v-model='subType')
-    .form-group
-      label.col-sm-3.control-label(for='starts') Train Times
+    .form-group.row
+      label.col-sm-3.col-form-label(for='starts') Train Times
       .col-sm-9
         textarea#starts.form-control(type='text', v-model='startsText')
-    .form-group
-      .col-sm-1.col-sm-offset-3
-        label.control-label Pattern
+    .form-group.row.justify-content-end
+      .col-sm-1
+        label.col-form-label Pattern
       .col-sm-2
         input#patternStart.form-control(type='text', v-model='pattern.start')
       .col-sm-2
@@ -35,20 +35,20 @@ script(src='/js/creator/create_diagram.js')
         input#patternPeriod.form-control(type='number', v-model='pattern.period')
       .col-sm-2
         button.btn.btn-default.form-control(type='button', @click='pushPattern()') Push
-  form.form-horizontal(@submit.prevent, @submit='scrapeStation()')
-    .form-group
-      .col-sm-2.col-sm-offset-3
-        label.control-label えきから時刻表の駅ページURL
+  form(@submit.prevent, @submit='scrapeStation()')
+    .form-group.row.justify-content-end
+      .col-sm-2
+        label.col-form-label えきから時刻表の駅ページURL
       .col-sm-5
         input.form-control(type='text', v-model='stationUrl')
       .col-sm-2
         button.btn.btn-default.form-control(type='submit') Scrape
-  form.form-horizontal
-    .form-group
-      label.col-sm-5.control-label Station
-      label.col-sm-2.control-label Arrival(minutes)
-      label.col-sm-2.control-label Departure(minutes)
-    .form-group(v-for='stop, idx in stops')
+  form
+    .form-group.row
+      label.col-sm-5.col-form-label Station
+      label.col-sm-2.col-form-label Arrival(minutes)
+      label.col-sm-2.col-form-label Departure(minutes)
+    .form-group.row(v-for='stop, idx in stops')
       .col-sm-5
         input.form-control.autoCompleteStation(autocomplete='off', v-model='stop.name', :data-idx='idx')
       .col-sm-2
@@ -67,9 +67,9 @@ script(src='/js/creator/create_diagram.js')
           span.glyphicon.glyphicon-minus
           span.glyphicon.glyphicon-arrow-down
 
-  form.form-horizontal(@submit.prevent, @submit='getScrape()')
-    .form-group
-      label.col-sm-3.control-label えきから時刻表の列車詳細ページURL
+  form(@submit.prevent, @submit='getScrape()')
+    .form-group.row
+      label.col-sm-3.col-form-label えきから時刻表の列車詳細ページURL
       .col-sm-7
         input.form-control(type='text', v-model='scrape')
       .col-sm-2
@@ -82,9 +82,9 @@ script(src='/js/creator/create_diagram.js')
   .modal-dialog(role='document')
     .modal-content
       .modal-header
+        h3 Select trains
         button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') &times;
-        h3 Select trains
       .modal-body
         form(@submit.prevent, @submit='submit()')
           .checkbox(v-for='attr in trainAttrs')

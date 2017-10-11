@@ -4,38 +4,38 @@ script(src='/js/creator/create_mission.js')
 
 #createMission
   h1.page-header Create Mission
-  form.form-holizontal
-    .form-group
+  form
+    .form-group.row
       label.col-sm-3.control-label(for='name') Name
       .col-sm-9
         input#name.form-control(type='text', v-model='name')
-    .form-group
+    .form-group.row
       label.col-sm-3.control-label(for='start') Start Station
       .col-sm-9
         input#start.autoCompleteStation.form-control(type='text', v-model='startStation')
-    .form-group
+    .form-group.row
       label.col-sm-3.control-label Introduction(Max1000)
       .col-sm-9
         textarea#introduction.form-control(type='text', v-model='introduction')
-    .form-group
+    .form-group.row
       label.col-sm-3.control-label Clear Text(Max1000)
       .col-sm-9
         textarea#clearText.form-control(type='text', v-model='clearText')
 
   h3 Stations
-  form.form-holizontal
-    .form-group(v-for='st, idx in stations')
-      .col-sm-9.col-sm-offset-3
+  form
+    .form-group.row.justify-content-end(v-for='st, idx in stations')
+      .col-sm-9
         input.autoCompleteStation.form-control(type='text', v-model='st.name', :data-idx='idx')
-    .form-group
-      .col-sm-2.col-sm-offset-10
+    .form-group.row.justify-content-end
+      .col-sm-2
         button.btn.btn-default.btn-raised.form-control(type='button', @click='addStation()') Add Station
-    .form-group
+    .form-group.row
       label.col-sm-3.control-label(for='csv_stations') CSV
       .col-sm-9
         textarea#csv_stations.form-control(type='text', v-model='csvStations')
-    .form-group
-      .col-sm-2.col-sm-offset-10
+    .form-group.row.justify-content-end
+      .col-sm-2
         button.btn.btn-default.btn-raised.form-control(type='button', @click='loadCSV') Load CSV
 
   h3 Send
@@ -43,8 +43,8 @@ script(src='/js/creator/create_mission.js')
     button.btn.btn-primary.btn-lg.btn-raised(type='button', @click='submit()') ALL Send
 
   h3 Random Create
-  form.form-inline
-    .form-group
-      button.btn.btn-default.form-control(type='button', @click='getRandom(6)') Easy
-      button.btn.btn-default.form-control(type='button', @click='getRandom(12)') Medium
-      button.btn.btn-default.form-control(type='button', @click='getRandom(24)') Hard
+  form
+    .btn-group
+      button.btn.btn-secondary(type='button', @click='getRandom(6)') Easy
+      button.btn.btn-secondary(type='button', @click='getRandom(12)') Medium
+      button.btn.btn-secondary(type='button', @click='getRandom(24)') Hard

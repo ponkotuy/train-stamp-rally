@@ -17,7 +17,7 @@ html(lang=ja)
       .panel(v-for='line in lines', :class='{"panel-info": line.line.name.endsWith("新幹線")}')
         .panel-heading(v-text='line.line.name')
         .panel-body
-          table.table.table-condensed.table-striped
+          table.table.table-sm.table-striped
             tr(v-for='train in line.trains', :class='trainColor(train.trainType.value)')
               th(v-text='train.subType + " " + train.name')
               td

@@ -8,7 +8,7 @@ html(lang=ja)
     include template/_navbar
   .container(role=main)
     .jumbotron
-      h1 Train Stamp Rally
+      h1.display-2 Train Stamp Rally
       p 列車に乗って駅をめぐる
       p 時間・距離・金額を競う
       a.btn.btn-primary.btn-lg(href='/auth/account.html') アカウント登録
@@ -17,7 +17,7 @@ html(lang=ja)
     p ※現在位置情報は使わないゲームです
     #histories
       h3 更新履歴
-      dl.dl-horizontal
+      dl.row
         template(v-for='history in histories')
-          dt(v-text='format(history.created)')
-          dd(v-text='history.message')
+          dt.col-2.text-right(v-text='format(history.created)')
+          dd.col-10(v-text='history.message')

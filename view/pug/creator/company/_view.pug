@@ -1,7 +1,7 @@
 script(src='/js/creator/companies.js')
 h2 Companies
 #companies
-  table.table.table-striped.table-condensed
+  table.table.table-striped.table-sm
     tr
       th ID
       th Name
@@ -17,11 +17,11 @@ h2 Companies
   .modal-dialog(role='document')
     .modal-content
       .modal-header
+        h3(v-text='company.name + trainType.name + "運賃"')
         button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') &times;
-        h3(v-text='company.name + trainType.name + "運賃"')
       .modal-body
-        table.table.table-striped.table-condensed
+        table.table.table-striped.table-sm
           thead
             tr
               th km

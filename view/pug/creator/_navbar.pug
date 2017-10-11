@@ -1,4 +1,4 @@
 script(src='/js/creator/navbar.js')
-#creatorNav.nav.nav-pills(role='group')
-  li(v-for='cat in categories')
-    a(:href="'../' + cat.name + '/index.html'", :class="{'btn-info': category === cat.name}", v-text='camelCase(cat.name)')
+#creatorNav.nav.nav-tabs(role='group')
+  li.nav-item(v-for='cat in categories')
+    a.nav-link(:href="'../' + cat.name + '/index.html'", :class="{'btn-info': category === cat.name}", v-text='camelCase(cat.name)')

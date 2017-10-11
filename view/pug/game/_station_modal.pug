@@ -3,9 +3,9 @@ script(src='/js/game/station_modal.js')
   .modal-dialog(role='document')
     .modal-content
       .modal-header
+        h3(v-text='mission.mission.name')
         button.close(type='button', data-dismiss='modal', aria-label='Close')
           span(aria-hidden='true') &times;
-        h3(v-text='mission.mission.name')
       .modal-body
         a.btn.btn-primary(:href="'https://twitter.com/share?text=' + mission.mission.name + '+Ranking&hashtags=TrainStampRally&url=https%3A%2F%2Ftrain.ponkotuy.com%2Fdata%2Franking.html%3fmission%3d' + mission.mission.id", target='_blank') Tweet
         button.btn.btn-primary.btn-raised(type='button', @click='start(mission.mission.id)', v-if='!mission.game') Start

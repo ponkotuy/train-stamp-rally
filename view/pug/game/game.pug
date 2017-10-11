@@ -37,9 +37,9 @@ html(lang=ja)
       .modal-dialog(role='document')
         .modal-content
           .modal-header
+            h3(v-text='train.subType + " " + train.name')
             button.close(type='button', data-dismiss='modal', aria-label='Close')
               span(aria-hidden='true') &times;
-            h3(v-text='train.subType + " " + train.name')
           .modal-body
             .text-right
               button.btn.btn-default.btn-sm(v-if='isAll', @click='switchAll()') 主要駅表示

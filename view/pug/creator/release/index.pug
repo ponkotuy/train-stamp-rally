@@ -10,7 +10,7 @@ html(lang=ja)
     .container(role=main)
       include ../_navbar
       #histories
-        table.table.table-condensed.table-striped
+        table.table.table-sm.table-striped
           thead
             tr
               th ID
@@ -23,24 +23,24 @@ html(lang=ja)
               td(v-text='history.message')
       h2 Create
       #create
-        form.form-horizontal(@submit.prevent, @submit='submit()')
-          .form-group
-            label.col-sm-3.control-label(for='message') Message
+        form(@submit.prevent, @submit='submit()')
+          .form-group.row
+            label.col-sm-2.col-form-label.text-right(for='message') Message
             .col-sm-9
               input#message.form-control(type='text', v-model='message')
-          .form-group
-            label.col-sm-3.control-label(for='release') Release No.
+          .form-group.row
+            label.col-sm-2.col-form-label.text-right(for='release') Release No.
             .col-sm-9
               select#release.form-control(v-model='release')
                 option(v-for='r in releaseSelector', :value='r.id', v-text='r.name')
-          .form-group
-            .col-sm-offset-3
+          .form-group.row
+            .col-sm-10
               button.btn.btn-primary(type='submit') Create
 
         h2 Releases
         div(v-for='r in releases')
           h3(v-text='"No. " + r.id')
-          table.table.table-striped.table-condensed
+          table.table.table-striped.table-sm
             tr
               th ID
               th Name
