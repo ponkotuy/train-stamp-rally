@@ -18,9 +18,9 @@ html(lang=ja)
             h3(v-text='dateFormat(game.time)')
             p 使用金額:{{ game.money }}円 移動距離:{{ game.distance.toFixed(1) }}km
             button.btn.btn-default.btn-raised(:class='{disabled: !history}', @click='back()') Back
-            .panel(v-for='line in fromLines', :class='{"panel-info": line.name.endsWith("新幹線")}')
-              .panel-heading(v-text='line.name')
-              .panel-body
+            .card(v-for='line in fromLines')
+              .card-body
+                h4.card-title(v-text='line.name')
                 table.table.table-hover
                   tr.clickable(v-for='train in line.trains', @click='openModal(train)', :class='trainColor(train.trainType.value)')
                     td(v-text='train.subType + " " + train.name + " " + train.stops[train.stops.length - 1].station.name + "行"')

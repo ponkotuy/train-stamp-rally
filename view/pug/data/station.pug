@@ -14,9 +14,9 @@ html(lang=ja)
           span(v-text='line.line.name')
           small(v-text='line.km.toFixed(1) + "km"')
       h3 停車する列車
-      .panel(v-for='line in lines', :class='{"panel-info": line.line.name.endsWith("新幹線")}')
-        .panel-heading(v-text='line.line.name')
-        .panel-body
+      .card(v-for='line in lines')
+        .card-body
+          h4.card-title(v-text='line.line.name')
           table.table.table-sm.table-striped
             tr(v-for='train in line.trains', :class='trainColor(train.trainType.value)')
               th(v-text='train.subType + " " + train.name')

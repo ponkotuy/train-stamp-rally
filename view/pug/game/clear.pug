@@ -18,10 +18,10 @@ html(lang=ja)
         p.with-line-feed(v-text='mission.clearText')
       #mission
         h3 駅の到着時間
-        dl.dl-horizontal
+        dl.row
           template(v-for='progress in progresses')
-            dt(v-text='progress.station.name')
-            dd(v-text='dateFormat(progress.arrivalTime)')
+            dt.col-3.text-right(v-text='progress.station.name')
+            dd.col-9(v-text='dateFormat(progress.arrivalTime)')
       #ranking
         h3 Ranking
         .row

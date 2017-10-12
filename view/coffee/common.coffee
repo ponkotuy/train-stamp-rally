@@ -181,9 +181,9 @@ failure = (jqXHR) ->
   methods:
     trainColor: (value) ->
       switch value
-        when 2 then 'success'
-        when 3 then 'danger'
-        when 4 then 'info'
+        when 2 then 'text-success'
+        when 3 then 'text-danger'
+        when 4 then 'text-primary'
         else ''
 
 @momentFormat =

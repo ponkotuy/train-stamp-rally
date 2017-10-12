@@ -10,7 +10,7 @@ html(lang=ja)
       include ../_navbar
       h1.page-header Validator
       #messages
-        .panel.panel-default(v-for='mes in messages')
-          .panel-body
+        .card(v-for='mes in messages')
+          .card-body
             a(v-if='mes.url', :href='mes.url', v-text='mes.message')
             span(v-if='!mes.url', v-text='mes.message')

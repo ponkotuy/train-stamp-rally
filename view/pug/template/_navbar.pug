@@ -1,5 +1,5 @@
 script(src='/js/navbar.js')
-header.navbar.navbar-expand.flex-column.flex-md-row(style='box-shadow: none;')
+header.navbar.navbar-expand.flex-column.flex-md-row.navbar-dark.bg-primary(style='box-shadow: none;')
   a.navbar-brand(href='/') TrainStampRally
   ul#navs.navbar-nav
     li.nav-item(v-for='cat in categories', :class="{'active': cat === category}")
