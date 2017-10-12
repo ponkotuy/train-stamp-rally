@@ -31,7 +31,7 @@ html(lang=ja)
             a(:href="'/data/mission.html?id=' + missionId", target='_blank') Map
             div(v-for='progress in progresses', :class='{"text-success": progress.arrivalTime, "text-danger": !progress.arrivalTime}')
               h4
-                span.glyphicon(:class='{"glyphicon-ok": progress.arrivalTime, "glyphicon-remove": !progress.arrivalTime}')
+                span.oi(:class='{"oi-check": progress.arrivalTime, "oi-x": !progress.arrivalTime}')
                 a(v-text='progress.station.name', :href="'/data/station.html?id=' + progress.station.id", target='_blank')
     .modal#trainModal.fade(role='dialog')
       .modal-dialog(role='document')

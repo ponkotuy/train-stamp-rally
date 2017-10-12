@@ -57,15 +57,15 @@ script(src='/js/creator/create_diagram.js')
         input.form-control(type='text', v-model='stop.departure', v-bind="{'disabled': idx == 0 || idx == stops.length - 1}")
       .col-sm-1
         button.btn.btn-default.form-control(type='button', @click='addStop(idx)')
-          span.glyphicon.glyphicon-plus
+          span.oi.oi-plus
       .col-sm-1
         button.btn.btn-warning.form-control(type='button', @click='deleteStop(0, idx)', v-bind='{disabled: idx == stops.length - 1}')
-          span.glyphicon.glyphicon-minus
-          span.glyphicon.glyphicon-arrow-up
+          span.oi.oi-minus
+          span.oi.oi-expand-up
       .col-sm-1
         button.btn.btn-warning.form-control(type='button', @click='deleteStop(idx, stops.length - 1)', v-bind='{disabled: idx == 0}')
-          span.glyphicon.glyphicon-minus
-          span.glyphicon.glyphicon-arrow-down
+          span.oi.oi-minus(title='plus', aria-hidden='true')
+          span.oi.oi-expand-down
 
   form(@submit.prevent, @submit='getScrape()')
     .form-group.row
