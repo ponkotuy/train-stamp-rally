@@ -33,6 +33,10 @@ lazy val root = (project in file(".")).enablePlugins(PlayScala)
 
 scalacOptions += "-feature"
 
+javaOptions in Universal ++= Seq(
+  "-Dpidfile.path=/dev/null"
+)
+
 SbtScalariform.scalariformSettings
 
 ScalariformKeys.preferences := ScalariformKeys.preferences.value
