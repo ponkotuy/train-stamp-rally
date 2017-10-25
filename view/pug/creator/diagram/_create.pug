@@ -87,11 +87,9 @@ script(src='/js/creator/create_diagram.js')
           span(aria-hidden='true') &times;
       .modal-body
         form(@submit.prevent, @submit='submit()')
-          .checkbox(v-for='attr in trainAttrs')
-            label
-              input(type='checkbox', v-model='attr.check')
-              span.checkbox-material
-                span.check
-              |  {{ attr.label }}
+          .form-check(v-for='attr in trainAttrs')
+            label.form-check-label
+              input.form-check-input(type='checkbox', v-model='attr.check')
+              | {{ attr.label }}
           textarea.textarea.form-control(rows='3', v-model='candidateText', readonly)
           button.btn.btn-primary(type='submit') Push All
