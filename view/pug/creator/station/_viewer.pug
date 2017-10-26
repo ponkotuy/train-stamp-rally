@@ -18,4 +18,4 @@
         td
           a(href='#', v-text='station.name', @click='update(station.id)')
         td
-          span.label.label-default.clickable(v-for='line in station.lines', v-text='line.line.name', @click='createStation(station, line)')
+          span.badge.badge-secondary.clickable(v-for='line in station.lines', v-text='line.line.name', @click='createStation(station, line)')
