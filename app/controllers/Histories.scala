@@ -52,7 +52,7 @@ object Histories {
     if (req.headers.get(IF_NONE_MATCH).contains(eTag)) {
       NotModified
     } else {
-      content.withHeaders(ETAG -> eTag)
+      content.withHeaders(ETAG -> s""""${eTag}"""")
     }
   }
 }
