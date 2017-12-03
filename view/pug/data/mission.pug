@@ -3,9 +3,9 @@ html(lang=ja)
   head
     include ../template/_header
     link(rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.2/leaflet.css')
-    script(src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.2/leaflet.js')
-    script(src='/js/data/map.js')
-    script(src='/js/data/mission_map.js')
+    script(defer, src='https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.2/leaflet.js')
+    script(defer, src='/js/data/map.js')
+    script(defer, src='/js/data/mission_map.js')
     title Mission
   body
     include ../template/_navbar

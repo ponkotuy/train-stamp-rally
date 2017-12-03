@@ -1,4 +1,4 @@
-script(src='/js/creator/navbar.js')
+script(defer, src='/js/creator/navbar.js')
 #creatorNav.nav.nav-tabs(role='group')
   li.nav-item(v-for='cat in categories')
     a.nav-link(:href="'../' + cat.name + '/index.html'", :class="{'btn-info': category === cat.name}", v-text='camelCase(cat.name)')
