@@ -8,28 +8,30 @@ import org.json4s.{DefaultFormats, Formats, _}
 import scalikejdbc._
 import utils.{ImgAttr, ImgSrc, Wikipedia}
 
-import scala.concurrent.duration.Duration
-import scala.concurrent.{Await, ExecutionContext, Future}
-import scala.util.Try
+import scala.concurrent.{ExecutionContext, Future}
 
 class WikipediaActor(wiki: Wikipedia)(implicit ec: ExecutionContext) extends Actor {
   import WikipediaActor._
 
   implicit def _wiki: Wikipedia = wiki
 
+  type ResponseSaveImage = Future[(StationImage, Attr)]
+
   override def receive = {
     case ImageRequest(id) =>
-      sender ! StationImage.findById(id).orElse(saveImage(id).map(_._1))
+      val result = StationImage.findById(id).fold[Future[StationImage]](saveImage(id).map(_._1))(Future.successful)
+      sender ! result
     case AttrRequest(id) =>
-      if (StationImage.findById(id).map(_.imageId).contains(None))
-        sender ! None
-      else
-        sender ! ImageAttribute.findById(id).orElse(saveImage(id).map(_._2))
+      if (StationImage.findById(id).map(_.imageId).contains(None)) sender ! None
+      else {
+        val result = ImageAttribute.findById(id).fold[Future[Attr]](saveImage(id).map(_._2))(Future.successful)
+        sender ! result
+      }
   }
 
-  def saveImage(stationId: Long): Option[(StationImage, Attr)] = {
-    val future = Station.findById(stationId).map { st =>
-      for {
+  def saveImage(stationId: Long): ResponseSaveImage = {
+    Station.findById(stationId).fold[ResponseSaveImage](Future.failed(StationNotFound(stationId))) { st =>
+      val future = for {
         imgSrc <- getImgSrc(st.name)
         fName <- Future { imgSrc.origin.get }
         attr <- getAttribution(fName)
@@ -38,20 +40,17 @@ class WikipediaActor(wiki: Wikipedia)(implicit ec: ExecutionContext) extends Act
         val now = System.currentTimeMillis()
         DB localTx { implicit session =>
           val image = Image(0L, res.bodyAsBytes.toArray, now)
-          val id = image.save()
+          val id = image.save()(session)
           val stImage = StationImage(stationId, Some(id))
-          stImage.save()
-          attr.imageAttribute(stationId, now).save()
+          stImage.save()(session)
+          attr.imageAttribute(stationId, now).save()(session)
           (stImage.copy(image = Some(image)), attr)
         }
       }
-    }
-    future.flatMap { f =>
-      f.onFailure {
-        case _ =>
-          StationImage(stationId, None).save()(AutoSession)
+      future.failed.foreach[Unit] { _ =>
+        StationImage(stationId, None).save()(AutoSession)
       }
-      Try { Await.result(f, Duration.Inf) }.toOption
+      future
     }
   }
 }
@@ -59,6 +58,8 @@ class WikipediaActor(wiki: Wikipedia)(implicit ec: ExecutionContext) extends Act
 case class ImageRequest(stationId: Long)
 
 case class AttrRequest(stationId: Long)
+
+case class StationNotFound(stationId: Long) extends RuntimeException(s"Station nof found. id = ${stationId}")
 
 object WikipediaActor {
   implicit val formats: Formats = DefaultFormats

@@ -1,13 +1,7 @@
 
-import scalariform.formatter.preferences._
-import com.typesafe.sbt.SbtScalariform
-import com.typesafe.sbt.SbtScalariform.ScalariformKeys
-
 name := "TrainStampRally"
 
-scalaVersion := "2.12.3"
-
-val googleLibVer = "1.22.0"
+scalaVersion := "2.12.8"
 
 libraryDependencies ++= Seq(
   ws,
@@ -36,18 +30,6 @@ scalacOptions += "-feature"
 javaOptions in Universal ++= Seq(
   "-Dpidfile.path=/dev/null"
 )
-
-SbtScalariform.scalariformSettings
-
-ScalariformKeys.preferences := ScalariformKeys.preferences.value
-  .setPreference(DoubleIndentClassDeclaration, true)
-  .setPreference(SpacesAroundMultiImports, false)
-
-excludeFilter in scalariformFormat := (excludeFilter in scalariformFormat).value ||
-    "Routes.scala" ||
-    "ReverseRoutes.scala" ||
-    "JavaScriptReverseRoutes.scala" ||
-    "RoutesPrefix.scala"
 
 // Docker settings
 dockerEntrypoint ++= Seq(
